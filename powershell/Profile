@@ -1,0 +1,43 @@
+Clear-Host # Remove the default startup script
+
+# Use PoshGit
+Import-Module 'C:\Users\t_eck\posh-git\src\posh-git.psd1'
+
+# Prompt with directory stack
+function prompt {
+    $prompt_cd = "$(Get-Location)"
+
+    $host.ui.rawui.WindowTitle = $prompt_cd
+    $stack_string = ""
+    $time_string = "$((Get-Date).ToLongDateString()) $((Get-Date).ToShortTimeString())"
+    if ((Get-Location -Stack).Count -gt 0) {
+        $stack_string = "$((Get-Location -Stack).Peek()) +$((Get-Location -Stack).Count - 1)"
+    }
+
+    $prompt = Write-Prompt "$time_string $stack_string `r`n" -ForegroundColor "#2c3e50"
+    $prompt += & $GitPromptScriptBlock
+    $prompt += Write-Prompt "`r`n|> " -ForegroundColor "#1abc9c"
+    if ($prompt) {$prompt} else {" "}
+}
+
+# Scripts
+$script_dir = "C:\Users\t_eck\Documents\Scripts"
+Set-Alias -Name Get-Weather -Value $script_dir\Get-Weather.ps1
+Set-Alias -Name Trace-CPU -Value $script_dir\Trace-CPU.ps1 
+Set-Alias -Name Move-LatestCsv -Value $script_dir\Move-LatestCsv.ps1
+Set-Alias -Name Get-GitIgnore -Value $script_dir\Get-GitIgnore.ps1
+Set-Alias -Name Start-WebServer -Value $script_dir\Start-WebServer.ps1
+Set-Alias -Name Open-Notebook -Value $script_dir\Open-Notebook.ps1
+
+# Aliases
+Set-Alias -Name wthr -Value Get-Weather
+Set-Alias -Name top -Value Trace-CPU
+Set-Alias -Name mlc -Value Move-LatestCsv
+Set-Alias -Name ggi -Value Get-GitIgnore
+Set-Alias -Name sws -Value Start-WebServer
+Set-Alias -Name cls -Value clear
+Set-Alias -Name vi -Value nvim
+Set-Alias -Name nb -Value Open-Notebook
+
+# Startup prompt
+Invoke-RestMethod "http://wttr.in/Seattle?format=%c+%l+%m+%0A+🌡+%20+%f+☔+%p+%o"
