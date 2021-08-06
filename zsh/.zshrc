@@ -6,7 +6,15 @@ DISABLE_UPDATE_PROMPT="true"
 ENABLE_CORRECTION="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-plugins=(git)
+plugins=(
+  docker
+  git
+  golang
+  node
+  python
+  zsh-autocomplete
+  zsh-syntax-highlighting
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -23,6 +31,7 @@ alias vi=nvim
 alias v=nvim
 alias py=python3.9
 alias md=mkdir
+alias mcd="mkdir $_ && cd $_"
 alias ls="ls --color -AF"
 alias gs="git status"
 alias venv="source .venv/bin/activate"
