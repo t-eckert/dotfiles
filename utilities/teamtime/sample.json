@@ -1,0 +1,10 @@
+[
+  {
+    "name": "John Doe",
+    "tz": "America/Los Angeles"
+  },
+  {
+    "name": "Jane Doe",
+    "tz": "America/New York"
+  }
+]
