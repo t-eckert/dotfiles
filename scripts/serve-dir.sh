@@ -1,1 +1,3 @@
-py -m http.server
+#!/bin/bash
+
+python3 -m http.server
