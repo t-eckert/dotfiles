@@ -21,3 +21,4 @@ cd ./utilities/normalize-lines/
 go install .
 cd ./utilities/teamtime/
 go install .
+
