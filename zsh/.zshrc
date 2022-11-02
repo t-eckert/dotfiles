@@ -57,11 +57,12 @@ alias td="$HOME/Scripts/scripts/print-md.sh $CONSUL_TEAM"
 alias kbb="kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh"
 alias gs="git status"
 alias zrc="$EDITOR $HOME/.zshrc"
+alias dockert=docker # I always mess this up because of my last name.
 
 unsetopt correct_all
 
 export GOPATH=~/go
-export GOROOT="/usr/local/Cellar/go/1.18.3/libexec"
+export GOROOT="/usr/local/Cellar/go/1.19.2/libexec"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export CONSUL_ENT_LICENSE="$(cat $HOME/.consul.dev.license)"
