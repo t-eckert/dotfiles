@@ -1,0 +1,147 @@
+# Configuration for Alacritty terminal emulator
+window:
+  # window padding (change requires restart)
+  padding:
+    x: 4
+    y: 4
+  # spread additional padding evenly around the terminal content
+  dynamic_padding: true
+  # window decoarations
+  # - full: borders and title bar
+  # - none: neither borders nor title bar
+  # - (macos) transparent: title bar, transparent background, and title bar buttons
+  # - (macos) buttonless: title bar transparent background, but no title bar buttons
+  decorations: buttonless
+  # dynamically set the window title
+  dynamic_title: true
+  # Startup mode
+  # - Windowed
+  # - Maximized
+  # - Fullscreen
+  # - SimpleFullscreen (macos only)
+  startup_mode: Windowed
+  option_as_alt: Both
+
+scrolling:
+  history: 10000
+  multiplier: 3
+
+# Font settings
+font:
+  normal:
+    family: CaskaydiaCoveNerdFontCompleteM Nerd Font
+    style: Book
+  bold:
+    family: CaskaydiaCoveNerdFontCompleteM Nerd Font
+    style: Book
+    style: Bold
+  italic:
+    family: CaskaydiaCoveNerdFontCompleteM Nerd Font
+    style: Bold Italic
+  # point size
+  size: 15.0
+  # extra space around each character.
+  # offset.y can be thought of as modifying the line spacing
+  # offset.x can be thought of as modifying the letter spacing
+  offset:
+    x: 0
+    y: 0
+  glyph_offset:
+    x: 0
+    y: 0
+  # draw bold text with bright color variants
+  draw_bold_text_with_bright_colors: true
+mouse:
+  # hide the cursor when typing
+  hide_when_typing: true
+  # save selected text to system clipboard
+  save_to_clipboard: true
+cursor:
+  # Cursor style
+  # - ▇ Block
+  # - _ Underline
+  # - | Beam
+  style: Block
+  # render the cursor as a hollow box when window is not focused
+  unfocused_hollow: true
+
+# automatically reload config upon change
+live_config_reload: true
+
+# set the backgeround opacity
+window_opacity: 1
+
+# Use custom cursor colors. If true, display the cursor in the cursor.foreground
+# and cursor.background colors, otherwise invert the colors of the cursor.
+custom_cursor_colors: true
+
+
+# neutrals = [
+# 	"#FFFFFF", 
+# 	"#FAFAFA",
+# 	"#F3F4F6",
+# 	"#D4D4D8",
+# 	"#a3a3a3",
+# 	"#737373",
+# 	"#525252",
+# 	"#262626",
+# 	"#18181B",
+# 	"#000000"
+# ]
+
+# # Colors
+# [red]
+# light = "#ef4444"
+# medium = "#dc2626"
+# dark = "#b91c1c"
+
+# [yellow]
+# light = "#fbbf24"
+# medium = "#f59e0b"
+# dark = "#d97706"
+
+# [green]
+# light = "#34d399"
+# medium = "#10b981"
+# dark = "#059669"
+
+# [blue]
+# light = "#7dd3fc"
+# medium = "#38bdf8"
+# dark = "#0284c7"
+
+# [purple]
+# light = "#c084fc"
+# medium = "#a855f7"
+# dark = "#9333ea"
+
+
+# Colors
+colors:
+  primary:
+    background: "0x000000"
+    foreground: "0xfafafa"
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: "0x000000"
+    cursor: "0xfafafa"
+  # Normal colors
+  normal:
+    black: "0x000000"
+    red: "0xdc2626"
+    green: "0x10b981"
+    yellow: "0xf59e0b"
+    blue: "0x38bdf8"
+    magenta: "0xa855f7"
+    cyan: "0x2563eb"
+    white: "0xf3f4f6"
+  # Bright colors
+  bright:
+    black: "0x7f8c8d"
+    red: "0xef4444"
+    green: "0x34d399"
+    yellow: "0xfbbf24"
+    blue: "0x7dd3fc"
+    magenta: "0xc084fc"
+    cyan: "0x60a5fa"
+    white: "0xfafafa"
