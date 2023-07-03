@@ -1,0 +1,1 @@
+../../Repos/dotfiles/zellij/link.sh
