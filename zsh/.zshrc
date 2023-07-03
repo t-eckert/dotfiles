@@ -45,6 +45,7 @@ alias nl="nb log"
 alias gogo=$GOPATH/src/github.com/
 alias fgi="$HOME/Scripts/fetch-gitignore.sh"
 alias csl="$HOME/go/src/github.com/hashicorp/consul"
+alias cag="$HOME/go/src/github.com/hashicorp/consul-api-gateway"
 alias cks="$HOME/go/src/github.com/hashicorp/consul-k8s"
 alias ckscli="$HOME/go/src/github.com/hashicorp/consul-k8s/cli"
 alias cksacc="$HOME/go/src/github.com/hashicorp/consul-k8s/acceptance"
@@ -58,17 +59,18 @@ alias kbb="kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh
 alias gs="git status"
 alias zrc="$EDITOR $HOME/.zshrc"
 alias dockert=docker # I always mess this up because of my last name.
+alias z="zellij"
 
 unsetopt correct_all
 
 export GOPATH=~/go
-export GOROOT="/usr/local/Cellar/go/1.19.2/libexec"
+export GOROOT="/usr/local/Cellar/go/1.20.5/libexec"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export CONSUL_ENT_LICENSE="$(cat $HOME/.consul.dev.license)"
 export CONSUL_LICENSE_FILE="$HOME/.consul.dev.license"
 export CONSUL_LICENSE="$(cat $HOME/.consul.dev.license)"
-export PATH=$GOROOT/bin:$GOPATH/bin:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$PATH
+export PATH=$HOME/.local/bin/:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:$PATH
 export NVM_DIR=~/.nvm
 
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
@@ -85,7 +87,7 @@ hdelall () {
     kubectl delete --all replicasets
     kubectl delete --all deployments
     kubectl delete --all services
-    kubectl delete ns ns1
+    kubectl delete ns ns1https://github.com/hashicorp/engineering-docs/blob/main/consul/consul-k8s/release-process.md
     kubectl delete ns ns2
     kubectl get all
 }
@@ -132,7 +134,7 @@ LS_COLORS='no=0;97:fi=0;34:di=1;97:ln=1;97:pi=0;32:ex=1;35:ow=1;97'
 
 # Prompt format
 PROMPT='%{$YELLOW%}%~%u$(parse_git_dirty)$(git_prompt_ahead)%{$RESET_COLOR%}
-%{$BLUE%}=>%{$RESET_COLOR%} '
+%{$BLUE%}>%{$RESET_COLOR%} '
 RPROMPT='%{$GREEN_BOLD%}$(git_current_branch)$(git_prompt_short_sha)$(git_prompt_status)%{$RESET_COLOR%}'
 
 bindkey -v
@@ -141,3 +143,12 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH="/usr/local/opt/curl/bin:$PATH"
+
+eval "$(zellij setup --generate-auto-start zsh)"
