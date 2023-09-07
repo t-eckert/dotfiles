@@ -34,23 +34,18 @@ source $ZSH/oh-my-zsh.sh
 
 alias k=kubectl
 alias v=nvim
+alias z="zellij"
 alias py=python3.9
 alias python=python3
 alias md=mkdir
 alias mcd="mkdir $_ && cd $_"
 alias venv="source .venv/bin/activate"
 alias cat="bat"
-alias fixtime="sudo hwclock -s" # For when WSL gets out of sync.
-alias nl="nb log"
 alias gogo=$GOPATH/src/github.com/
 alias fgi="$HOME/Scripts/fetch-gitignore.sh"
-alias csl="$HOME/go/src/github.com/hashicorp/consul"
-alias cag="$HOME/go/src/github.com/hashicorp/consul-api-gateway"
-alias cks="$HOME/go/src/github.com/hashicorp/consul-k8s"
-alias ckscli="$HOME/go/src/github.com/hashicorp/consul-k8s/cli"
-alias cksacc="$HOME/go/src/github.com/hashicorp/consul-k8s/acceptance"
-alias ckscp="$HOME/go/src/github.com/hashicorp/consul-k8s/control-plane"
-alias cksr="$HOME/go/src/github.com/hashicorp/consul-k8s-releases"
+alias csl="$HOME/Repos/consul"
+alias cks="$HOME/Repos/consul-k8s"
+alias cksr="$HOME/Repos/consul-k8s-releases"
 alias hc="$HOME/go/src/github.com/hashicorp"
 alias scr="$HOME/Scripts/scripts"
 alias tt="teamtime ~/.teammembers.json"
@@ -59,19 +54,20 @@ alias kbb="kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh
 alias gs="git status"
 alias zrc="$EDITOR $HOME/.zshrc"
 alias dockert=docker # I always mess this up because of my last name.
-alias z="zellij"
 
 unsetopt correct_all
 
 export GOPATH=~/go
-export GOROOT="/usr/local/Cellar/go/1.20.5/libexec"
+export GOROOT="/usr/local/Cellar/go/1.20.7/libexec"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export CONSUL_ENT_LICENSE="$(cat $HOME/.consul.dev.license)"
 export CONSUL_LICENSE_FILE="$HOME/.consul.dev.license"
 export CONSUL_LICENSE="$(cat $HOME/.consul.dev.license)"
-export PATH=$HOME/.local/bin/:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:$PATH
+export PATH=$HOME/.local/bin/:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:~/repos/dotfiles/scripts/:$PATH
 export NVM_DIR=~/.nvm
+export BAT_THEME=base16
+export XDG_CONFIG_HOME=$HOME/.config
 
 [[ $commands[kubectl] ]] && source <(kubectl completion zsh)
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
