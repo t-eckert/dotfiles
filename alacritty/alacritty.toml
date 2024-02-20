@@ -1,0 +1,79 @@
+live_config_reload = true
+window_opacity = 1
+custom_cursor_colors = true
+
+[window]
+dynamic_padding = true
+decorations = "buttonless"
+dynamic_title = true
+startup_mode = "Windowed"
+option_as_alt = "Both"
+
+  [window.padding]
+  x = 4
+  y = 4
+
+[scrolling]
+history = 10_000
+multiplier = 3
+
+[font]
+size = 15
+draw_bold_text_with_bright_colors = true
+
+  [font.normal]
+  family = "CaskaydiaCoveNerdFontCompleteM Nerd Font"
+  style = "Book"
+
+  [font.bold]
+  family = "CaskaydiaCoveNerdFontCompleteM Nerd Font"
+  style = "Bold"
+
+  [font.italic]
+  family = "CaskaydiaCoveNerdFontCompleteM Nerd Font"
+  style = "Bold Italic"
+
+  [font.offset]
+  x = 0
+  y = 0
+
+  [font.glyph_offset]
+  x = 0
+  y = 0
+
+[mouse]
+hide_when_typing = true
+save_to_clipboard = true
+
+[cursor]
+style = "Block"
+unfocused_hollow = true
+
+[colors.primary]
+background = "0x000000"
+foreground = "0xfafafa"
+
+[colors.cursor]
+text = "0x000000"
+cursor = "0xfafafa"
+
+[colors.normal]
+black = "0x000000"
+red = "0xdc2626"
+green = "0x10b981"
+yellow = "0xf59e0b"
+blue = "0x38bdf8"
+magenta = "0xa855f7"
+cyan = "0x2563eb"
+white = "0xf3f4f6"
+
+[colors.bright]
+black = "0x7f8c8d"
+red = "0xef4444"
+green = "0x34d399"
+yellow = "0xfbbf24"
+blue = "0x7dd3fc"
+magenta = "0xc084fc"
+cyan = "0x60a5fa"
+white = "0xfafafa"
+

@@ -1,0 +1,38 @@
+#!/bin/zsh
+
+# Function to convert a string to kebab case
+to_kebab_case() {
+    echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/-\{2,\}/-/g' | sed 's/^-//;s/-$//'
+}
+
+# Check if at least one argument is provided
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <file(s) or glob>"
+    exit 1
+fi
+
+# Loop through each argument
+for file in "$@"; do
+    # Check if the argument is a file or a glob
+    if [[ -f "$file" ]]; then
+        # Get the directory path, filename, and extension
+        directory=$(dirname "$file")
+        filename=$(basename "$file")
+        extension="${filename##*.}"
+        filename_no_ext="${filename%.*}"
+        
+        # Convert the filename to kebab case
+        kebab_case=$(to_kebab_case "$filename_no_ext")
+        
+        # Rename the file
+        mv -i "$directory/$filename" "$directory/$kebab_case.$extension"
+        echo "Renamed '$filename' to '$kebab_case.$extension'"
+    elif [[ -n $(ls -d "$file" 2>/dev/null) ]]; then
+        # Handle glob expression
+        for f in "$file"; do
+            $0 "$f"
+        done
+    else
+        echo "Error: '$file' is not a valid file or glob"
+    fi
+done
