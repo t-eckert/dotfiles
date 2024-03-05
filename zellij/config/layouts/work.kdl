@@ -1,7 +1,0 @@
-layout {
-    tab name="Notebook" focus=true {
-        pane command="nb" args="log"
-    }
-    tab name="Lab" cwd="~/repos/consul-lab"
-    tab name="Workspace" cwd="~/repos/consul-k8s"
-}
