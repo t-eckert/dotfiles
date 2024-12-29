@@ -1,7 +1,31 @@
 # Thomas Eckert's Dotfiles
 
-Hello! This is my repository of configuration files I use to set up my computers.
-Feel free to look around and steal ideas!
+This repository helps me unify development environments between multiple MacOS systems.
+It contains configuration files for applications I use and small sharp tools I've written
+to make my work more effective.
 
-I keep my [Neovim Configuration](https://github.com/t-eckert/neovim-config) in a separate repository.
+## Installation
 
+Clone the repository and run `sudo ./install.sh`.
+
+## Configs
+
+- [Atuin](./.config/atuin)
+- [GitHub CLI](./.config/gh)
+- [Ghostty](./.config/ghostty)
+- [Helm](./.config/helm)
+- [K9s](./.config/k9s)
+- [Neovim](./.config/nvim)
+- [Zellij](./.config/zellij)
+
+## Tools
+
+I've unified my tooling around simple Go applications. They are all available in [`tools`](./tools).
+
+- [`create-react-component`](./tools/create-react-component) generates a new React component with the given name.
+- [`fetch-gitignore`](./tools/fetch-gitignore) fetches a `.gitignore` file from the GitHub gitignore repository.
+- [`normalize-lines`](./tools/normalize-lines) normalizes lines in a string of text to be 80 characters long without breaking words.
+- [`prepend`](./tools/prepend)
+- [`serve`](./tools/serve)
+- [`slug`](./tools/slug)
+- [`teamtime`](./tools/teamtime) tells you what time is is for everyone on your team.
