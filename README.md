@@ -1,23 +1,22 @@
 # Thomas Eckert's Dotfiles
 
-This repository helps me unify development environments between multiple systems. It contains configuration files for applications I use and small sharp tools I've written to make my work more effective.
+This repository helps me unify development environments between multiple MacOS systems.
+It contains configuration files for applications I use and small sharp tools I've written
+to make my work more effective.
 
 ## Installation
 
+Clone the repository and run `sudo ./install.sh`.
+
 ## Configs
 
-- [Atuin](./.configs/atuin)
-- [GitHub CLI](./.configs/gh)
-- [GitHub Copilot](./.configs/github-copilot)
-- [Helm](./.configs/helm)
-- [K9s](./.configs/k9s)
-- [LazyGit](./.configs/lazygit)
-- [Neovim](./.configs/nvim)
-- [1Password](./.configs/op)
-- [Raycast](./.configs/raycast)
-- [Wezterm](./.configs/wezterm)
-- [Zed](./.configs/zed)
-- [Zellij](./.configs/zellij)
+- [Atuin](./.config/atuin)
+- [GitHub CLI](./.config/gh)
+- [Ghostty](./.config/ghostty)
+- [Helm](./.config/helm)
+- [K9s](./.config/k9s)
+- [Neovim](./.config/nvim)
+- [Zellij](./.config/zellij)
 
 ## Tools
 
