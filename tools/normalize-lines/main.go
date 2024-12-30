@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"io"
+	"os"
+	"regexp"
 	"strings"
 )
 
@@ -11,8 +15,13 @@ func main() {
 	breakLengthFlag := flag.Int("breaklength", 80, "The maximum length of each line before breaking")
 	flag.Parse()
 
-	// Join the remaining arguments into a single string
-	text := strings.Join(flag.Args(), " ")
+	var inputBuffer bytes.Buffer
+	_, err := io.Copy(&inputBuffer, os.Stdin)
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		os.Exit(1)
+	}
+	text := inputBuffer.String()
 
 	// Normalize text with the specified breakLength
 	fmt.Print(normalize(text, *breakLengthFlag))
@@ -24,22 +33,15 @@ func normalize(text string, breakLength int) string {
 	var lines []string
 	var builder strings.Builder
 
-	// Split the input text into words, preserving spaces where needed
-	words := strings.Fields(text) // This splits on any whitespace and removes excess spaces
-
-	for _, word := range words {
-		// Check if adding the word to the builder would exceed the line length
-		if builder.Len()+len(word)+1 > breakLength { // +1 for the space
-			// If it would, finish the current line and start a new one
-			lines = append(lines, builder.String())
+	for _, unit := range splitAndRetainWhitespace(text) {
+		if builder.Len()+len(unit) > breakLength || unit == "\n" {
+			lines = append(lines, strings.TrimSpace(builder.String()))
 			builder.Reset()
 		}
 
-		// Add the word to the current line
-		if builder.Len() > 0 {
-			builder.WriteString(" ") // Add space between words
+		if unit != "\n" {
+			builder.WriteString(unit)
 		}
-		builder.WriteString(word)
 	}
 
 	// Append the last line (if any)
@@ -49,4 +51,13 @@ func normalize(text string, breakLength int) string {
 
 	// Join all the lines with newlines between them
 	return strings.Join(lines, "\n")
+}
+
+// splitAndRetainWhitespace splits a string on any whitespace characters
+// It returns a slice of strings where alternating values are words and whitespace.
+// For example, "Hello   World " would return []string{"Hello", "   ", "World", " "}.
+func splitAndRetainWhitespace(text string) []string {
+	re := regexp.MustCompile(`\S+|(\n|\r\n|\s+)`) // Match sequences of non-whitespace and the whitespace that follows them.
+
+	return re.FindAllString(text, -1)
 }
