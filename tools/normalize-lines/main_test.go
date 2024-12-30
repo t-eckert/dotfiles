@@ -51,7 +51,7 @@ sagittis condimentum ut lectus.`,
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			actual := Normalize(tc.text, 80)
+			actual := normalize(tc.text, 80)
 			require.Equal(t, tc.expected, actual)
 		})
 	}
