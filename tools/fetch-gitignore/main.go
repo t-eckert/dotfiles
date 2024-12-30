@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	source = "https://raw.githubusercontent.com/github/gitignore/master/%s.gitignore"
+	source = "https://raw.githubusercontent.com/github/gitignore/main/%s.gitignore"
 	target = ".gitignore"
 )
 
@@ -17,6 +17,11 @@ func main() {
 	var lang string
 	flag.StringVar(&lang, "lang", "", "language to fetch .gitignore for")
 	flag.Parse()
+
+	if lang == "" {
+		fmt.Println("Missing value for flag `--lang` (e.g. --lang Python).")
+		os.Exit(1)
+	}
 
 	resp, err := http.Get(fmt.Sprintf(source, lang))
 	if err != nil {

@@ -21,7 +21,7 @@ CONFIG_DIR="./config"
 if [ -d "$CONFIG_DIR" ]; then
 	echo "Setting up config directories..."
 
-	cd "$CONFIG_DIR"
+	cd "$CONFIG_DIR" || exit
 
 	for dir in *; do
 		if [ -d "$dir" ]; then
@@ -32,6 +32,8 @@ if [ -d "$CONFIG_DIR" ]; then
 			stow -vt "$target_dir" "$dir"
 		fi
 	done
+
+	cd - || exit
 else
 	echo "No ./config directory found."
 fi
@@ -39,5 +41,9 @@ fi
 # Symlink .zshrc to the home directory
 echo "Copying .zshrc to home directory..."
 cp -f "$PWD/.zshrc" "$HOME/.zshrc"
+
+# Install tools
+echo "Installing Tools"
+go install ./tools/*
 
 echo "Done."
