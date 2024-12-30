@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var prepend string
-	flag.StringVar(&prepend, "prepend", "", "string to prepend to all files in the glob")
+	flag.StringVar(&prepend, "text", "", "string to prepend to all files in the glob")
 	flag.Parse()
 
 	globs := flag.Args()
