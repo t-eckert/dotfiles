@@ -1,0 +1,5 @@
+undodir/
+.netrwhist
+**/plugged/
+tags*
+autoload/plug.vim
