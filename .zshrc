@@ -117,19 +117,12 @@ PROMPT='%{$YELLOW%}%~%u$(parse_git_dirty)$(git_prompt_ahead)%{$RESET_COLOR%}
 RPROMPT='%{$GREEN_BOLD%}$(git_current_branch)$(git_prompt_short_sha)$(git_prompt_status)%{$RESET_COLOR%}'
 
 bindkey -v
-
 autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
-
-# The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-
-# The next line enables shell command completion for gcloud.
 if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 export PATH="/usr/local/opt/curl/bin:$PATH"
-
 eval "$(zellij setup --generate-auto-start zsh)"
-
 eval "$(atuin init zsh)"

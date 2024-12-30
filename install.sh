@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Ensure the script is run with sudo privileges if needed
-if [[ $EUID -ne 0 ]]; then
-	echo "Please run as root or with sudo"
-	exit 1
-fi
-
 # Install Homebrew if not installed
 if ! command -v brew &>/dev/null; then
 	echo "Homebrew not found. Installing..."
@@ -27,7 +21,9 @@ CONFIG_DIR="./config"
 if [ -d "$CONFIG_DIR" ]; then
 	echo "Setting up config directories..."
 
-	for dir in "$CONFIG_DIR"/*; do
+	cd "$CONFIG_DIR"
+
+	for dir in *; do
 		if [ -d "$dir" ]; then
 			target_dir="$HOME/.config/$(basename "$dir")"
 			echo "Creating directory $target_dir"
@@ -41,7 +37,7 @@ else
 fi
 
 # Symlink .zshrc to the home directory
-echo "Symlinking .zshrc to home directory..."
-ln -sf "$PWD/.zshrc" "$HOME/.zshrc"
+echo "Copying .zshrc to home directory..."
+cp -f "$PWD/.zshrc" "$HOME/.zshrc"
 
 echo "Done."
