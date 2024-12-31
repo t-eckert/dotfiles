@@ -153,22 +153,15 @@ require("lazy").setup({
 						return "make install_jsregexp"
 					end)(),
 					dependencies = {
-						-- `friendly-snippets` contains a variety of premade snippets.
-						--    See the README about individual language/framework/plugin snippets:
-						--    https://github.com/rafamadriz/friendly-snippets
-						-- {
-						--   'rafamadriz/friendly-snippets',
-						--   config = function()
-						--     require('luasnip.loaders.from_vscode').lazy_load()
-						--   end,
-						-- },
+						{
+							"rafamadriz/friendly-snippets",
+							config = function()
+								require("luasnip.loaders.from_vscode").lazy_load()
+							end,
+						},
 					},
 				},
 				"saadparwaiz1/cmp_luasnip",
-
-				-- Adds other completion capabilities.
-				--  nvim-cmp does not ship with all sources by default. They are split
-				--  into multiple repos for maintenance purposes.
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-path",
 			},
@@ -335,39 +328,39 @@ require("lazy").setup({
 						-- jump to the definition of the word under your cursor.
 						--  this is where a variable was first declared, or where a function is defined, etc.
 						--  to jump back, press <c-t>.
-						map("gd", require("telescope.builtin").lsp_definitions, "[g]oto [d]efinition")
+						map("gd", vim.lsp.buf.definition, "[g]oto [d]efinition")
 
 						-- find references for the word under your cursor.
-						map("gr", require("telescope.builtin").lsp_references, "[g]oto [r]eferences")
+						map("gr", vim.lsp.buf.references, "[g]oto [r]eferences")
 
 						-- jump to the implementation of the word under your cursor.
 						--  useful when your language has ways of declaring types without an actual implementation.
-						map("gi", require("telescope.builtin").lsp_implementations, "[g]oto [i]mplementation")
+						map("gi", vim.lsp.buf.implementation, "[g]oto [i]mplementation")
 
 						-- jump to the type of the word under your cursor.
 						--  useful when you're not sure what type a variable is and you want to see
 						--  the definition of its *type*, not where it was *defined*.
-						map("<leader>d", require("telescope.builtin").lsp_type_definitions, "type [d]efinition")
+						map("gt", vim.lsp.buf.type_definition, "[g]oto [t]ype definition")
 
 						-- fuzzy find all the symbols in your current document.
 						--  symbols are things like variables, functions, types, etc.
-						map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[d]ocument [s]ymbols")
+						map("<Leader>ds", require("telescope.builtin").lsp_document_symbols, "[d]ocument [s]ymbols")
 
 						-- fuzzy find all the symbols in your current workspace.
 						--  similar to document symbols, except searches over your entire project.
 						map(
-							"<leader>ws",
+							"<Leader>ws",
 							require("telescope.builtin").lsp_dynamic_workspace_symbols,
 							"[w]orkspace [s]ymbols"
 						)
 
 						-- rename the variable under your cursor.
 						--  most language servers support renaming across files, etc.
-						map("<leader>rn", vim.lsp.buf.rename, "[r]e[n]ame")
+						map("<Leader>r", vim.lsp.buf.rename, "[r]ename")
 
 						-- execute a code action, usually your cursor needs to be on top of an error
 						-- or a suggestion from your lsp for this to activate.
-						map("<leader>ca", vim.lsp.buf.code_action, "[c]ode [a]ction", { "n", "x" })
+						map("<Leader>ca", vim.lsp.buf.code_action, "[c]ode [a]ction", { "n", "x" })
 
 						-- warn: this is not goto definition, this is goto declaration.
 						--  for example, in c this would take you to the header.
@@ -449,6 +442,8 @@ require("lazy").setup({
 				require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 				require("mason-lspconfig").setup({
+					ensure_installed = { "lua_ls", "rust_analyzer", "tsserver" },
+					automatic_installation = true,
 					handlers = {
 						function(server_name)
 							local server = servers[server_name] or {}
@@ -572,6 +567,22 @@ require("lazy").setup({
 		{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 		-- Detect tabstop and shiftwidth automatically
 		"tpope/vim-sleuth",
+		-- Svelte
+		"evanleck/vim-svelte",
+		-- Astro
+		"wuelnerdotexe/vim-astro",
+		-- Better Git Support
+		"tpope/vim-fugitive",
+		-- Highlighting for Git Merge Conflics
+		{ "akinsho/git-conflict.nvim", version = "*", config = true },
+		-- Automatically pair braces
+		{
+			"windwp/nvim-autopairs",
+			event = "InsertEnter",
+			config = true,
+			-- use opts = {} for passing setup options
+			-- this is equivalent to setup({}) function
+		},
 		-- Adds git related signs to the gutter, as well as utilities for managing changes
 		{
 			"lewis6991/gitsigns.nvim",
@@ -677,11 +688,10 @@ require("lazy").setup({
 			opts = {},
 			-- Optional dependencies
 			dependencies = { { "echasnovski/mini.icons", opts = {} } },
-			-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
 		},
 		{
-			"epwalsh/obsidian.nvim",
-			version = "*", -- recommended, use latest release instead of latest commit
+			"t-eckert/obsidian.nvim",
+			branch = "t-eckert/add-set-checkbox",
 			lazy = true,
 			ft = "markdown",
 			-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
@@ -864,10 +874,16 @@ vim.api.nvim_set_keymap("n", "<Leader>h", ":split<CR>", { noremap = true, silent
 -- Telescope
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<Leader>p", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<Leader>g", builtin.live_grep, { desc = "Telescope live grep" })
+vim.keymap.set("n", "<Leader>f", builtin.live_grep, { desc = "Telescope live grep" })
 vim.keymap.set("n", "<Leader>b", builtin.buffers, { desc = "Telescope buffers" })
+vim.keymap.set("n", "<Leader>gb", builtin.git_branches, { desc = "Telescope Git Branches" })
+vim.keymap.set("n", "<Leader>gc", builtin.git_commits, { desc = "Telescope Git Commits" })
+vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Telescope Git Stash" })
 -- Neotree
 vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { noremap = true, silent = true })
+-- Diagnostics
+vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next, { buffer = 0 })
+vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev, { buffer = 0 })
 
 -- =====================================================================================================================
 -- Extend Filetypes
