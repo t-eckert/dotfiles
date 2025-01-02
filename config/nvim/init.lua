@@ -689,24 +689,14 @@ require("lazy").setup({
 			-- Optional dependencies
 			dependencies = { { "echasnovski/mini.icons", opts = {} } },
 		},
+		-- Obsidian
 		{
 			"t-eckert/obsidian.nvim",
 			branch = "t-eckert/add-set-checkbox",
 			lazy = true,
 			ft = "markdown",
-			-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-			-- event = {
-			--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-			--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-			--   -- refer to `:h file-pattern` for more examples
-			--   "BufReadPre path/to/my-vault/*.md",
-			--   "BufNewFile path/to/my-vault/*.md",
-			-- },
 			dependencies = {
-				-- Required.
 				"nvim-lua/plenary.nvim",
-
-				-- see below for full list of optional dependencies 👇
 			},
 			opts = {
 				workspaces = {
@@ -715,8 +705,13 @@ require("lazy").setup({
 						path = "~/Notebook",
 					},
 				},
-
-				-- see below for full list of options 👇
+				daily_notes = {
+					folder = "Log",
+					template = "Daily Note.md",
+				},
+				templates = {
+					folder = "./~Templates/",
+				},
 			},
 		},
 	},
@@ -884,6 +879,17 @@ vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { noremap = true, silent = true
 -- Diagnostics
 vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next, { buffer = 0 })
 vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev, { buffer = 0 })
+-- Obsidian
+vim.keymap.set("n", "<Leader>x", ":ObsdianToggleCheckbox<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>o", ":<Nop>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>ot", ":ObsdianToday<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>om", ":ObsdianTomorrow<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>oy", ":ObsdianYesterday<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>oh", ":ObsdianTOC<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>or", ":ObsdianRename", { buffer = 0 })
+vim.keymap.set("n", "<Leader>os", ":ObsdianSearch<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>opi", ":ObsdianPasteImage<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>on", ":ObsdianNew<CR>", { buffer = 0 })
 
 -- =====================================================================================================================
 -- Extend Filetypes
