@@ -707,10 +707,9 @@ require("lazy").setup({
 				},
 				daily_notes = {
 					folder = "Log",
-					template = "Daily Note.md",
 				},
 				templates = {
-					folder = "./~Templates/",
+					folder = "./~Templates",
 				},
 			},
 		},
