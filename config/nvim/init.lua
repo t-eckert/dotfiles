@@ -879,16 +879,16 @@ vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { noremap = true, silent = true
 vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next, { buffer = 0 })
 vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev, { buffer = 0 })
 -- Obsidian
-vim.keymap.set("n", "<Leader>x", ":ObsdianToggleCheckbox<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>o", ":<Nop>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>ot", ":ObsdianToday<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>om", ":ObsdianTomorrow<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>oy", ":ObsdianYesterday<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>oh", ":ObsdianTOC<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>or", ":ObsdianRename", { buffer = 0 })
-vim.keymap.set("n", "<Leader>os", ":ObsdianSearch<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>opi", ":ObsdianPasteImage<CR>", { buffer = 0 })
-vim.keymap.set("n", "<Leader>on", ":ObsdianNew<CR>", { buffer = 0 })
+vim.keymap.set("n", "<Leader>x", ":ObsidianToggleCheckbox<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>o", ":<Nop>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>ot", ":ObsidianToday<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>om", ":ObsidianTomorrow<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>oy", ":ObsidianYesterday<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>oh", ":ObsidianTOC<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>or", ":ObsidianRename", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>os", ":ObsidianSearch<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>opi", ":ObsidianPasteImage<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>on", ":ObsidianNew<CR>", { noremap = true, silent = true })
 
 -- =====================================================================================================================
 -- Extend Filetypes
