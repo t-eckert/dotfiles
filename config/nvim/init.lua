@@ -361,10 +361,6 @@ require("lazy").setup({
 						-- execute a code action, usually your cursor needs to be on top of an error
 						-- or a suggestion from your lsp for this to activate.
 						map("<Leader>ca", vim.lsp.buf.code_action, "[c]ode [a]ction", { "n", "x" })
-
-						-- warn: this is not goto definition, this is goto declaration.
-						--  for example, in c this would take you to the header.
-						map("gd", vim.lsp.buf.declaration, "[g]oto [d]eclaration")
 					end,
 				})
 
@@ -442,7 +438,7 @@ require("lazy").setup({
 				require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 				require("mason-lspconfig").setup({
-					ensure_installed = { "lua_ls", "rust_analyzer", "tsserver" },
+					ensure_installed = { "lua_ls", "rust_analyzer" },
 					automatic_installation = true,
 					handlers = {
 						function(server_name)
