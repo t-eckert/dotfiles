@@ -863,12 +863,22 @@ vim.api.nvim_set_keymap("n", "<Leader>v", ":vsplit<CR>", { noremap = true, silen
 vim.api.nvim_set_keymap("n", "<Leader>h", ":split<CR>", { noremap = true, silent = true })
 -- Telescope
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<Leader>p", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<Leader>f", builtin.live_grep, { desc = "Telescope live grep" })
-vim.keymap.set("n", "<Leader>b", builtin.buffers, { desc = "Telescope buffers" })
-vim.keymap.set("n", "<Leader>gb", builtin.git_branches, { desc = "Telescope Git Branches" })
-vim.keymap.set("n", "<Leader>gc", builtin.git_commits, { desc = "Telescope Git Commits" })
-vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Telescope Git Stash" })
+vim.keymap.set("n", "<Leader>p", builtin.find_files, { desc = "Telescope find files", noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>f", builtin.live_grep, { desc = "Telescope live grep", noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>b", builtin.buffers, { desc = "Telescope buffers", noremap = true, silent = true })
+vim.keymap.set(
+	"n",
+	"<Leader>gb",
+	builtin.git_branches,
+	{ desc = "Telescope Git Branches", noremap = true, silent = true }
+)
+vim.keymap.set(
+	"n",
+	"<Leader>gc",
+	builtin.git_commits,
+	{ desc = "Telescope Git Commits", noremap = true, silent = true }
+)
+vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Telescope Git Stash", noremap = true, silent = true })
 -- Neotree
 vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { noremap = true, silent = true })
 -- Diagnostics
