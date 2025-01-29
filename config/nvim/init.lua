@@ -84,10 +84,6 @@ vim.opt.incsearch = true -- incremental search
 vim.opt.lazyredraw = false -- don't redraw while executing macros
 vim.opt.magic = true -- use magic for regex
 
-vim.opt.textwidth = 120
-vim.opt.wrap = true
-vim.opt.linebreak = true
-
 if vim.fn.executable("rg") then -- if ripgrep is installed
 	vim.opt.grepprg = "rg --vimgrep --noheading" -- use RG for searching
 	vim.opt.grepformat = "%f:%l:%c:%m,%f:%l:%m"
