@@ -124,5 +124,7 @@ bindkey -M vicmd v edit-command-line
 if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 export PATH="/usr/local/opt/curl/bin:$PATH"
+
+ZELLIJ_AUTO_ATTACH="true"
 eval "$(zellij setup --generate-auto-start zsh)"
 eval "$(atuin init zsh)"
