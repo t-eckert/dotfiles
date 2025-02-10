@@ -114,6 +114,8 @@ require("lazy").setup({
 	spec = {
 		-- Language Support
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+		-- Copilot
+		"github/copilot.vim",
 		-- Neotree
 		{
 			"nvim-neo-tree/neo-tree.nvim",
