@@ -672,6 +672,8 @@ require("lazy").setup({
 					return "%2l:%-2v"
 				end
 
+				require("mini.align").setup()
+
 				-- ... and there is more!
 				--  Check out: https://github.com/echasnovski/mini.nvim
 			end,
@@ -708,6 +710,13 @@ require("lazy").setup({
 					folder = "./~Templates",
 				},
 			},
+		},
+		-- Markdown Table Formatting
+		{
+			"Kicamon/markdown-table-mode.nvim",
+			config = function()
+				require("markdown-table-mode").setup()
+			end,
 		},
 	},
 	checker = { enabled = true },
