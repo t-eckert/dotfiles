@@ -601,12 +601,12 @@ require("lazy").setup({
 			cmd = { "ConformInfo" },
 			keys = {
 				{
-					"<leader>f",
+					"<leader>cf",
 					function()
 						require("conform").format({ async = true, lsp_format = "fallback" })
 					end,
 					mode = "",
-					desc = "[F]ormat buffer",
+					desc = "[C]onform [F]ormat buffer",
 				},
 			},
 			opts = {
