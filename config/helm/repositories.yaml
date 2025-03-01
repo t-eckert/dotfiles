@@ -55,3 +55,21 @@ repositories:
   password: ""
   url: https://pkgs.tailscale.com/helmcharts
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: prometheus-community
+  pass_credentials_all: false
+  password: ""
+  url: https://prometheus-community.github.io/helm-charts
+  username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: kubernetes-dashboard
+  pass_credentials_all: false
+  password: ""
+  url: https://kubernetes.github.io/dashboard/
+  username: ""
