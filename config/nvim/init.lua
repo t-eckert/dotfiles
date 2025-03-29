@@ -115,7 +115,27 @@ require("lazy").setup({
 		-- Language Support
 		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 		-- Copilot
-		"github/copilot.vim",
+		{
+			"zbirenbaum/copilot.lua",
+			dependencies = {
+				"zbirenbaum/copilot-cmp",
+			},
+			opts = {
+				suggestion = {
+					enabled = true,
+					auto_trigger = true,
+					keymap = {
+						accept = "<Right>",
+						accept_word = false,
+						accept_line = false,
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
+				panel = { enabled = false },
+			},
+		},
 		-- Neotree
 		{
 			"nvim-neo-tree/neo-tree.nvim",
