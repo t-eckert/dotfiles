@@ -440,7 +440,7 @@ require("lazy").setup({
 				require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 				require("mason-lspconfig").setup({
-					ensure_installed = { "lua_ls", "rust_analyzer" },
+					ensure_installed = { "lua_ls", "rust_analyzer", "denols", "ts_ls" },
 					automatic_installation = true,
 					handlers = {
 						function(server_name)
@@ -964,4 +964,30 @@ require("lspconfig").tailwindcss.setup({
 			},
 		},
 	},
+})
+
+-- =====================================================================================================================
+-- Run the right TS LSP
+-- =====================================================================================================================
+
+local lspconfig = require("lspconfig")
+
+lspconfig.denols.setup({
+	root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+	init_options = {
+		enable = true,
+		lint = true,
+		unstable = true,
+	},
+})
+
+lspconfig.ts_ls.setup({
+	root_dir = lspconfig.util.root_pattern("package.json"),
+	on_attach = function(client, bufnr)
+		local buffer_path = vim.api.nvim_buf_get_name(bufnr)
+		if lspconfig.util.root_pattern("deno.json", "deno.jsonc")(buffer_path) then
+			client.stop()
+			return
+		end
+	end,
 })
