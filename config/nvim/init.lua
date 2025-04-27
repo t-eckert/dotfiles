@@ -274,6 +274,13 @@ require("lazy").setup({
 				})
 			end,
 		},
+		-- Wrapping
+		{
+			"andrewferrier/wrapping.nvim",
+			config = function()
+				require("wrapping").setup()
+			end,
+		},
 		-- `lazydev` configures lua lsp for your neovim config, runtime and plugins
 		-- used for completion, annotations and signatures of neovim apis
 		{
@@ -859,6 +866,10 @@ vim.api.nvim_set_keymap("n", "<C-h>", "<C-w>h", { noremap = true, silent = true 
 vim.api.nvim_set_keymap("n", "<C-j>", "<C-w>j", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-k>", "<C-w>k", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-l>", "<C-w>l", { noremap = true, silent = true })
+
+-- Move up and down soft wrapped lines.
+vim.api.nvim_set_keymap("n", "j", "gj", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "k", "gk", { noremap = true, silent = true })
 
 -- Indent and unindent can be chained.
 vim.api.nvim_set_keymap("v", "<", "<gv", { silent = true })
