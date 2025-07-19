@@ -736,7 +736,7 @@ require("lazy").setup({
 					folder = "Log",
 				},
 				templates = {
-					folder = "./~Templates",
+					folder = "./+Templates",
 				},
 			},
 		},
