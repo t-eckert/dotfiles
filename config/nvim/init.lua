@@ -635,6 +635,14 @@ require("lazy").setup({
 					topdelete = { text = "-" },
 					changedelete = { text = ">" },
 				},
+				signs_staged = {
+					add = { text = "┃" },
+					change = { text = "┃" },
+					delete = { text = "▁" },
+					topdelete = { text = "▔" },
+					changedelete = { text = "▌" },
+				},
+				signs_staged_enable = true,
 				on_attach = function(bufnr)
 					local gitsigns = require('gitsigns')
 
@@ -1256,6 +1264,27 @@ require("catppuccin").setup({
 
 -- setup must be called before loading
 vim.cmd.colorscheme("catppuccin")
+
+-- Custom gitsigns highlight groups for staged vs unstaged
+vim.api.nvim_create_autocmd("ColorScheme", {
+	pattern = "*",
+	callback = function()
+		-- Unstaged changes (default bright colors)
+		vim.api.nvim_set_hl(0, "GitSignsAdd", { fg = "#a6e3a1" }) -- bright green
+		vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#f9e2af" }) -- bright yellow
+		vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#f38ba8" }) -- bright red
+		-- Staged changes (dimmer, bluer colors)
+		vim.api.nvim_set_hl(0, "GitSignsAddStaged", { fg = "#74c7ec" }) -- dim blue-green
+		vim.api.nvim_set_hl(0, "GitSignsChangeStaged", { fg = "#fab387" }) -- dim orange
+		vim.api.nvim_set_hl(0, "GitSignsDeleteStaged", { fg = "#eba0ac" }) -- dim pink
+		vim.api.nvim_set_hl(0, "GitSignsTopDeleteStaged", { fg = "#eba0ac" })
+		vim.api.nvim_set_hl(0, "GitSignsChangeDeleteStaged", { fg = "#eba0ac" })
+	end,
+	desc = "Set custom gitsigns colors for staged vs unstaged",
+})
+
+-- Apply colors immediately
+vim.cmd("doautocmd ColorScheme")
 
 vim.opt.number = true -- show line numbers
 vim.opt.relativenumber = true -- use relative line numbers
