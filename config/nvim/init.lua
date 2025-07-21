@@ -232,7 +232,7 @@ require("lazy").setup({
 							focusable = false,
 							style = "minimal",
 							border = "rounded",
-							source = "always",
+							source = true,
 							header = "",
 							prefix = "",
 						},
@@ -1232,6 +1232,9 @@ vim.keymap.set("n", "<Leader>os", ":ObsidianSearch<CR>", { desc = "Search notes"
 vim.keymap.set("n", "<Leader>opi", ":ObsidianPasteImage<CR>", { desc = "Paste image" })
 vim.keymap.set("n", "<Leader>on", ":ObsidianNew<CR>", { desc = "New note" })
 
+-- Claude Code integration
+vim.keymap.set("n", "<Leader>cc", ":ClaudeCodeDiagnostic<CR>", { desc = "Send diagnostic to Claude Code" })
+
 -- ======================================================================================
 -- FILETYPE EXTENSIONS
 -- ======================================================================================
@@ -1257,3 +1260,22 @@ vim.cmd([[abbr dockert docker]])
 -- ======================================================================================
 
 require("testrunner")
+require("claude-code")
+
+-- ======================================================================================
+-- CLAUDE CODE INTEGRATION
+-- ======================================================================================
+
+-- Create user command for Claude Code diagnostic integration
+vim.api.nvim_create_user_command("ClaudeCodeDiagnostic", function()
+	require("claude-code").send_diagnostic_to_claude()
+end, {
+	desc = "Send diagnostic at cursor to Claude Code for fixing suggestions",
+})
+
+-- Short alias for convenience
+vim.api.nvim_create_user_command("CCDiagnostic", function()
+	require("claude-code").send_diagnostic_to_claude()
+end, {
+	desc = "Send diagnostic at cursor to Claude Code for fixing suggestions",
+})
