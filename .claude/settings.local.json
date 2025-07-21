@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sed:*)",
+      "Bash(cp:*)",
+      "Bash(nvim:*)"
+    ],
+    "deny": []
+  }
+}
