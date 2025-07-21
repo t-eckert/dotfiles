@@ -73,3 +73,12 @@ repositories:
   password: ""
   url: https://kubernetes.github.io/dashboard/
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: prequel
+  pass_credentials_all: false
+  password: ""
+  url: https://prequel-dev.github.io/helm
+  username: ""
