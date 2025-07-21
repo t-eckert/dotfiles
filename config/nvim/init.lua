@@ -440,12 +440,6 @@ require("lazy").setup({
 			},
 		},
 
-		-- Oil file manager
-		{
-			"stevearc/oil.nvim",
-			opts = {},
-			dependencies = { "echasnovski/mini.icons" },
-		},
 
 		-- Fuzzy finder
 		{
