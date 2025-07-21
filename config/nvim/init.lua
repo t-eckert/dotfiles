@@ -763,8 +763,378 @@ require("lazy").setup({
 				require("markdown-table-mode").setup()
 			end,
 		},
+		-- Trouble.nvim - Better diagnostics list
+		{
+			"folke/trouble.nvim",
+			dependencies = { "nvim-tree/nvim-web-devicons" },
+			opts = {
+				auto_close = true,
+				auto_preview = true,
+				auto_refresh = true,
+				focus = true,
+				keys = {
+					["?"] = "help",
+					r = "refresh",
+					R = "toggle_refresh",
+					q = "close",
+					o = "jump_close",
+					["<esc>"] = "cancel",
+					["<cr>"] = "jump",
+					["<2-leftmouse>"] = "jump",
+					["<c-s>"] = "jump_split",
+					["<c-v>"] = "jump_vsplit",
+					-- go down to next item (accepts count)
+					-- j = "next",
+					["}"] = "next",
+					["]]"] = "next",
+					-- go up to previous item (accepts count)
+					-- k = "prev",
+					["{"] = "prev",
+					["[["] = "prev",
+					i = "inspect",
+					p = "preview",
+					P = "toggle_preview",
+					zo = "fold_open",
+					zO = "fold_open_recursive",
+					zc = "fold_close",
+					zC = "fold_close_recursive",
+					za = "fold_toggle",
+					zA = "fold_toggle_recursive",
+					zm = "fold_more",
+					zM = "fold_close_all",
+					zr = "fold_reduce",
+					zR = "fold_open_all",
+					zx = "fold_update",
+					zX = "fold_update_all",
+					zn = "fold_disable",
+					zN = "fold_enable",
+					zi = "fold_toggle_enable",
+				},
+			},
+		},
+		-- Which-key.nvim - Interactive keybinding help
+		{
+			"folke/which-key.nvim",
+			event = "VeryLazy",
+			init = function()
+				vim.o.timeout = true
+				vim.o.timeoutlen = 500
+			end,
+			opts = {
+				preset = "modern",
+				delay = 500,
+				filter = function(mapping)
+					-- filter out mappings without a description
+					return mapping.desc and mapping.desc ~= ""
+				end,
+				spec = {
+					{ "<leader>d", group = "Diagnostics" },
+					{ "<leader>g", group = "Git" },
+					{ "<leader>j", group = "Jump" },
+					{ "<leader>o", group = "Obsidian" },
+					{ "<leader>s", group = "Search" },
+				},
+				keys = {
+					scroll_down = "<c-d>",
+					scroll_up = "<c-u>",
+				},
+				win = {
+					border = "rounded",
+					position = "bottom",
+					margin = { 1, 0, 1, 0 },
+					padding = { 2, 2, 2, 2 },
+					winblend = 0,
+				},
+				layout = {
+					height = { min = 4, max = 25 },
+					width = { min = 20, max = 50 },
+					spacing = 3,
+					align = "left",
+				},
+				show_help = true,
+				triggers = {
+					{ "<auto>", mode = "nixsotc" },
+					{ "s", mode = { "n", "v" } },
+				},
+				defer = {
+					gc = "Comments",
+				},
+			},
+		},
+		-- Flash.nvim - Enhanced f/F/t/T motions and navigation
+		{
+			"folke/flash.nvim",
+			event = "VeryLazy",
+			opts = {
+				search = {
+					multi_window = true,
+					forward = true,
+					wrap = true,
+					incremental = false,
+				},
+				jump = {
+					jumplist = true,
+					pos = "start",
+					history = false,
+					register = false,
+					nohlsearch = false,
+					autojump = false,
+				},
+				label = {
+					uppercase = true,
+					exclude = "",
+					current = true,
+					after = true,
+					before = false,
+					style = "overlay",
+					reuse = "lowercase",
+					distance = true,
+					min_pattern_length = 0,
+					rainbow = {
+						enabled = false,
+						shade = 5,
+					},
+				},
+				highlight = {
+					backdrop = true,
+					matches = true,
+					priority = 5000,
+					groups = {
+						match = "FlashMatch",
+						current = "FlashCurrent",
+						backdrop = "FlashBackdrop",
+						label = "FlashLabel",
+					},
+				},
+				action = nil,
+				pattern = "",
+				continue = false,
+				config = nil,
+				prompt = {
+					enabled = true,
+					prefix = { { "⚡", "FlashPromptIcon" } },
+					win_config = {
+						relative = "editor",
+						width = 1,
+						height = 1,
+						row = -1,
+						col = 0,
+						zindex = 1000,
+					},
+				},
+				remote_op = {
+					restore = false,
+					motion = false,
+				},
+			},
+			keys = {
+				{
+					"<leader>j",
+					mode = { "n", "x", "o" },
+					function()
+						require("flash").jump()
+					end,
+					desc = "Flash Jump",
+				},
+				{
+					"<leader>J",
+					mode = { "n", "o", "x" },
+					function()
+						require("flash").treesitter()
+					end,
+					desc = "Flash Treesitter",
+				},
+				{
+					"r",
+					mode = "o",
+					function()
+						require("flash").remote()
+					end,
+					desc = "Remote Flash",
+				},
+				{
+					"R",
+					mode = { "o", "x" },
+					function()
+						require("flash").treesitter_search()
+					end,
+					desc = "Treesitter Search",
+				},
+				{
+					"<c-s>",
+					mode = { "c" },
+					function()
+						require("flash").toggle()
+					end,
+					desc = "Toggle Flash Search",
+				},
+			},
+		},
+		-- nvim-dap - Debug Adapter Protocol support
+		{
+			"mfussenegger/nvim-dap",
+			dependencies = {
+				-- Creates a beautiful debugger UI
+				"rcarriga/nvim-dap-ui",
+				-- Required dependency for nvim-dap-ui
+				"nvim-neotest/nvim-nio",
+				-- Installs the debug adapters for you
+				"williamboman/mason.nvim",
+				"jay-babu/mason-nvim-dap.nvim",
+				-- Add your own debuggers here
+				"leoluz/nvim-dap-go",
+			},
+			keys = {
+				{
+					"<F5>",
+					function()
+						require("dap").continue()
+					end,
+					desc = "Debug: Start/Continue",
+				},
+				{
+					"<F1>",
+					function()
+						require("dap").step_into()
+					end,
+					desc = "Debug: Step Into",
+				},
+				{
+					"<F2>",
+					function()
+						require("dap").step_over()
+					end,
+					desc = "Debug: Step Over",
+				},
+				{
+					"<F3>",
+					function()
+						require("dap").step_out()
+					end,
+					desc = "Debug: Step Out",
+				},
+				{
+					"<leader>b",
+					function()
+						require("dap").toggle_breakpoint()
+					end,
+					desc = "Debug: Toggle Breakpoint",
+				},
+				{
+					"<leader>B",
+					function()
+						require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+					end,
+					desc = "Debug: Set Breakpoint",
+				},
+			},
+			config = function()
+				local dap = require("dap")
+				local dapui = require("dapui")
+
+				require("mason-nvim-dap").setup({
+					automatic_installation = true,
+					handlers = {},
+					ensure_installed = {
+						"delve",
+					},
+				})
+
+				-- Basic debugging keymaps, feel free to change to your liking!
+				-- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
+				vim.keymap.set("n", "<F7>", dapui.toggle, { desc = "Debug: See last session result." })
+
+				dapui.setup({
+					icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
+					controls = {
+						icons = {
+							pause = "⏸",
+							play = "▶",
+							step_into = "⏎",
+							step_over = "⏭",
+							step_out = "⏮",
+							step_back = "b",
+							run_last = "▶▶",
+							terminate = "⏹",
+							disconnect = "⏏",
+						},
+					},
+				})
+
+				dap.listeners.after.event_initialized["dapui_config"] = dapui.open
+				dap.listeners.before.event_terminated["dapui_config"] = dapui.close
+				dap.listeners.before.event_exited["dapui_config"] = dapui.close
+
+				-- Install golang specific config
+				require("dap-go").setup({
+					delve = {
+						detached = vim.fn.has("win32") == 0,
+					},
+				})
+			end,
+		},
 	},
-	checker = { enabled = true },
+	checker = { 
+		enabled = true,
+		notify = false,  -- Don't show notifications for updates
+		frequency = 3600, -- Check for updates every hour instead of constantly
+	},
+	change_detection = {
+		enabled = true,
+		notify = false,  -- Don't show notifications when config changes
+	},
+	install = {
+		missing = true,
+		colorscheme = { "catppuccin" },
+	},
+	ui = {
+		size = { width = 0.8, height = 0.8 },
+		wrap = true,
+		border = "rounded",
+		backdrop = 60,
+		title = "Lazy",
+		title_pos = "center",
+		pills = true,
+		icons = {
+			cmd = "⌘",
+			config = "🛠",
+			event = "📅",
+			ft = "📂",
+			init = "⚙",
+			keys = "🗝",
+			plugin = "🔌",
+			runtime = "💻",
+			require = "🌙",
+			source = "📄",
+			start = "🚀",
+			task = "📌",
+			lazy = "💤 ",
+		},
+		custom_keys = {
+			["<localleader>l"] = false,
+			["<localleader>t"] = false,
+		},
+	},
+	performance = {
+		cache = {
+			enabled = true,
+		},
+		reset_packpath = true,
+		rtp = {
+			reset = true,
+			paths = {},
+			disabled_plugins = {
+				"gzip",
+				"matchit",
+				"matchparen",
+				"netrwPlugin",
+				"tarPlugin",
+				"tohtml",
+				"tutor",
+				"zipPlugin",
+			},
+		},
+	},
 	lockfile = "~/Repos/github.com/t-eckert/dotfiles/config/nvim/lazy-lock.json",
 })
 
