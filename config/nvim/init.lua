@@ -394,15 +394,31 @@ require("lazy").setup({
 				})
 
 				-- change diagnostic symbols in the sign column (gutter)
-				-- if vim.g.have_nerd_font then
-				--   local signs = { error = '', warn = '', info = '', hint = '' }
-				--   local diagnostic_signs = {}
-				--   for type, icon in pairs(signs) do
-				--     diagnostic_signs[vim.diagnostic.severity[type]] = icon
-				--   end
-				--   vim.diagnostic.config { signs = { text = diagnostic_signs } }
-				-- end
-
+				vim.g.have_nerd_font = true -- Enable nerd font support
+				if vim.g.have_nerd_font then
+					local signs = { error = "󰅚", warn = "󰀪", info = "󰋽", hint = "󰌶" }
+					local diagnostic_signs = {}
+					for type, icon in pairs(signs) do
+						diagnostic_signs[vim.diagnostic.severity[type:upper()]] = icon
+					end
+					vim.diagnostic.config({
+						signs = { text = diagnostic_signs },
+						virtual_text = {
+							prefix = "●",
+							spacing = 4,
+						},
+						float = {
+							focusable = false,
+							style = "minimal",
+							border = "rounded",
+							source = "always",
+							header = "",
+							prefix = "",
+						},
+						severity_sort = true,
+						update_in_insert = false,
+					})
+				end
 				-- lsp servers and clients are able to communicate to each other what features they support.
 				--  by default, neovim doesn't support everything that is in the lsp specification.
 				--  when you add nvim-cmp, luasnip, etc. neovim now has *more* capabilities.
