@@ -20,12 +20,12 @@ Clone the repository and run `sudo ./install.sh`.
 
 ## Tools
 
-I've unified my tooling around simple Go applications. They are all available in [`tools`](./tools).
+I've unified my tooling around simple Go applications. They are all available in [`tools`](./tools). The install script 
 
 - [`create-react-component`](./tools/create-react-component) generates a new React component with the given name.
 - [`fetch-gitignore`](./tools/fetch-gitignore) fetches a `.gitignore` file from the GitHub gitignore repository.
 - [`normalize-lines`](./tools/normalize-lines) normalizes lines in a string of text to be 80 characters long without breaking words.
-- [`prepend`](./tools/prepend)
-- [`serve`](./tools/serve)
-- [`slug`](./tools/slug)
+- [`prepend`](./tools/prepend) a file renaming tool which will prepend a given string to a glob.
+- [`serve`](./tools/serve) serve the current directory as a file server.
+- [`slug`](./tools/slug) 
 - [`teamtime`](./tools/teamtime) tells you what time is is for everyone on your team.
