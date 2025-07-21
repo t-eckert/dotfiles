@@ -925,7 +925,6 @@ require("lazy").setup({
 				show_help = true,
 				triggers = {
 					{ "<auto>", mode = "nixsotc" },
-					{ "s", mode = { "n", "v" } },
 				},
 				defer = {
 					gc = "Comments",
@@ -1305,7 +1304,7 @@ vim.opt.showmatch = true -- show matching braces
 vim.opt.mat = 2 -- how many tenths of a second to blink
 vim.opt.updatetime = 300 -- timeout to write to swap file
 vim.opt.signcolumn = "yes" -- add a sign column to the left
-vim.opt.shortmess = "atToOFc" -- prompt message options
+vim.opt.shortmess = "atToOFcW" -- prompt message options (W = don't show written messages)
 vim.opt.conceallevel = 0 -- show text that has been concealed
 vim.opt.cmdheight = 0 -- Hide the command bar
 vim.opt.breakindent = true -- Preserve horizontal blocks of text.
