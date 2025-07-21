@@ -1282,6 +1282,29 @@ vim.opt.cmdheight = 0 -- Hide the command bar
 vim.opt.breakindent = true -- Preserve horizontal blocks of text.
 vim.opt.inccommand = "split" -- Preview substitutions live.
 
+-- Auto-reload files when they change externally (if no unsaved changes)
+vim.opt.autoread = true -- Enable automatic reading of files changed outside Vim
+
+-- Set up autocommands for better file change detection
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+	pattern = "*",
+	callback = function()
+		if vim.fn.mode() ~= "c" then -- Don't check when in command mode
+			vim.cmd("checktime")
+		end
+	end,
+	desc = "Check for external file changes",
+})
+
+-- Notify when file is automatically reloaded
+vim.api.nvim_create_autocmd("FileChangedShellPost", {
+	pattern = "*",
+	callback = function()
+		vim.notify("File changed on disk. Buffer reloaded!", vim.log.levels.INFO, { title = "File Reload" })
+	end,
+	desc = "Notify when file is reloaded from disk",
+})
+
 -- Diff settings
 table.insert(vim.opt.diffopt, "vertical")
 table.insert(vim.opt.diffopt, "iwhite")
