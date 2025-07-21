@@ -63,6 +63,15 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
 	desc = "Notify when file is reloaded from disk",
 })
 
+-- Handle save attempts in Neo-tree (treat as :wall)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "neo-tree",
+	callback = function()
+		vim.keymap.set("n", "<leader>w", "<cmd>wall<cr>", { buffer = true, desc = "Save all files" })
+	end,
+	desc = "Override save in Neo-tree to save all files",
+})
+
 -- ======================================================================================
 -- CORE VIM OPTIONS
 -- ======================================================================================
@@ -439,7 +448,6 @@ require("lazy").setup({
 				"MunifTanjim/nui.nvim",
 			},
 		},
-
 
 		-- Fuzzy finder
 		{
