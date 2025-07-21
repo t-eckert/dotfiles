@@ -1,6 +1,6 @@
-DISABLE_UPDATE_PROMPT="true"
-ENABLE_CORRECTION="true"
-DISABLE_UNTRACKED_FILES_DIRTY="true"
+DISABLE_UPDATE_PROMPT="true" # Always upgrade if there is new Oh My Zsh
+ENABLE_CORRECTION="true" # Enable command correction
+DISABLE_UNTRACKED_FILES_DIRTY="true" # Disable untracked files in git status
 
 # Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
@@ -10,6 +10,8 @@ else
   export EDITOR='nvim'
   export VISUAL='nvim'
 fi
+
+# Oh My Zsh Plugins
 
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -31,6 +33,8 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
+
+# Aliases
 
 alias k=kubectl
 alias v=nvim
@@ -57,8 +61,9 @@ alias clera="clear"
 
 unsetopt correct_all
 
-export GOPATH=$HOME/go
+# Environment Variables
 
+export GOPATH=$HOME/go
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export PATH=/opt/homebrew/bin:$HOME/.local/bin/:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:~/repos/dotfiles/scripts/:$PATH
@@ -125,6 +130,5 @@ if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . 
 if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 export PATH="/usr/local/opt/curl/bin:$PATH"
 
-ZELLIJ_AUTO_ATTACH="true"
 eval "$(zellij setup --generate-auto-start zsh)"
 eval "$(atuin init zsh)"
