@@ -3,7 +3,11 @@
     "allow": [
       "Bash(sed:*)",
       "Bash(cp:*)",
-      "Bash(nvim:*)"
+      "Bash(nvim:*)",
+      "Bash(brew list:*)",
+      "WebFetch(domain:search.nixos.org)",
+      "WebFetch(domain:wickedchicken.github.io)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }
