@@ -882,55 +882,12 @@ require("lazy").setup({
 				},
 			},
 		},
-		-- Which-key.nvim - Interactive keybinding help
-		{
-			"folke/which-key.nvim",
-			event = "VeryLazy",
-			init = function()
-				vim.o.timeout = true
-				vim.o.timeoutlen = 500
-			end,
-			opts = {
-				preset = "modern",
-				delay = 500,
-				filter = function(mapping)
-					-- filter out mappings without a description
-					return mapping.desc and mapping.desc ~= ""
-				end,
-				spec = {
-					{ "<leader>d", group = "Diagnostics" },
-					{ "<leader>g", group = "Git" },
-					{ "<leader>h", group = "Hunk" },
-					{ "<leader>j", group = "Jump" },
-					{ "<leader>o", group = "Obsidian" },
-					{ "<leader>s", group = "Search" },
-				},
-				keys = {
-					scroll_down = "<c-d>",
-					scroll_up = "<c-u>",
-				},
-				win = {
-					border = "rounded",
-					position = "bottom",
-					margin = { 1, 0, 1, 0 },
-					padding = { 2, 2, 2, 2 },
-					winblend = 0,
-				},
-				layout = {
-					height = { min = 4, max = 25 },
-					width = { min = 20, max = 50 },
-					spacing = 3,
-					align = "left",
-				},
-				show_help = true,
-				triggers = {
-					{ "<auto>", mode = "nixsotc" },
-				},
-				defer = {
-					gc = "Comments",
-				},
-			},
-		},
+		-- Which-key.nvim - Interactive keybinding help (DISABLED due to compatibility issues)
+		-- Uncomment and update if you want to try fixing which-key later
+		-- {
+		-- 	"folke/which-key.nvim",
+		-- 	enabled = false,
+		-- },
 		-- Flash.nvim - Enhanced f/F/t/T motions and navigation
 		{
 			"folke/flash.nvim",
