@@ -705,7 +705,7 @@ require("lazy").setup({
 					map("n", "<leader>hD", function()
 						gitsigns.diffthis("~")
 					end, { desc = "Diff this ~" })
-					map("n", "<leader>htd", gitsigns.toggle_deleted, { desc = "Toggle deleted" })
+					map("n", "<leader>htd", gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
 
 					-- Text object
 					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })
@@ -792,6 +792,8 @@ require("lazy").setup({
 				dapui.setup({
 					icons = { expanded = "▾", collapsed = "▸", current_frame = "*" },
 					controls = {
+						enabled = true,
+						element = "repl",
 						icons = {
 							pause = "⏸",
 							play = "▶",
@@ -803,6 +805,43 @@ require("lazy").setup({
 							terminate = "⏹",
 							disconnect = "⏏",
 						},
+					},
+					mappings = {},
+					element_mappings = {},
+					expand_lines = true,
+					force_buffers = true,
+					layouts = {
+						{
+							elements = {
+								{ id = "scopes", size = 0.25 },
+								{ id = "breakpoints", size = 0.25 },
+								{ id = "stacks", size = 0.25 },
+								{ id = "watches", size = 0.25 },
+							},
+							size = 40,
+							position = "left",
+						},
+						{
+							elements = {
+								{ id = "repl", size = 0.5 },
+								{ id = "console", size = 0.5 },
+							},
+							size = 10,
+							position = "bottom",
+						},
+					},
+					floating = {
+						max_height = nil,
+						max_width = nil,
+						border = "single",
+						mappings = {
+							close = { "q", "<Esc>" },
+						},
+					},
+					render = {
+						max_type_length = nil,
+						max_value_lines = 100,
+						indent = 2,
 					},
 				})
 
@@ -899,10 +938,32 @@ require("lazy").setup({
 				require("mini.align").setup()
 
 				local statusline = require("mini.statusline")
-				statusline.setup({ use_icons = vim.g.have_nerd_font })
-				statusline.section_location = function()
-					return "%2l:%-2v"
-				end
+				statusline.setup({
+					use_icons = vim.g.have_nerd_font,
+					content = {
+						active = function()
+							local mode, mode_hl = statusline.section_mode({ trunc_width = 120 })
+							local git = statusline.section_git({ trunc_width = 40 })
+							local diff = statusline.section_diff({ trunc_width = 75 })
+							local diagnostics = statusline.section_diagnostics({ trunc_width = 75 })
+							local lsp = statusline.section_lsp({ trunc_width = 75 })
+							local filename = statusline.section_filename({ trunc_width = 140 })
+							local fileinfo = statusline.section_fileinfo({ trunc_width = 120 })
+							local location = "%2l:%-2v"
+							local search = statusline.section_searchcount({ trunc_width = 75 })
+
+							return statusline.combine_groups({
+								{ hl = mode_hl, strings = { mode } },
+								{ hl = "MiniStatuslineDevinfo", strings = { git, diff, diagnostics, lsp } },
+								"%<", -- Mark general truncate point
+								{ hl = "MiniStatuslineFilename", strings = { filename } },
+								"%=", -- End left alignment
+								{ hl = "MiniStatuslineFileinfo", strings = { fileinfo } },
+								{ hl = mode_hl, strings = { search, location } },
+							})
+						end,
+					},
+				})
 			end,
 		},
 
@@ -921,7 +982,19 @@ require("lazy").setup({
 		{
 			"andrewferrier/wrapping.nvim",
 			config = function()
-				require("wrapping").setup()
+				require("wrapping").setup({
+					set_nvim_opt_defaults = true,
+					softener = { text = true, comment = true, default = 0 },
+					create_commands = true,
+					create_keymaps = true,
+					auto_set_mode_heuristically = true,
+					auto_set_mode_filetype_allowlist = {},
+					auto_set_mode_filetype_denylist = {},
+					buftype_allowlist = {},
+					excluded_treesitter_queries = {},
+					notify_on_switch = false,
+					log_path = vim.fn.stdpath("data") .. "/wrapping.log",
+				})
 			end,
 		},
 
@@ -1218,8 +1291,12 @@ vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Git stash" })
 vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { desc = "File explorer" })
 
 -- Diagnostics
-vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+vim.keymap.set("n", "<Leader>dn", function()
+	vim.diagnostic.jump({ count = 1 })
+end, { desc = "Next diagnostic" })
+vim.keymap.set("n", "<Leader>dp", function()
+	vim.diagnostic.jump({ count = -1 })
+end, { desc = "Previous diagnostic" })
 vim.keymap.set("n", "<Leader>dt", ":Trouble diagnostics toggle<CR>", { desc = "Toggle trouble diagnostics" })
 vim.keymap.set("n", "<Leader>dd", ":Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Buffer diagnostics" })
 
