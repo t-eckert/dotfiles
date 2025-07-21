@@ -1312,6 +1312,8 @@ vim.keymap.set("n", "<Leader>e", ":Neotree<CR>", { noremap = true, silent = true
 -- Diagnostics
 vim.keymap.set("n", "<Leader>dn", vim.diagnostic.goto_next, { buffer = 0 })
 vim.keymap.set("n", "<Leader>dp", vim.diagnostic.goto_prev, { buffer = 0 })
+vim.keymap.set("n", "<Leader>dt", ":Trouble diagnostics toggle<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Leader>dd", ":Trouble diagnostics toggle filter.buf=0<CR>", { noremap = true, silent = true })
 -- Obsidian
 vim.keymap.set("n", "<Leader>x", ":ObsidianToggleCheckbox<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<Leader>o", ":<Nop>", { noremap = true, silent = true })
