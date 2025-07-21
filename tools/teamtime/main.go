@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -43,7 +43,7 @@ func LoadConfig(filename string) (*[]Teammember, error) {
 	}
 	defer file.Close()
 
-	byteValue, _ := ioutil.ReadAll(file)
+	byteValue, _ := io.ReadAll(file)
 	var teammembers []Teammember
 	json.Unmarshal(byteValue, &teammembers)
 
