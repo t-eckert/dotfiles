@@ -661,6 +661,24 @@ require("lazy").setup({
 						end
 					end, {desc = "Previous hunk"})
 
+					-- Navigate specifically to unstaged hunks
+					map('n', ']h', function()
+						gitsigns.nav_hunk('next', {target = 'unstaged'})
+					end, {desc = "Next unstaged hunk"})
+
+					map('n', '[h', function()
+						gitsigns.nav_hunk('prev', {target = 'unstaged'})
+					end, {desc = "Previous unstaged hunk"})
+
+					-- Navigate specifically to staged hunks
+					map('n', ']H', function()
+						gitsigns.nav_hunk('next', {target = 'staged'})
+					end, {desc = "Next staged hunk"})
+
+					map('n', '[H', function()
+						gitsigns.nav_hunk('prev', {target = 'staged'})
+					end, {desc = "Previous staged hunk"})
+
 					-- Actions
 					map('n', '<leader>hs', gitsigns.stage_hunk, {desc = "Stage hunk"})
 					map('n', '<leader>hr', gitsigns.reset_hunk, {desc = "Reset hunk"})
