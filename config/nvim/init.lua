@@ -1253,7 +1253,8 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 -- Repeat in visual mode
 vim.keymap.set("v", ".", ":normal .<cr>", { desc = "Repeat last command" })
 
--- Tab navigation
+-- Tab management
+vim.keymap.set("n", "<Leader>t", ":tabnew<CR>", { desc = "New tab" })
 vim.keymap.set("n", "<Tab>", "gt", { desc = "Next tab" })
 vim.keymap.set("n", "<S-Tab>", "gT", { desc = "Previous tab" })
 
