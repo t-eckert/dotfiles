@@ -209,6 +209,7 @@ require("lazy").setup({
 						)
 
 						-- Actions
+						map("K", vim.lsp.buf.hover, "[H]over Documentation")
 						map("<Leader>r", vim.lsp.buf.rename, "[R]ename")
 						map("<Leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
 					end,
