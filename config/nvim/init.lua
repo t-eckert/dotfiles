@@ -983,7 +983,7 @@ require("lazy").setup({
 					create_commands = true,
 					create_keymaps = true,
 					auto_set_mode_heuristically = true,
-					auto_set_mode_filetype_allowlist = {},
+					auto_set_mode_filetype_allowlist = { "markdown" },
 					auto_set_mode_filetype_denylist = {},
 					buftype_allowlist = {},
 					excluded_treesitter_queries = {},
