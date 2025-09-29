@@ -25,11 +25,21 @@ if [ -d "$CONFIG_DIR" ]; then
 
 	for dir in *; do
 		if [ -d "$dir" ]; then
-			target_dir="$HOME/.config/$(basename "$dir")"
-			echo "Creating directory $target_dir"
-			mkdir -p "$target_dir"
-			echo "Symlinking using stow..."
-			stow -vt "$target_dir" "$dir"
+			if [ "$dir" = "hammerspoon" ]; then
+				# Hammerspoon config goes to ~/.hammerspoon
+				target_dir="$HOME/.hammerspoon"
+				echo "Creating directory $target_dir"
+				mkdir -p "$target_dir"
+				echo "Symlinking Hammerspoon config using stow..."
+				stow -vt "$target_dir" "$dir"
+			else
+				# Other configs go to ~/.config
+				target_dir="$HOME/.config/$(basename "$dir")"
+				echo "Creating directory $target_dir"
+				mkdir -p "$target_dir"
+				echo "Symlinking using stow..."
+				stow -vt "$target_dir" "$dir"
+			fi
 		fi
 	done
 
