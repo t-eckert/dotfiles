@@ -58,6 +58,8 @@ alias gs="git status"
 alias zrc="$EDITOR $HOME/.zshrc"
 alias dockert=docker # I always mess this up because of my last name.
 alias clera="clear"
+alias tree="tree --dirsfirst"
+alias mvlatest='mv "$(ls -t ~/Downloads/* | head -n1)" .'
 
 unsetopt correct_all
 
