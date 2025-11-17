@@ -1021,6 +1021,10 @@ require("lazy").setup({
 			branch = "t-eckert/add-set-checkbox",
 			lazy = true,
 			ft = "markdown",
+			event = {
+				"BufReadPre " .. vim.fn.expand("~") .. "/Notebook/**.md",
+				"BufNewFile " .. vim.fn.expand("~") .. "/Notebook/**.md",
+			},
 			dependencies = { "nvim-lua/plenary.nvim" },
 			opts = {
 				workspaces = {
