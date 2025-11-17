@@ -91,3 +91,12 @@ repositories:
   password: ""
   url: https://helm.runix.net
   username: ""
+- caFile: ""
+  certFile: ""
+  insecure_skip_tls_verify: false
+  keyFile: ""
+  name: penpot
+  pass_credentials_all: false
+  password: ""
+  url: http://helm.penpot.app
+  username: ""
