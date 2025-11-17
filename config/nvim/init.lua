@@ -1342,14 +1342,28 @@ vim.keymap.set("n", "<Leader>dd", ":Trouble diagnostics toggle filter.buf=0<CR>"
 
 -- Obsidian
 vim.keymap.set("n", "<Leader>x", ":ObsidianToggleCheckbox<CR>", { desc = "Toggle checkbox" })
+
+-- Daily notes
 vim.keymap.set("n", "<Leader>ot", ":ObsidianToday<CR>", { desc = "Today's note" })
 vim.keymap.set("n", "<Leader>om", ":ObsidianTomorrow<CR>", { desc = "Tomorrow's note" })
 vim.keymap.set("n", "<Leader>oy", ":ObsidianYesterday<CR>", { desc = "Yesterday's note" })
-vim.keymap.set("n", "<Leader>oh", ":ObsidianTOC<CR>", { desc = "Table of contents" })
-vim.keymap.set("n", "<Leader>or", ":ObsidianRename", { desc = "Rename note" })
+vim.keymap.set("n", "<Leader>od", ":ObsidianDailies<CR>", { desc = "Daily notes picker" })
+
+-- Navigation and search
+vim.keymap.set("n", "<Leader>oo", ":ObsidianQuickSwitch<CR>", { desc = "Quick switch notes" })
 vim.keymap.set("n", "<Leader>os", ":ObsidianSearch<CR>", { desc = "Search notes" })
-vim.keymap.set("n", "<Leader>opi", ":ObsidianPasteImage<CR>", { desc = "Paste image" })
+vim.keymap.set("n", "<Leader>ob", ":ObsidianBacklinks<CR>", { desc = "Show backlinks" })
+vim.keymap.set("n", "<Leader>oT", ":ObsidianTags<CR>", { desc = "Search by tags" })
+
+-- Note management
 vim.keymap.set("n", "<Leader>on", ":ObsidianNew<CR>", { desc = "New note" })
+vim.keymap.set("n", "<Leader>or", ":ObsidianRename", { desc = "Rename note" })
+vim.keymap.set("n", "<Leader>oh", ":ObsidianTOC<CR>", { desc = "Table of contents" })
+vim.keymap.set("n", "<Leader>oO", ":ObsidianOpen<CR>", { desc = "Open in Obsidian app" })
+
+-- Templates and media
+vim.keymap.set("n", "<Leader>opt", ":ObsidianTemplate<CR>", { desc = "Insert template" })
+vim.keymap.set("n", "<Leader>opi", ":ObsidianPasteImage<CR>", { desc = "Paste image" })
 
 -- Claude Code integration
 vim.keymap.set("n", "<Leader>cc", ":ClaudeCodeDiagnostic<CR>", { desc = "Send diagnostic to Claude Code" })
