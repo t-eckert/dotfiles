@@ -101,6 +101,7 @@ vim.opt.swapfile = false -- Don't write swap files for new buffers
 vim.opt.updatecount = 0 -- Don't write swap files after some number of updates
 vim.opt.undofile = true -- Save undo history
 vim.opt.autoread = true -- Enable automatic reading of files changed outside Vim
+vim.opt.exrc = true -- Enable project-specific .nvim.lua configuration files
 
 -- Backup and temporary directories
 vim.opt.backupdir = {
