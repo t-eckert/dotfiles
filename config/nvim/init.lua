@@ -72,6 +72,15 @@ vim.api.nvim_create_autocmd("FileType", {
 	desc = "Override save in Neo-tree to save all files",
 })
 
+-- Set conceal level for Obsidian markdown files
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+	pattern = vim.fn.expand("~") .. "/Notebook/*.md",
+	callback = function()
+		vim.opt_local.conceallevel = 2
+	end,
+	desc = "Set conceal level to 2 for Obsidian notes",
+})
+
 -- ======================================================================================
 -- CORE VIM OPTIONS
 -- ======================================================================================
