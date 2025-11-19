@@ -45,14 +45,6 @@ alias md=mkdir
 alias mcd="mkdir $_ && cd $_"
 alias venv="source .venv/bin/activate"
 alias cat="bat"
-alias fgi="$HOME/Scripts/fetch-gitignore.sh"
-alias csl="$HOME/Repos/consul"
-alias cks="$HOME/Repos/consul-k8s"
-alias cksr="$HOME/Repos/consul-k8s-releases"
-alias hc="$HOME/go/src/github.com/hashicorp"
-alias scr="$HOME/Scripts/scripts"
-alias tt="teamtime ~/.teammembers.json"
-alias td="$HOME/Scripts/scripts/print-md.sh $CONSUL_TEAM"
 alias kbb="kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh"
 alias gs="git status"
 alias zrc="$EDITOR $HOME/.zshrc"
@@ -60,6 +52,16 @@ alias dockert=docker # I always mess this up because of my last name.
 alias clera="clear"
 alias tree="tree --dirsfirst"
 alias mvlatest='mv "$(ls -t ~/Downloads/* | head -n1)" .'
+
+# Conditional aliases (only if paths exist)
+[[ -f "$HOME/Scripts/fetch-gitignore.sh" ]] && alias fgi="$HOME/Scripts/fetch-gitignore.sh"
+[[ -d "$HOME/Repos/consul" ]] && alias csl="cd $HOME/Repos/consul"
+[[ -d "$HOME/Repos/consul-k8s" ]] && alias cks="cd $HOME/Repos/consul-k8s"
+[[ -d "$HOME/Repos/consul-k8s-releases" ]] && alias cksr="cd $HOME/Repos/consul-k8s-releases"
+[[ -d "$HOME/go/src/github.com/hashicorp" ]] && alias hc="cd $HOME/go/src/github.com/hashicorp"
+[[ -d "$HOME/Scripts/scripts" ]] && alias scr="cd $HOME/Scripts/scripts"
+[[ -f ~/.teammembers.json ]] && alias tt="teamtime ~/.teammembers.json"
+[[ -f "$HOME/Scripts/scripts/print-md.sh" ]] && alias td="$HOME/Scripts/scripts/print-md.sh $CONSUL_TEAM"
 
 unsetopt correct_all
 
@@ -73,11 +75,29 @@ export NVM_DIR=~/.nvm
 export BAT_THEME=base16
 export XDG_CONFIG_HOME=$HOME/.config
 
-[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-if [ -f '/Users/thomaseckert/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thomaseckert/google-cloud-sdk/path.zsh.inc'; fi
-if [ -f '/Users/thomaseckert/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/google-cloud-sdk/completion.zsh.inc'; fi
+# Lazy load kubectl completion for faster shell startup
+if [[ $commands[kubectl] ]]; then
+  kubectl() {
+    if ! type __start_kubectl >/dev/null 2>&1; then
+      source <(command kubectl completion zsh)
+    fi
+    command kubectl "$@"
+  }
+fi
 
+# NVM
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+# Google Cloud SDK (check multiple possible locations)
+for gcloud_path in "$HOME/google-cloud-sdk" "$HOME/Downloads/google-cloud-sdk" "/usr/local/Caskroom/google-cloud-sdk"; do
+  if [ -f "$gcloud_path/path.zsh.inc" ]; then
+    source "$gcloud_path/path.zsh.inc"
+    [ -f "$gcloud_path/completion.zsh.inc" ] && source "$gcloud_path/completion.zsh.inc"
+    break
+  fi
+done
+
+# FZF
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # Color shortcuts
@@ -128,9 +148,11 @@ autoload -z edit-command-line
 zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
-if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/path.zsh.inc'; fi
-if [ -f '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/thomaseckert/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
-export PATH="/usr/local/opt/curl/bin:$PATH"
+# Add curl to PATH if installed via Homebrew
+[ -d "/usr/local/opt/curl/bin" ] && export PATH="/usr/local/opt/curl/bin:$PATH"
 
+# Zellij auto-start
 eval "$(zellij setup --generate-auto-start zsh)"
+
+# Atuin shell history
 eval "$(atuin init zsh)"
