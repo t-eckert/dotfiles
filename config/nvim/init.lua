@@ -81,6 +81,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	desc = "Set conceal level to 2 for Obsidian notes",
 })
 
+
 -- ======================================================================================
 -- CORE VIM OPTIONS
 -- ======================================================================================
@@ -173,7 +174,18 @@ require("lazy").setup({
 		-- =============================================================================
 
 		-- Treesitter - Syntax highlighting and parsing
-		{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+		{
+			"nvim-treesitter/nvim-treesitter",
+			build = ":TSUpdate",
+			config = function()
+				require("nvim-treesitter.configs").setup({
+					ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml" },
+					highlight = {
+						enable = true,
+					},
+				})
+			end,
+		},
 
 		-- Language-specific plugins
 		"evanleck/vim-svelte", -- Svelte support
