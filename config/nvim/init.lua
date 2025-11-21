@@ -179,7 +179,7 @@ require("lazy").setup({
 			build = ":TSUpdate",
 			config = function()
 				require("nvim-treesitter.configs").setup({
-					ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml" },
+					ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml", "astro", "tsx" },
 					highlight = {
 						enable = true,
 					},
@@ -234,6 +234,15 @@ require("lazy").setup({
 						map("K", vim.lsp.buf.hover, "[H]over Documentation")
 						map("<Leader>r", vim.lsp.buf.rename, "[R]ename")
 						map("<Leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction", { "n", "x" })
+
+						-- Enable inlay hints if supported
+						local client = vim.lsp.get_client_by_id(event.data.client_id)
+						if client and client.server_capabilities.inlayHintProvider then
+							vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+							map("<Leader>th", function()
+								vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+							end, "[T]oggle inlay [H]ints")
+						end
 					end,
 				})
 
@@ -280,6 +289,24 @@ require("lazy").setup({
 							},
 						},
 					},
+					rust_analyzer = {
+						settings = {
+							["rust-analyzer"] = {
+								inlayHints = {
+									enable = true,
+									chainingHints = { enable = true },
+									closingBraceHints = { enable = true, minLines = 10 },
+									closureReturnTypeHints = { enable = "always" },
+									lifetimeElisionHints = { enable = "always", useParameterNames = true },
+									parameterHints = { enable = true },
+									typeHints = { enable = true, hideClosureInitialization = false, hideNamedConstructor = false },
+								},
+								checkOnSave = {
+									command = "clippy",
+								},
+							},
+						},
+					},
 				}
 
 				-- Mason setup
@@ -290,7 +317,7 @@ require("lazy").setup({
 				require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 				require("mason-lspconfig").setup({
-					ensure_installed = { "lua_ls", "rust_analyzer", "denols", "ts_ls" },
+					ensure_installed = { "lua_ls", "rust_analyzer", "denols", "ts_ls", "astro" },
 					automatic_installation = true,
 					handlers = {
 						function(server_name)
@@ -337,6 +364,11 @@ require("lazy").setup({
 							},
 						},
 					},
+				})
+
+				-- Astro LSP
+				require("lspconfig").astro.setup({
+					capabilities = capabilities,
 				})
 			end,
 		},
@@ -1388,9 +1420,13 @@ vim.g.do_filetype_lua = 1
 vim.filetype.add({
 	extension = {
 		svx = "markdown",
-		mdx = "markdown",
+		mdx = "mdx",
+		astro = "astro",
 	},
 })
+
+-- Register treesitter parser for MDX as markdown
+vim.treesitter.language.register("markdown", "mdx")
 
 -- ======================================================================================
 -- ABBREVIATIONS
