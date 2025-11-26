@@ -53,15 +53,9 @@ alias clera="clear"
 alias tree="tree --dirsfirst"
 alias mvlatest='mv "$(ls -t ~/Downloads/* | head -n1)" .'
 
-# Conditional aliases (only if paths exist)
-[[ -f "$HOME/Scripts/fetch-gitignore.sh" ]] && alias fgi="$HOME/Scripts/fetch-gitignore.sh"
-[[ -d "$HOME/Repos/consul" ]] && alias csl="cd $HOME/Repos/consul"
-[[ -d "$HOME/Repos/consul-k8s" ]] && alias cks="cd $HOME/Repos/consul-k8s"
-[[ -d "$HOME/Repos/consul-k8s-releases" ]] && alias cksr="cd $HOME/Repos/consul-k8s-releases"
-[[ -d "$HOME/go/src/github.com/hashicorp" ]] && alias hc="cd $HOME/go/src/github.com/hashicorp"
-[[ -d "$HOME/Scripts/scripts" ]] && alias scr="cd $HOME/Scripts/scripts"
-[[ -f ~/.teammembers.json ]] && alias tt="teamtime ~/.teammembers.json"
-[[ -f "$HOME/Scripts/scripts/print-md.sh" ]] && alias td="$HOME/Scripts/scripts/print-md.sh $CONSUL_TEAM"
+# Quick access to Repos
+
+alias ft="cd ~/Repos/github.com/t-eckert/field-theories/"
 
 unsetopt correct_all
 
