@@ -1024,7 +1024,22 @@ require("lazy").setup({
 		{
 			"windwp/nvim-autopairs",
 			event = "InsertEnter",
-			config = true,
+			config = function()
+				local npairs = require("nvim-autopairs")
+				local Rule = require("nvim-autopairs.rule")
+				local cond = require("nvim-autopairs.conds")
+
+				npairs.setup({
+					check_ts = true,
+					ts_config = {
+						lua = { "string" },
+						javascript = { "template_string" },
+					},
+				})
+
+				-- Disable backtick pairing in markdown files
+				npairs.get_rules("`")[1].not_filetypes = { "markdown", "mdx" }
+			end,
 		},
 
 		-- Text wrapping
