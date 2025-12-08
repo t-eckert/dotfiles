@@ -1,0 +1,35 @@
+# Git files
+.git/
+.github/
+.gitignore
+
+# Documentation (except CLAUDE.md which is referenced in plan)
+README.md
+!CLAUDE.md
+
+# Markdown docs
+docs/
+
+# Notebook and notes
+notebook/
+
+# MacOS files
+.DS_Store
+._*
+
+# Claude Code configs
+.claude/
+
+# Build artifacts and logs
+*.log
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+tmp/
+temp/

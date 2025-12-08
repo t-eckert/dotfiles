@@ -1,0 +1,140 @@
+{
+  "brew_to_debian": {
+    "python@3.11": "python3.11",
+    "python@3.10": "python3.10",
+    "kubernetes-cli": "kubectl",
+    "rename": "perl-rename",
+    "yarn": "yarnpkg",
+    "nss": "libnss3-tools",
+    "pkgconf": "pkg-config",
+    "nghttp2": "libnghttp2-dev",
+    "ninja": "ninja-build",
+    "node": "nodejs",
+    "postgresql@15": "postgresql-15"
+  },
+  "same_name": [
+    "autoconf",
+    "autoconf-archive",
+    "automake",
+    "bat",
+    "ccache",
+    "cmake",
+    "ctags",
+    "curl",
+    "ffmpeg",
+    "fzf",
+    "gcc",
+    "git",
+    "go",
+    "helm",
+    "jq",
+    "llvm",
+    "luarocks",
+    "nasm",
+    "neovim",
+    "nmap",
+    "protobuf",
+    "ripgrep",
+    "stow",
+    "tree",
+    "virtualenv",
+    "watch",
+    "wget",
+    "yq"
+  ],
+  "external_repos": {
+    "debian": {
+      "gh": {
+        "type": "apt_repo",
+        "description": "GitHub CLI official repository"
+      },
+      "docker": {
+        "type": "apt_repo",
+        "description": "Docker official repository",
+        "packages": ["docker-ce", "docker-ce-cli", "containerd.io"]
+      },
+      "kubectl": {
+        "type": "apt_repo",
+        "description": "Kubernetes CLI official repository"
+      },
+      "terraform": {
+        "type": "apt_repo",
+        "description": "HashiCorp official repository"
+      },
+      "helm": {
+        "type": "apt_repo",
+        "description": "Helm official repository"
+      },
+      "tailscale": {
+        "type": "apt_repo",
+        "description": "Tailscale official repository"
+      },
+      "azure-cli": {
+        "type": "apt_repo",
+        "description": "Microsoft Azure CLI"
+      },
+      "nodejs": {
+        "type": "apt_repo",
+        "description": "NodeSource Node.js repository"
+      }
+    },
+    "github_releases": {
+      "k9s": {
+        "description": "Kubernetes cluster manager",
+        "install_method": "download_binary"
+      },
+      "lazygit": {
+        "description": "Terminal UI for git",
+        "install_method": "download_binary"
+      },
+      "buf": {
+        "description": "Protocol buffer tool",
+        "install_method": "download_binary"
+      },
+      "d2": {
+        "description": "Diagram scripting language",
+        "install_method": "download_binary"
+      },
+      "deno": {
+        "description": "JavaScript runtime",
+        "install_method": "download_binary"
+      },
+      "flyctl": {
+        "description": "Fly.io CLI",
+        "install_method": "install_script"
+      }
+    },
+    "language_managers": {
+      "atuin": {
+        "method": "cargo",
+        "description": "Shell history sync"
+      },
+      "zellij": {
+        "method": "cargo",
+        "description": "Terminal multiplexer"
+      },
+      "kind": {
+        "method": "go_install",
+        "package": "sigs.k8s.io/kind@latest",
+        "description": "Kubernetes in Docker"
+      },
+      "kustomize": {
+        "method": "go_install",
+        "description": "Kubernetes customization tool"
+      }
+    }
+  },
+  "skip_debian": [
+    "iproute2mac",
+    "amethyst",
+    "wezterm",
+    "1password-cli",
+    "grip"
+  ],
+  "notes": {
+    "bat": "On older Debian/Ubuntu, package is named 'batcat'",
+    "lua-language-server": "Not in standard Debian repos, use Mason in Neovim or build from source",
+    "python_versions": "May need deadsnakes PPA for specific Python versions on older Debian/Ubuntu",
+    "qt": "Debian has qt5-default or qt6-base-dev depending on version needed"
+  }
+}

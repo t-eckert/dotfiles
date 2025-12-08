@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  devenv:
+    build:
+      context: .
+      dockerfile: Containerfile
+      args:
+        USERNAME: dev
+        USER_UID: 1000
+        USER_GID: 1000
+        GO_VERSION: 1.24.0
+    image: dotfiles-dev:latest
+    container_name: dotfiles-dev
+
+    # Interactive terminal
+    stdin_open: true
+    tty: true
+
+    # Volume mounts for persistence
+    volumes:
+      # Persistent data volumes
+      - nvim-data:/home/dev/.local/share/nvim
+      - atuin-data:/home/dev/.local/share/atuin
+      - zsh-history:/home/dev/.config/zsh_history
+      - cache:/home/dev/.cache
+      - go-pkg:/home/dev/go/pkg
+
+      # Mount workspace (host → container)
+      # Override with: WORKSPACE_PATH=/path/to/project docker compose run devenv
+      - ${WORKSPACE_PATH:-.}:/workspace
+
+      # Optional: SSH keys for git operations (read-only)
+      # Uncomment if you need SSH access from container:
+      # - ${HOME}/.ssh:/home/dev/.ssh:ro
+
+      # Optional: Git credentials (read-only)
+      # Uncomment if you have a local git config:
+      # - ${HOME}/.gitconfig.local:/home/dev/.gitconfig.local:ro
+
+      # Optional: Docker socket for Docker-in-Docker
+      # Uncomment if you need to use Docker from within the container:
+      # - /var/run/docker.sock:/var/run/docker.sock
+
+    # Environment variables
+    environment:
+      - TERM=xterm-256color
+      - COLORTERM=truecolor
+      # Set timezone (optional)
+      # - TZ=America/New_York
+
+    # Working directory
+    working_dir: /workspace
+
+    # Default command
+    command: /bin/zsh
+
+    # Network mode for services (optional)
+    # Uncomment if you need host networking:
+    # network_mode: host
+
+# Named volumes for persistent data
+volumes:
+  nvim-data:
+    driver: local
+  atuin-data:
+    driver: local
+  zsh-history:
+    driver: local
+  cache:
+    driver: local
+  go-pkg:
+    driver: local

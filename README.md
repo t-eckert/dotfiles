@@ -6,11 +6,49 @@ to make my work more effective.
 
 ## Installation
 
-Clone the repository and run `sudo ./install.sh`.
+Clone the repository and run `./install.sh`.
+
+The installation script automatically detects your platform (MacOS or Debian) and installs the appropriate packages and configurations.
+
+### Platform Support
+
+| Platform | Native Install | Container |
+|----------|----------------|-----------|
+| MacOS    | ✅ Homebrew    | N/A       |
+| Debian   | ✅ apt         | ✅ Docker |
+
+### Quick Start
+
+**MacOS:**
+```bash
+git clone https://github.com/t-eckert/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh
+```
+
+**Debian:**
+```bash
+git clone https://github.com/t-eckert/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh
+```
+
+**Container (Debian-based):**
+```bash
+git clone https://github.com/t-eckert/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+docker compose build
+docker compose run --rm devenv
+```
+
+For detailed installation instructions, see:
+- [Debian Installation Guide](docs/DEBIAN.md)
+- [Container Usage Guide](docs/CONTAINER.md)
 
 ## Configs
 
 - [Atuin](./.config/atuin)
+- [Claude Code](./.claude) - Reusable slash commands for Claude Code
 - [GitHub CLI](./.config/gh)
 - [Ghostty](./.config/ghostty)
 - [Helm](./.config/helm)

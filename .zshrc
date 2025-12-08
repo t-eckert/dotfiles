@@ -64,10 +64,15 @@ unsetopt correct_all
 export GOPATH=$HOME/go
 export FZF_DEFAULT_COMMAND="rg --files --hidden --follow --glob '!.git/'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export PATH=/opt/homebrew/bin:$HOME/.local/bin/:/Applications/GoLand.app/Contents/MacOS:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:~/repos/dotfiles/scripts/:$PATH
+export PATH=$HOME/.local/bin:$HOME/lsp/bin:$GOROOT/bin:$GOPATH/bin:~/repos/dotfiles/scripts/:$PATH
 export NVM_DIR=~/.nvm
 export BAT_THEME=base16
 export XDG_CONFIG_HOME=$HOME/.config
+
+# Source platform-specific configurations (PATH additions, etc.)
+if [[ -f "$HOME/.config/zshrc.d/platform-$(uname -s | tr '[:upper:]' '[:lower:]').zsh" ]]; then
+  source "$HOME/.config/zshrc.d/platform-$(uname -s | tr '[:upper:]' '[:lower:]').zsh"
+fi
 
 # Lazy load kubectl completion for faster shell startup
 if [[ $commands[kubectl] ]]; then

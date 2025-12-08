@@ -1,0 +1,83 @@
+# Debian package manifest for dotfiles installation
+# Packages are organized by category and installed in order
+# Lines starting with # are comments
+# Lines starting with [ are section headers (for organization only)
+
+[core]
+# Core system dependencies (install first)
+curl
+wget
+git
+stow
+build-essential
+software-properties-common
+gnupg2
+ca-certificates
+lsb-release
+sudo
+locales
+
+[dev-tools]
+# Essential development tools
+autoconf
+autoconf-archive
+automake
+ccache
+cmake
+ctags
+gettext
+pkg-config
+nasm
+
+[languages-base]
+# Base language runtimes (from standard repos)
+golang-go
+python3.11
+python3.11-venv
+python3-pip
+
+[cli-tools]
+# Command-line utilities
+neovim
+ripgrep
+fzf
+bat
+jq
+yq
+tree
+watch
+wget
+nmap
+ffmpeg
+
+[build-tools]
+# Compilation and build tools
+gcc
+llvm
+ninja-build
+protobuf-compiler
+
+[version-control]
+# Version control and related tools
+git
+
+[utilities]
+# General utilities
+virtualenv
+luarocks
+
+[external-repo-packages]
+# These packages require external repos to be setup first
+# See debian-external-repos.sh
+# Uncomment after running external repos setup:
+# gh
+# docker-ce
+# docker-ce-cli
+# containerd.io
+# kubectl
+# terraform
+# helm
+# nodejs
+# npm
+# tailscale
+# azure-cli
