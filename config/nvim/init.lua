@@ -81,6 +81,17 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 	desc = "Set conceal level to 2 for Obsidian notes",
 })
 
+-- Force SoftWrapMode for all Markdown files
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "markdown", "mdx" },
+	callback = function()
+		vim.schedule(function()
+			vim.cmd("SoftWrapMode")
+		end)
+	end,
+	desc = "Enable soft wrap mode for Markdown files",
+})
+
 
 -- ======================================================================================
 -- CORE VIM OPTIONS
@@ -1052,8 +1063,8 @@ require("lazy").setup({
 					softener = { text = true, comment = true, default = 0 },
 					create_commands = true,
 					create_keymaps = true,
-					auto_set_mode_heuristically = true,
-					auto_set_mode_filetype_allowlist = { "markdown" },
+					auto_set_mode_heuristically = false, -- Disabled for markdown to prevent conflicts
+					auto_set_mode_filetype_allowlist = { "markdown", "mdx", "svx" },
 					auto_set_mode_filetype_denylist = {},
 					buftype_allowlist = {},
 					excluded_treesitter_queries = {},
