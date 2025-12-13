@@ -741,6 +741,7 @@ require("lazy").setup({
 						gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, { desc = "Reset hunk" })
 					map("n", "<leader>HS", gitsigns.stage_buffer, { desc = "Stage buffer" })
+					map("n", "<leader>ga", gitsigns.stage_buffer, { desc = "Git add (stage current file)" })
 					map("n", "<leader>Hu", function()
 						gitsigns.stage_hunk({ staged = true })
 					end, { desc = "Undo stage hunk" })
