@@ -91,8 +91,8 @@ prompt_git() {
 
   # Parse git status porcelain
   while IFS= read -r line; do
-    local status="${line:0:2}"
-    case "$status" in
+    local git_status="${line:0:2}"
+    case "$git_status" in
       "##")
         # Branch tracking info
         if [[ "$line" =~ ahead\ ([0-9]+) ]]; then
@@ -105,9 +105,9 @@ prompt_git() {
       "??") ((untracked++)); is_dirty=true ;;
       "UU"|"AA"|"DD") ((conflicted++)); is_dirty=true ;;
       *)
-        [[ "${status:0:1}" != " " && "${status:0:1}" != "?" ]] && ((staged++))
-        [[ "${status:1:1}" == "M" ]] && ((modified++)) && is_dirty=true
-        [[ "${status:1:1}" == "D" ]] && ((deleted++)) && is_dirty=true
+        [[ "${git_status:0:1}" != " " && "${git_status:0:1}" != "?" ]] && ((staged++))
+        [[ "${git_status:1:1}" == "M" ]] && ((modified++)) && is_dirty=true
+        [[ "${git_status:1:1}" == "D" ]] && ((deleted++)) && is_dirty=true
         ;;
     esac
   done < <(git status --porcelain=v1 -b 2>/dev/null)
