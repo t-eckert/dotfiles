@@ -2,17 +2,30 @@
 # Catppuccin Mocha color palette with rich context information
 
 format = """
+$username\
+$hostname\
 $directory\
 $git_branch\
 $git_status\
+$git_commit\
+$git_state\
 $kubernetes\
+$docker_context\
+$terraform\
 $rust\
 $golang\
+$nodejs\
 $python\
+$package\
 $aws\
 $gcloud\
+$memory_usage\
+$jobs\
 $cmd_duration\
 $status\
+$fill\
+$battery\
+$time\
 $line_break\
 $character"""
 
@@ -134,3 +147,82 @@ symbol = ""
 success_symbol = " "
 pipestatus = false
 recognize_signal_code = false
+
+[time]
+disabled = false
+format = '[$time ]($style)'
+style = 'fg:overlay1'
+time_format = '%R'
+utc_time_offset = '0'
+
+[battery]
+disabled = false
+format = '[$symbol$percentage ]($style)'
+[[battery.display]]
+threshold = 20
+style = 'fg:red'
+[[battery.display]]
+threshold = 50
+style = 'fg:yellow'
+[[battery.display]]
+threshold = 100
+style = 'fg:green'
+
+[memory_usage]
+disabled = false
+threshold = 75
+format = '[${ram_pct} ]($style)'
+style = 'fg:yellow'
+symbol = ' '
+
+[jobs]
+symbol = '✦'
+number_threshold = 1
+format = '[$symbol$number ]($style)'
+style = 'fg:blue'
+
+[nodejs]
+symbol = ' '
+format = '[$symbol$version ]($style)'
+style = 'fg:green'
+
+[package]
+symbol = '📦 '
+format = '[$symbol$version ]($style)'
+style = 'fg:overlay2'
+disabled = false
+
+[terraform]
+symbol = '💠 '
+format = '[$symbol$workspace ]($style)'
+style = 'fg:mauve'
+
+[docker_context]
+symbol = ' '
+format = '[$symbol$context ]($style)'
+style = 'fg:blue'
+
+[git_commit]
+tag_symbol = ' 🏷  '
+format = '[$hash$tag ]($style)'
+style = 'fg:green'
+only_detached = false
+tag_disabled = false
+
+[git_state]
+format = '[$state( $progress_current/$progress_total) ]($style)'
+style = 'fg:yellow'
+
+[username]
+show_always = false
+format = '[$user]($style) '
+style_user = 'fg:blue'
+style_root = 'fg:red'
+
+[hostname]
+ssh_only = true
+format = '[@$hostname ]($style)'
+style = 'fg:green'
+
+[fill]
+symbol = ' '
