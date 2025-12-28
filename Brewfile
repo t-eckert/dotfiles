@@ -56,6 +56,7 @@ brew "python@3.10"
 brew "qt"
 brew "rename"
 brew "ripgrep"
+brew "starship"
 brew "stow"
 brew "tailscale", restart_service: true
 brew "terraform"
