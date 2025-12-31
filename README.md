@@ -8,13 +8,13 @@ Clone the repository and run `sudo ./install.sh`.
 
 ## Configs
 
-- [Atuin](./.config/atuin)
-- [GitHub CLI](./.config/gh)
-- [Ghostty](./.config/ghostty)
-- [Helm](./.config/helm)
-- [K9s](./.config/k9s)
-- [Neovim](./.config/nvim)
-- [Zellij](./.config/zellij)
+- [Atuin](./config/atuin)
+- [GitHub CLI](./config/gh)
+- [Ghostty](./config/ghostty)
+- [Helm](./config/helm)
+- [K9s](./config/k9s)
+- [Neovim](./config/nvim)
+- [Zellij](./config/zellij)
 
 ## Tools
 
