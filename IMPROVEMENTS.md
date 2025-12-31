@@ -371,4 +371,20 @@ export HISTFILESIZE=20000
 
 ---
 
+# Config Improvements
+
+I have been using NeoVim for awhile now and I want to take some time to improve my setup. Here are some gaps that I'd like to fill:
+
+- [x] Ligatures: Alacritty does not support them. Now that I am all in on the MacOS ecosystem, I think I will look for another terminal emulator that does.
+- [ ] Rust debugging
+- [ ] Git blame inline
+- [ ] Python auto-formatting with Black
+- [ ] Python debugging
+- [ ] Improvements to `50PH1A`
+- [ ] Improved YAML editing?
+- [ ] Inline code actions
+- [ ] Better inline menu
+- [ ] Emmet
+- [ ] Cleaner UI for DAP UI
+
 *This analysis provides specific, actionable improvements that will significantly enhance your dotfiles repository's functionality, maintainability, and cross-system compatibility.*
