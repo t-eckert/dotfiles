@@ -1,40 +1,3 @@
-# Dotfiles Repository Improvement Suggestions
-
-## Overview
-
-This document outlines comprehensive improvements for the dotfiles repository to enhance functionality, maintainability, and cross-system compatibility.
-
----
-
-## 1. Repository Structure & Organization
-
-### Current State
-The repository is well-organized with a clear separation between configs and tools, using Stow for symlink management.
-
-### Improvements Needed
-
-#### 1.1 Add Missing Essential Dotfiles
-- **`.gitconfig`**: Missing global Git configuration
-- **`.ssh/config`**: SSH client configuration for host management
-- **`.tmux.conf`**: While you use Zellij, tmux config would be useful for remote sessions
-- **`.editorconfig`**: Consistent editor settings across projects
-
-#### 1.2 Improve Documentation Structure
-- The README.md has broken links (`.config/` instead of `config/`)
-- Missing tool descriptions for `prepend`, `serve`, `slug`
-- No troubleshooting guide or FAQ section
-
-#### 1.3 Directory Structure Enhancements
-```
-├── config/           # Application configs (good)
-├── tools/           # Custom Go tools (good)
-├── scripts/         # Shell scripts (missing)
-├── templates/       # Project templates (missing)
-├── docs/           # Extended documentation (missing)
-└── backup/         # Backup scripts/configs (missing)
-```
-
----
 
 ## 2. Neovim Configuration Analysis
 
@@ -371,11 +334,7 @@ export HISTFILESIZE=20000
 
 ---
 
-# Config Improvements
 
-I have been using NeoVim for awhile now and I want to take some time to improve my setup. Here are some gaps that I'd like to fill:
-
-- [x] Ligatures: Alacritty does not support them. Now that I am all in on the MacOS ecosystem, I think I will look for another terminal emulator that does.
 - [ ] Rust debugging
 - [ ] Git blame inline
 - [ ] Python auto-formatting with Black
