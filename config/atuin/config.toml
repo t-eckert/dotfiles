@@ -29,7 +29,9 @@
 # update_check = true
 
 ## address of the sync server
-# sync_address = "https://api.atuin.sh"
+# Default: "https://api.atuin.sh"
+# Homelab server (requires Tailscale access)
+sync_address = "http://atuin-homelab.feist-gondola.ts.net:8888"
 
 ## how often to sync history. note that this is only triggered when a command
 ## is ran, so sync intervals may well be longer
@@ -172,3 +174,9 @@ enter_accept = true
 #
 # Set commands that should be totally stripped and ignored from stats
 #common_prefix = ["sudo"]
+
+[sync]
+# Enable sync v2 by default
+# This ensures that sync v2 is enabled for new installs only
+# In a later release it will become the default across the board
+records = true
