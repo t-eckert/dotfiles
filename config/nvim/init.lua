@@ -534,6 +534,20 @@ require("lazy").setup({
         "nvim-tree/nvim-web-devicons",
         "MunifTanjim/nui.nvim",
       },
+      opts = {
+        filesystem = {
+          filtered_items = {
+            visible = false, -- Hide filtered items by default
+            hide_dotfiles = false, -- Don't hide dotfiles
+            hide_gitignored = true, -- Hide gitignored files
+            hide_hidden = false, -- Don't hide hidden files (Windows)
+            never_show = {
+              ".DS_Store",
+              "thumbs.db",
+            },
+          },
+        },
+      },
     },
 
     -- Fuzzy finder
@@ -554,6 +568,18 @@ require("lazy").setup({
       },
       config = function()
         require("telescope").setup({
+          defaults = {
+            file_ignore_patterns = { "%.DS_Store" },
+          },
+          pickers = {
+            find_files = {
+              hidden = true, -- Show dotfiles
+              -- Respects .gitignore by default when using rg/fd
+            },
+            live_grep = {
+              additional_args = { "--hidden" }, -- Search in dotfiles
+            },
+          },
           extensions = {},
         })
 
