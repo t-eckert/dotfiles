@@ -2,12 +2,18 @@
 
 theme = Catppuccin Mocha
 background = #000000
-window-decoration = true
-macos-titlebar-style = hidden
+font-size = 14
+font-family = "FiraCode Nerd Font Mono"
+cursor-style = block
+cursor-thickness = 2
+
 window-padding-y = 8,0
 window-padding-x = 4
+window-decoration = true
+macos-titlebar-style = hidden
 
 mouse-hide-while-typing = true
-
 keybind = shift+enter=text:\n
 confirm-close-surface = false
+copy-on-select = true
+window-save-state = always
