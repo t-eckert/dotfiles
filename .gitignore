@@ -1,5 +1,9 @@
 .config/
 
+# Nix build outputs
+result
+result-*
+
 # Neovim lazy.nvim lock file
 config/nvim/lazy-lock.json
 
