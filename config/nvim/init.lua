@@ -118,6 +118,12 @@ vim.opt.undofile = true -- Save undo history
 vim.opt.autoread = true -- Enable automatic reading of files changed outside Vim
 vim.opt.exrc = true -- Enable project-specific .nvim.lua configuration files
 
+vim.opt.timeoutlen = 300 -- Time to wait for a mapped sequence to complete (in milliseconds)
+vim.opt.ttimeoutlen = 0 -- Time to wait for a key code sequence to complete (in milliseconds)
+
+vim.g.loaded_netrw = 1 -- Disable netrw (using neo-tree instead)
+vim.g.loaded_netrwPlugin = 1 -- Disable netrw plugin
+
 -- Backup and temporary directories
 vim.opt.backupdir = {
   "~/.vim-tmp",
