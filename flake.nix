@@ -96,26 +96,6 @@
           ];
         };
 
-        # Intel Mac configuration
-        "thomaseckert@macos-x86" = home-manager.lib.homeManagerConfiguration {
-          pkgs = pkgsFor "x86_64-darwin";
-          extraSpecialArgs = {
-            inherit self;
-            isDarwin = true;
-            isLinux = false;
-          };
-          modules = [
-            ./nix/home
-            {
-              home = {
-                username = username;
-                homeDirectory = homeDirectory "x86_64-darwin";
-                stateVersion = "24.05";
-              };
-            }
-          ];
-        };
-
         # Linux configuration (for Spark containers)
         "thomaseckert@linux" = home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor "x86_64-linux";
@@ -144,30 +124,6 @@
         # Apple Silicon Mac
         "Thomas-MacBook-Pro" = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = {
-            inherit self username;
-          };
-          modules = [
-            ./nix/darwin
-            home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = {
-                  inherit self;
-                  isDarwin = true;
-                  isLinux = false;
-                };
-                users.${username} = import ./nix/home;
-              };
-            }
-          ];
-        };
-
-        # Intel Mac (template - rename to match hostname if needed)
-        "macos-intel" = darwin.lib.darwinSystem {
-          system = "x86_64-darwin";
           specialArgs = {
             inherit self username;
           };
