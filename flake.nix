@@ -142,7 +142,7 @@
       # ============================================================
       darwinConfigurations = {
         # Apple Silicon Mac
-        "macos" = darwin.lib.darwinSystem {
+        "Thomas-MacBook-Pro" = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = {
             inherit self username;
@@ -165,8 +165,8 @@
           ];
         };
 
-        # Intel Mac
-        "macos-x86" = darwin.lib.darwinSystem {
+        # Intel Mac (template - rename to match hostname if needed)
+        "macos-intel" = darwin.lib.darwinSystem {
           system = "x86_64-darwin";
           specialArgs = {
             inherit self username;
