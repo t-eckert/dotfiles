@@ -1,3 +1,4 @@
+
 DISABLE_UPDATE_PROMPT="true" # Always upgrade if there is new Oh My Zsh
 ENABLE_CORRECTION="true" # Enable command correction
 DISABLE_UNTRACKED_FILES_DIRTY="true" # Disable untracked files in git status
@@ -19,7 +20,9 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
 
+export ZSH_CACHE_DIR="$HOME/.cache/oh-my-zsh"
 export ZSH="$HOME/.oh-my-zsh"
+
 ZSH_THEME=""  # Disable Oh My Zsh themes (using Starship instead)
 
 plugins=(
