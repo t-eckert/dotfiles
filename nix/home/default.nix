@@ -13,6 +13,9 @@
   # Let Home Manager manage itself
   programs.home-manager.enable = true;
 
+  # State version (required)
+  home.stateVersion = "24.05";
+
   # XDG directories
   xdg = {
     enable = true;
