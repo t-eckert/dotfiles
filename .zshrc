@@ -108,8 +108,12 @@ bindkey -M vicmd v edit-command-line
 # Add curl to PATH if installed via Homebrew
 [ -d "/usr/local/opt/curl/bin" ] && export PATH="/usr/local/opt/curl/bin:$PATH"
 
-# Zellij auto-start (temporarily disabled)
-# eval "$(zellij setup --generate-auto-start zsh)"
-
 # Atuin shell history
 eval "$(atuin init zsh)"
+
+# bun completions
+[ -s "/Users/thomaseckert/.bun/_bun" ] && source "/Users/thomaseckert/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
