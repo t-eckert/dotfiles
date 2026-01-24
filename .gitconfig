@@ -1,12 +1,13 @@
 [user]
 	name = Thomas Eckert
-	email = thomas@eckert.dev
+	email = thomas.james.eckert@gmail.com
 
 [core]
 	editor = nvim
 	autocrlf = input
 	whitespace = trailing-space,space-before-tab
 	pager = less -FRX
+  safecrlf = true
 
 [init]
 	defaultBranch = main
