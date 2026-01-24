@@ -23,6 +23,10 @@ fi
 export ZSH_CACHE_DIR="$HOME/.cache/oh-my-zsh"
 export ZSH="$HOME/.oh-my-zsh"
 
+export HISTCONTROL=ignoreboth:erasedups
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+
 ZSH_THEME=""  # Disable Oh My Zsh themes (using Starship instead)
 
 plugins=(
