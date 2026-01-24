@@ -198,8 +198,12 @@ require("lazy").setup({
       "nvim-treesitter/nvim-treesitter",
       build = ":TSUpdate",
       config = function()
+        ---@diagnostic disable-next-line: missing-fields
         require("nvim-treesitter.configs").setup({
           ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml", "astro", "tsx" },
+          sync_install = false,
+          auto_install = true,
+          ignore_install = {},
           highlight = {
             enable = true,
           },
