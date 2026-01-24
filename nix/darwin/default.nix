@@ -2,13 +2,18 @@
 { config, pkgs, lib, self, username, ... }:
 
 {
+  # Primary user (required for user-specific settings like system.defaults)
+  system.primaryUser = username;
+
   # Nix settings
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
-      auto-optimise-store = true;
       trusted-users = [ "root" username ];
     };
+
+    # Store optimization (replaces auto-optimise-store which is deprecated)
+    optimise.automatic = true;
 
     # Garbage collection
     gc = {
@@ -49,7 +54,6 @@
       "tailscale"        # Better to use Homebrew service management
       {
         name = "redpanda-data/tap/redpanda";
-        # args = [];
       }
     ];
 
@@ -58,12 +62,6 @@
       "1password-cli"
       "amethyst"
     ];
-  };
-
-  # Services
-  services = {
-    # Tailscale VPN (if not using Homebrew)
-    # tailscale.enable = true;
   };
 
   # macOS system defaults
@@ -157,17 +155,13 @@
     shell = pkgs.zsh;
   };
 
-  # Security
-  security.pam.enableSudoTouchIdAuth = true;
+  # Security - Touch ID for sudo
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # Fonts (optional)
   fonts.packages = with pkgs; [
-    (nerdfonts.override {
-      fonts = [
-        "JetBrainsMono"
-        "FiraCode"
-        "Hack"
-      ];
-    })
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.hack
   ];
 }
