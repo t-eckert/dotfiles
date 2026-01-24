@@ -67,16 +67,17 @@
     };
   };
 
-  # Hammerspoon (macOS only, uses ~/.hammerspoon not ~/.config)
-  home.file = lib.mkIf isDarwin {
+  # Home directory files
+  home.file = {
+    # EditorConfig
+    ".editorconfig".source = ../../.editorconfig;
+  } // lib.optionalAttrs isDarwin {
+    # Hammerspoon (macOS only, uses ~/.hammerspoon not ~/.config)
     ".hammerspoon" = {
       source = ../../config/hammerspoon;
       recursive = true;
     };
   };
-
-  # EditorConfig
-  home.file.".editorconfig".source = ../../.editorconfig;
 
   # Session variables
   home.sessionVariables = {
