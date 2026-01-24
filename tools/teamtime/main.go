@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -43,7 +44,10 @@ func LoadConfig(filename string) (*[]Teammember, error) {
 	}
 	defer file.Close()
 
-	byteValue, _ := io.ReadAll(file)
+	byteValue, err := io.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
 	var teammembers []Teammember
 	json.Unmarshal(byteValue, &teammembers)
 
