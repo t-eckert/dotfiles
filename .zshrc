@@ -13,6 +13,12 @@ fi
 
 # Oh My Zsh Plugins
 
+# Install Oh My Zsh if not present
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing Oh My Zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=""  # Disable Oh My Zsh themes (using Starship instead)
 
