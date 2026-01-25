@@ -26,7 +26,7 @@ in {
     # ============================================================
     git
     gh                      # GitHub CLI
-    neovim
+    # neovim - managed by programs.neovim in neovim.nix
     ripgrep
     fzf
     bat
