@@ -13,6 +13,15 @@
         email = "thomas.james.eckert@gmail.com";
       };
 
+      # Core settings
+      core = {
+        editor = "nvim";
+        autocrlf = "input";
+        whitespace = "trailing-space,space-before-tab";
+        fsmonitor = true;
+        untrackedCache = true;
+      };
+
       # Default branch
       init.defaultBranch = "main";
 
@@ -20,15 +29,33 @@
       pull.rebase = true;
 
       # Push behavior
-      push.autoSetupRemote = true;
+      push = {
+        default = "current";
+        autoSetupRemote = true;
+        followTags = true;
+      };
+
+      # Fetch behavior
+      fetch = {
+        prune = true;
+        pruneTags = true;
+      };
+
+      # Rebase behavior
+      rebase = {
+        autoStash = true;
+        autoSquash = true;
+      };
 
       # Diff and merge
-      merge.conflictstyle = "diff3";
-      diff.colorMoved = "default";
-
-      # Performance
-      core.fsmonitor = true;
-      core.untrackedCache = true;
+      merge = {
+        conflictStyle = "zdiff3";
+        ff = false;
+      };
+      diff = {
+        algorithm = "histogram";
+        colorMoved = "default";
+      };
 
       # Credential helper (macOS keychain)
       credential.helper = lib.mkIf pkgs.stdenv.isDarwin "osxkeychain";
@@ -44,7 +71,10 @@
       rerere.enabled = true;
 
       # Color
-      color.ui = true;
+      color.ui = "auto";
+
+      # Help
+      help.autocorrect = 1;
 
       # Aliases
       alias = {
@@ -53,12 +83,18 @@
         br = "branch";
         ci = "commit";
         unstage = "reset HEAD --";
-        last = "log -1 HEAD";
-        lg = "log --oneline --graph --decorate";
-        ll = "log --oneline -10";
+        last = "log -1 HEAD --stat";
+        lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        ll = "log --pretty=format:\"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]\" --decorate --numstat";
         amend = "commit --amend --no-edit";
         undo = "reset --soft HEAD~1";
         wip = "!git add -A && git commit -m 'WIP'";
+        aliases = "config --get-regexp alias";
+        branches = "branch -a";
+        tags = "tag -l";
+        fb = "!f() { git branch -a --contains $1; }; f";
+        fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f";
+        dm = "!git branch --merged | grep -v '\\\\*' | xargs -n 1 git branch -d";
       };
     };
 
