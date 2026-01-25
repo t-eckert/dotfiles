@@ -52,9 +52,8 @@ in {
     nodePackages.typescript
     nodePackages.typescript-language-server
 
-    # Python
+    # Python (only one version to avoid conflicts)
     python311
-    python310
     virtualenv
 
     # Deno

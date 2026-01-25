@@ -5,12 +5,15 @@
   programs.git = {
     enable = true;
 
-    # User identity
-    userName = "Thomas Eckert";
-    userEmail = "thomas.james.eckert@gmail.com";
+    # Git settings (new unified format)
+    settings = {
+      # User identity
+      user = {
+        name = "Thomas Eckert";
+        email = "thomas.james.eckert@gmail.com";
+      };
 
-    # Default branch
-    extraConfig = {
+      # Default branch
       init.defaultBranch = "main";
 
       # Pull behavior
@@ -42,21 +45,21 @@
 
       # Color
       color.ui = true;
-    };
 
-    # Useful aliases
-    aliases = {
-      st = "status";
-      co = "checkout";
-      br = "branch";
-      ci = "commit";
-      unstage = "reset HEAD --";
-      last = "log -1 HEAD";
-      lg = "log --oneline --graph --decorate";
-      ll = "log --oneline -10";
-      amend = "commit --amend --no-edit";
-      undo = "reset --soft HEAD~1";
-      wip = "!git add -A && git commit -m 'WIP'";
+      # Aliases
+      alias = {
+        st = "status";
+        co = "checkout";
+        br = "branch";
+        ci = "commit";
+        unstage = "reset HEAD --";
+        last = "log -1 HEAD";
+        lg = "log --oneline --graph --decorate";
+        ll = "log --oneline -10";
+        amend = "commit --amend --no-edit";
+        undo = "reset --soft HEAD~1";
+        wip = "!git add -A && git commit -m 'WIP'";
+      };
     };
 
     # Ignore patterns (global)
@@ -96,16 +99,17 @@
       "result"
       "result-*"
     ];
+  };
 
-    # Delta for better diffs (optional)
-    delta = {
-      enable = true;
-      options = {
-        navigate = true;
-        side-by-side = true;
-        line-numbers = true;
-        syntax-theme = "base16";
-      };
+  # Delta for better diffs (now separate from git)
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+    options = {
+      navigate = true;
+      side-by-side = true;
+      line-numbers = true;
+      syntax-theme = "base16";
     };
   };
 

@@ -89,7 +89,7 @@
     };
 
     # Extra initialization (runs at the end of .zshrc)
-    initExtra = ''
+    initContent = ''
       # Disable command correction (keep auto-suggestions but not corrections)
       unsetopt correct_all
 
