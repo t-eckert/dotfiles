@@ -1,1 +1,1 @@
-/nix/store/qmkpq2sjlisnj5nl0gdgwgjm8869hnp4-home-manager-files/.config/nvim/lua/winbar.lua
+/nix/store/5smmrasg97w04iffg1dvswgsi3s0w4cd-home-manager-files/.config/nvim/lua/winbar.lua

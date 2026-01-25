@@ -85,6 +85,7 @@ in {
 
     # Containers
     docker-client
+    podman
 
     # ============================================================
     # Databases & Data
