@@ -11,12 +11,11 @@ RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
 COPY . /src
 WORKDIR /src
 
-# Build the k8s tools volume
-# The --no-link flag returns the path, we use it directly in the next stage
-RUN nix build .#packages.x86_64-linux.k8s-tools-volume --no-link
+# Build the k8s tools volume and keep the symlink for easy access
+RUN nix build .#packages.x86_64-linux.k8s-tools-volume
 
-# The build output is in ./result
-RUN test -d result && echo "Build successful" || exit 1
+# Verify the build succeeded
+RUN test -L result && echo "Build successful: $(readlink result)" || exit 1
 
 # Stage 2: Minimal runtime image
 FROM alpine:latest
@@ -24,7 +23,8 @@ FROM alpine:latest
 # Install minimal dependencies for the install script
 RUN apk add --no-cache coreutils bash
 
-# Copy built tools from builder (copy the entire directory tree, preserving symlinks)
+# Copy built tools from builder
+# The 'result' symlink points into the nix store
 COPY --from=builder /src/result /tools
 
 # Copy install script
