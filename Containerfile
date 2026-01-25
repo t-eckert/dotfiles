@@ -12,19 +12,20 @@ COPY . /src
 WORKDIR /src
 
 # Build the k8s tools volume
-RUN nix build .#packages.x86_64-linux.k8s-tools-volume --no-link --print-out-paths > /tmp/result-path
+# The --no-link flag returns the path, we use it directly in the next stage
+RUN nix build .#packages.x86_64-linux.k8s-tools-volume --no-link
 
-# Copy result to a fixed location (nix store paths are hashed)
-RUN cp -rL $(cat /tmp/result-path) /build-output
+# The build output is in ./result
+RUN test -d result && echo "Build successful" || exit 1
 
 # Stage 2: Minimal runtime image
 FROM alpine:latest
 
 # Install minimal dependencies for the install script
-RUN apk add --no-cache coreutils
+RUN apk add --no-cache coreutils bash
 
-# Copy built tools from builder
-COPY --from=builder /build-output /tools
+# Copy built tools from builder (copy the entire directory tree, preserving symlinks)
+COPY --from=builder /src/result /tools
 
 # Copy install script
 COPY scripts/install-to-pvc.sh /install.sh

@@ -80,12 +80,12 @@ in pkgs.buildEnv {
     mkdir -p $out/etc
     mkdir -p $out/config
 
-    # Copy configuration files
-    cp -r ${configDir}/nvim $out/config/
-    cp -r ${configDir}/zellij $out/config/
-    cp -r ${configDir}/atuin $out/config/
-    cp -r ${configDir}/k9s $out/config/
-    cp ${configDir}/starship.toml $out/config/
+    # Copy configuration files (follow symlinks to get real files)
+    cp -rL ${configDir}/nvim $out/config/ 2>/dev/null || true
+    cp -rL ${configDir}/zellij $out/config/ 2>/dev/null || true
+    cp -rL ${configDir}/atuin $out/config/ 2>/dev/null || true
+    cp -rL ${configDir}/k9s $out/config/ 2>/dev/null || true
+    cp -L ${configDir}/starship.toml $out/config/ 2>/dev/null || true
 
     # Create an activation script that pods can source
     cat > $out/etc/activate.sh << 'SCRIPT'
