@@ -5,23 +5,8 @@
   # Primary user (required for user-specific settings like system.defaults)
   system.primaryUser = username;
 
-  # Nix settings
-  nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      trusted-users = [ "root" username ];
-    };
-
-    # Store optimization (replaces auto-optimise-store which is deprecated)
-    optimise.automatic = true;
-
-    # Garbage collection
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 3; Minute = 15; };
-      options = "--delete-older-than 30d";
-    };
-  };
+  # Disable nix-darwin's Nix management (Determinate Systems installer handles this)
+  nix.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
