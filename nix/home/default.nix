@@ -63,11 +63,8 @@
       recursive = true;
     };
 
-    # GitHub CLI
-    "gh" = {
-      source = ../../config/gh;
-      recursive = true;
-    };
+    # Note: gh config is managed by programs.gh in git.nix
+    # hosts.yml must be writable for authentication, so we don't symlink it
   };
 
   # Home directory files
