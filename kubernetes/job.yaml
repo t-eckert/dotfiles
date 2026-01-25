@@ -1,0 +1,35 @@
+# Job to update the dotfiles tools PVC
+# Run this to populate or refresh the tools volume
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dotfiles-tools-update
+  labels:
+    app: dotfiles-tools
+spec:
+  ttlSecondsAfterFinished: 300  # Clean up 5 minutes after completion
+  template:
+    metadata:
+      labels:
+        app: dotfiles-tools
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: installer
+          image: ghcr.io/t-eckert/dotfiles:latest
+          args: ["/mnt/tools"]
+          volumeMounts:
+            - name: tools
+              mountPath: /mnt/tools
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+      volumes:
+        - name: tools
+          persistentVolumeClaim:
+            claimName: dotfiles-tools
+  backoffLimit: 3

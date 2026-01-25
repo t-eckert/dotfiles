@@ -22,6 +22,7 @@ let
     # Shell
     zsh
     bash
+    starship
 
     # Search & filter
     ripgrep
@@ -32,11 +33,13 @@ let
     # File tools
     bat
     tree
+    eza
 
     # Git
     git
     gh
     lazygit
+    delta
 
     # Development
     go
@@ -59,6 +62,9 @@ let
     azure-cli
   ];
 
+  # Config files to include
+  configDir = ../../config;
+
 in pkgs.buildEnv {
   name = "k8s-tools-volume";
   paths = tools;
@@ -69,34 +75,70 @@ in pkgs.buildEnv {
   # Handle conflicts by picking the first one
   ignoreCollisions = true;
 
-  # Post-build: create a setup script
+  # Post-build: create setup scripts and copy configs
   postBuild = ''
     mkdir -p $out/etc
+    mkdir -p $out/config
+
+    # Copy configuration files
+    cp -r ${configDir}/nvim $out/config/
+    cp -r ${configDir}/zellij $out/config/
+    cp -r ${configDir}/atuin $out/config/
+    cp -r ${configDir}/k9s $out/config/
+    cp ${configDir}/starship.toml $out/config/
 
     # Create an activation script that pods can source
     cat > $out/etc/activate.sh << 'SCRIPT'
-    #!/bin/bash
-    # Source this to set up the environment
-    export PATH="/tools/bin:$PATH"
-    export EDITOR="nvim"
-    export VISUAL="nvim"
+#!/bin/bash
+# Dotfiles Tools Activation Script
+# Source this to set up the environment in Spark containers
+# Usage: source /home/user/.local/activate.sh
 
-    # Shell history
-    export HISTFILE="$HOME/.zsh_history"
-    export HISTSIZE=10000
-    export SAVEHIST=10000
+# Determine the base directory (where this script lives)
+TOOLS_BASE="$(cd "$(dirname "''${BASH_SOURCE[0]}")" && pwd)"
 
-    echo "Tools activated. $(ls /tools/bin | wc -l) tools available."
-    SCRIPT
+# Add tools to PATH
+export PATH="''${TOOLS_BASE}/bin:''${PATH}"
+
+# XDG Base Directories - point to our config
+export XDG_CONFIG_HOME="''${TOOLS_BASE}/config"
+export XDG_DATA_HOME="''${TOOLS_BASE}/share"
+export XDG_CACHE_HOME="''${HOME}/.cache"
+
+# Editor
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+# Tool-specific settings
+export BAT_THEME="base16"
+export STARSHIP_CONFIG="''${XDG_CONFIG_HOME}/starship.toml"
+
+# Shell history (keep in user's home)
+export HISTFILE="''${HOME}/.zsh_history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+
+# Initialize starship if available
+if command -v starship &> /dev/null; then
+    eval "$(starship init bash 2>/dev/null || starship init zsh 2>/dev/null || true)"
+fi
+
+echo "Dotfiles tools activated. $(ls "''${TOOLS_BASE}/bin" 2>/dev/null | wc -l) tools available."
+SCRIPT
     chmod +x $out/etc/activate.sh
 
     # Create a manifest of included tools
     cat > $out/etc/manifest.txt << EOF
-    # K8s Tools Volume Manifest
-    # Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+# K8s Tools Volume Manifest
+# https://github.com/t-eckert/dotfiles
+# Generated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-    $(ls -1 $out/bin | sort)
-    EOF
+# Tools included:
+$(ls -1 $out/bin | sort)
+
+# Configs included:
+$(ls -1 $out/config)
+EOF
   '';
 
   meta = {

@@ -1,0 +1,40 @@
+# Example Spark pod using the dotfiles tools PVC
+# This shows how to mount the tools volume in your Spark containers
+apiVersion: v1
+kind: Pod
+metadata:
+  name: spark-example
+  labels:
+    app: spark
+spec:
+  containers:
+    - name: spark
+      image: ubuntu:22.04  # Replace with your Spark base image
+      command: ["/bin/bash", "-c"]
+      args:
+        - |
+          # Activate dotfiles tools
+          source /home/user/.local/activate.sh
+
+          # Your Spark entrypoint here
+          exec sleep infinity
+      volumeMounts:
+        - name: dotfiles-tools
+          mountPath: /home/user/.local
+          readOnly: true
+        - name: user-home
+          mountPath: /home/user
+      env:
+        - name: HOME
+          value: /home/user
+      resources:
+        requests:
+          memory: "512Mi"
+          cpu: "250m"
+  volumes:
+    - name: dotfiles-tools
+      persistentVolumeClaim:
+        claimName: dotfiles-tools
+        readOnly: true
+    - name: user-home
+      emptyDir: {}  # Or use a PVC for persistent home

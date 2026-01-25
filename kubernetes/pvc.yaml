@@ -1,0 +1,15 @@
+# PersistentVolumeClaim for dotfiles tools
+# This PVC stores the tools and configs, mounted by Spark containers
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dotfiles-tools
+  labels:
+    app: dotfiles-tools
+spec:
+  accessModes:
+    - ReadWriteMany  # Required for multiple Sparks to mount simultaneously
+  resources:
+    requests:
+      storage: 5Gi  # Adjust based on tool size
+  # storageClassName: nfs  # Uncomment and set to your RWX-capable storage class
