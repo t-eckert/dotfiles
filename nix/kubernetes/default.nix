@@ -46,6 +46,9 @@ let
     gopls
     nodejs_22
     python311
+    rustup
+    cargo-edit
+    cargo-outdated
 
     # Kubernetes
     kubectl

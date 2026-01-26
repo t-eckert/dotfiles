@@ -59,8 +59,10 @@ in {
     # Deno
     deno
 
-    # Rust (optional - uncomment if needed)
-    # rustup
+    # Rust
+    rustup
+    cargo-edit
+    cargo-outdated
 
     # ============================================================
     # Cloud & Infrastructure
