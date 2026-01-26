@@ -86,6 +86,9 @@
       FZF_CTRL_T_COMMAND = "rg --files --hidden --follow --glob '!.git/'";
       NVM_DIR = "${config.home.homeDirectory}/.nvm";
       LS_COLORS = "no=0;97:fi=0;34:di=1;97:ln=1;97:pi=0;32:ex=1;35:ow=1;97";
+    } // lib.optionalAttrs isDarwin {
+      # macOS: Add libiconv to library path for Rust linking
+      LIBRARY_PATH = "${pkgs.libiconv}/lib";
     };
 
     # Extra initialization (runs at the end of .zshrc)

@@ -5,6 +5,7 @@ let
   # Platform-specific packages
   darwinPackages = with pkgs; [
     iproute2mac      # macOS networking tools
+    libiconv         # Required for Rust linking on macOS
   ];
 
   linuxPackages = with pkgs; [
