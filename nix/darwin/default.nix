@@ -109,7 +109,8 @@
       trackpad = {
         Clicking = true;
         TrackpadRightClick = true;
-        TrackpadThreeFingerDrag = true;
+        TrackpadThreeFingerDrag = false;  # Disable three-finger drag to enable swipe gestures
+        TrackpadThreeFingerHorizSwipeGesture = 2;  # Three-finger swipe between spaces/desktops
       };
 
       # Menu bar clock

@@ -22,6 +22,9 @@
 
     # Shell aliases
     shellAliases = {
+      # Nix
+      reload-nix = "darwin-rebuild switch --flake ~/Repos/github.com/t-eckert/dotfiles#Thomas-MacBook-Pro";
+
       # Kubernetes
       k = "kubectl";
       kbb = "kubectl run -i --tty --rm debug --image=busybox --restart=Never -- sh";
@@ -129,6 +132,38 @@
 
       # Bun completions (if installed outside of Nix)
       [ -s "${config.home.homeDirectory}/.bun/_bun" ] && source "${config.home.homeDirectory}/.bun/_bun"
+
+      # Zellij list sessions with columnar output (kubectl-style)
+      zls() {
+        if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+          echo "Usage: zls [OPTIONS]"
+          echo ""
+          echo "List Zellij sessions in columnar format (kubectl-style)"
+          echo ""
+          echo "Options:"
+          echo "  -n, --no-formatting    Plain output without colors"
+          echo "  -r, --reverse          List in reverse order"
+          echo "  -s, --short            Show only session names"
+          echo "  -h, --help             Show this help message"
+          return 0
+        fi
+
+        # Print header
+        printf "%-25s %-45s %s\n" "NAME" "CREATED" "STATUS"
+
+        # Get session list and format it
+        zellij list-sessions --no-formatting "$@" | awk -F'[][]' '{
+          name = $1
+          created = $3
+          status = $5
+          gsub(/^ +| +$/, "", name)
+          gsub(/^ +| +$/, "", created)
+          gsub(/^ +| +$/, "", status)
+          gsub(/Created /, "", created)
+          gsub(/ ago/, "", created)
+          printf "%-25s %-45s %s\n", name, created, status
+        }'
+      }
 
       # Homebrew (macOS)
       ${lib.optionalString isDarwin ''

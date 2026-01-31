@@ -6,6 +6,7 @@
     ./packages.nix
     ./shell.nix
     ./git.nix
+    ./ssh.nix
     ./programs/neovim.nix
     ./programs/starship.nix
   ];

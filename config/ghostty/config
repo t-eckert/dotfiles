@@ -2,10 +2,8 @@
 
 theme = Catppuccin Mocha
 background = #000000
-font-size = 14
-font-family = "FiraCode Nerd Font Mono"
+font-size = 13
 cursor-style = block
-cursor-thickness = 2
 
 window-padding-y = 8,0
 window-padding-x = 4
