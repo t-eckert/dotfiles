@@ -4,7 +4,54 @@ This repository helps me unify development environments between multiple MacOS s
 
 ## Installation
 
-Clone the repository and run `sudo ./install.sh`.
+Clone the repository and run `./install.sh`. The installer supports two methods:
+
+- **Nix (recommended)**: Declarative, reproducible environment with nix-darwin
+- **Legacy**: Traditional Homebrew + stow approach
+
+### Nix Installation
+
+```bash
+./install.sh --nix
+```
+
+This will:
+1. Install Nix via Determinate Systems installer
+2. Configure your user as a trusted user (no more sudo for nix commands!)
+3. Set up nix-darwin for macOS system configuration
+4. Apply Home Manager for user environment
+
+After installation, apply the full configuration:
+
+```bash
+# First time: Bootstrap nix-darwin
+nix run nix-darwin -- switch --flake .
+
+# Subsequent updates:
+darwin-rebuild switch --flake .
+# Or use the alias: reload-nix
+```
+
+### Nix Troubleshooting
+
+**If nix commands require sudo:**
+
+The installer automatically configures trusted users, but if you need to do it manually:
+
+```bash
+# Add yourself to trusted users
+sudo tee -a /etc/nix/nix.custom.conf > /dev/null <<EOF
+
+# Allow user to run nix commands without sudo
+trusted-users = root $(whoami)
+EOF
+
+# Restart the nix daemon
+sudo launchctl kickstart -k system/systems.determinate.nix-daemon
+
+# Verify you're trusted
+nix store ping  # Should show "Trusted: 1"
+```
 
 ## Configs
 

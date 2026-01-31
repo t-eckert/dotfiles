@@ -78,6 +78,56 @@ install_nix() {
   log_info "Nix installed successfully!"
 }
 
+# Configure Nix trusted users
+configure_nix_trusted_users() {
+  log_header "Configuring Nix Trusted Users"
+
+  local nix_custom_conf="/etc/nix/nix.custom.conf"
+  local current_user=$(whoami)
+
+  # Check if already configured
+  if grep -q "trusted-users.*$current_user" "$nix_custom_conf" 2>/dev/null; then
+    log_info "User '$current_user' is already a trusted user."
+    return 0
+  fi
+
+  log_info "Adding '$current_user' to Nix trusted users..."
+  log_info "This allows running nix commands without sudo."
+
+  # Add trusted-users configuration
+  if sudo tee -a "$nix_custom_conf" > /dev/null <<EOF
+
+# Allow user to run nix commands without sudo
+trusted-users = root $current_user
+EOF
+  then
+    log_info "Added trusted-users configuration to $nix_custom_conf"
+
+    # Restart nix daemon to apply changes
+    log_info "Restarting Nix daemon..."
+    if sudo launchctl kickstart -k system/systems.determinate.nix-daemon 2>/dev/null; then
+      log_info "Nix daemon restarted successfully."
+    else
+      log_warn "Could not restart Nix daemon automatically."
+      log_warn "You may need to restart your system or run:"
+      log_warn "  sudo launchctl kickstart -k system/systems.determinate.nix-daemon"
+    fi
+
+    # Verify configuration
+    sleep 1
+    if nix store ping 2>/dev/null | grep -q "Trusted: 1"; then
+      log_info "✓ Verified: You are now a trusted Nix user!"
+    else
+      log_warn "Unable to verify trusted user status immediately."
+      log_warn "Try logging out and back in, or run: nix store ping"
+    fi
+  else
+    log_error "Failed to configure trusted users."
+    log_error "You may need to run this manually or restart the installation."
+    return 1
+  fi
+}
+
 # Install nix-darwin (macOS only)
 install_nix_darwin() {
   if [[ "$(uname)" != "Darwin" ]]; then
@@ -308,6 +358,7 @@ main() {
   case $install_method in
     nix)
       install_nix
+      configure_nix_trusted_users
       install_nix_darwin
       apply_nix_config
       ;;
