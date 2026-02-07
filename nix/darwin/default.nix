@@ -46,6 +46,7 @@
     casks = [
       "1password-cli"
       "amethyst"
+      "macfuse"
     ];
   };
 
