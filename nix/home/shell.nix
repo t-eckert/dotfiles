@@ -53,6 +53,10 @@
       # Docker
       dockert = "docker";  # Typo alias
 
+      # Obsidian
+      obsidian = "Obsidian";
+      ob = "Obsidian";
+
       # Common typos
       clera = "clear";
 
@@ -169,6 +173,9 @@
       ${lib.optionalString isDarwin ''
       [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
       ''}
+
+      # Obsidian CLI
+      export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
     '';
 
     # Profile extra (runs at login)
@@ -180,6 +187,7 @@
       # Bun
       export BUN_INSTALL="${config.home.homeDirectory}/.bun"
       export PATH="$BUN_INSTALL/bin:$PATH"
+
     '';
   };
 
