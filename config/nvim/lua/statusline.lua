@@ -1,1 +1,9 @@
-/nix/store/wb4pig53bfkgdxid366056klq9p9jhzv-home-manager-files/.config/nvim/lua/statusline.lua
+require("lualine").setup(
+	{
+		options = {
+			component_separators = { left = "", right = "" },
+			section_separators = { left = "", right = "" },
+			globalstatus = true,
+		}
+	}
+)

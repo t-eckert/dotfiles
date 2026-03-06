@@ -344,6 +344,7 @@ require("lazy").setup({
             "rust_analyzer",
             "denols",
             "ts_ls",
+            "svelte",
             "astro",
             "gopls",
             "pyright",
@@ -374,7 +375,9 @@ require("lazy").setup({
         })
 
         lspconfig.ts_ls.setup({
-          root_dir = lspconfig.util.root_pattern("package.json"),
+          -- In monorepos, prefer the nearest project root (has svelte.config.js or tsconfig.json)
+          -- over the workspace root package.json, so each sub-project gets its own TS server instance.
+          root_dir = lspconfig.util.root_pattern("svelte.config.js", "svelte.config.ts", "tsconfig.json"),
           on_attach = function(client, bufnr)
             local buffer_path = vim.api.nvim_buf_get_name(bufnr)
             if lspconfig.util.root_pattern("deno.json", "deno.jsonc")(buffer_path) then
@@ -382,6 +385,13 @@ require("lazy").setup({
               return
             end
           end,
+          single_file_support = false,
+        })
+
+        -- Svelte LSP — root at nearest svelte.config.js so each SvelteKit app gets its own instance
+        lspconfig.svelte.setup({
+          root_dir = lspconfig.util.root_pattern("svelte.config.js", "svelte.config.ts"),
+          capabilities = capabilities,
         })
 
         -- TailwindCSS with CVA support
@@ -401,6 +411,18 @@ require("lazy").setup({
         -- Astro LSP
         require("lspconfig").astro.setup({
           capabilities = capabilities,
+        })
+
+        -- CSS LSP with Tailwind CSS v4 support
+        require("lspconfig").cssls.setup({
+          capabilities = capabilities,
+          settings = {
+            css = {
+              lint = {
+                unknownAtRules = "ignore"
+              }
+            }
+          }
         })
       end,
     },

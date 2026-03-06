@@ -105,6 +105,7 @@ in {
     # Build tools
     # ============================================================
     go-task                 # Task runner (Taskfile)
+    process-compose         # Process orchestration
     cmake
     ninja
     gcc

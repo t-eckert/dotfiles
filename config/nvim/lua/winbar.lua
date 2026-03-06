@@ -1,1 +1,1 @@
-/nix/store/wb4pig53bfkgdxid366056klq9p9jhzv-home-manager-files/.config/nvim/lua/winbar.lua
+vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"

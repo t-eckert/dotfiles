@@ -27,41 +27,43 @@
 
   # Link existing config files from ./config/ directory
   # These are files that are complex enough to keep as separate configs
+  # Note: recursive = false means a single symlink to the directory
+  # This prevents individual file symlinking and circular references
   xdg.configFile = {
     # Neovim configuration (complex, keep separate)
     "nvim" = {
       source = ../../config/nvim;
-      recursive = true;
+      recursive = false;  # Symlink entire directory, not individual files
     };
 
     # Ghostty terminal configuration
     "ghostty" = {
       source = ../../config/ghostty;
-      recursive = true;
+      recursive = false;
     };
 
     # Zellij terminal multiplexer
     "zellij" = {
       source = ../../config/zellij;
-      recursive = true;
+      recursive = false;
     };
 
     # Atuin shell history
     "atuin" = {
       source = ../../config/atuin;
-      recursive = true;
+      recursive = false;
     };
 
     # k9s Kubernetes manager
     "k9s" = {
       source = ../../config/k9s;
-      recursive = true;
+      recursive = false;
     };
 
     # Helm configuration
     "helm" = {
       source = ../../config/helm;
-      recursive = true;
+      recursive = false;
     };
 
     # Note: gh config is managed by programs.gh in git.nix
