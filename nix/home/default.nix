@@ -30,11 +30,9 @@
   # Note: recursive = false means a single symlink to the directory
   # This prevents individual file symlinking and circular references
   xdg.configFile = {
-    # Neovim configuration (complex, keep separate)
-    "nvim" = {
-      source = ../../config/nvim;
-      recursive = false;  # Symlink entire directory, not individual files
-    };
+    # Neovim configuration — out-of-store symlink so edits are live without rebuild
+    "nvim".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Repos/github.com/t-eckert/dotfiles/config/nvim";
 
     # Ghostty terminal configuration
     "ghostty" = {

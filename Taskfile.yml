@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+tasks:
+  rebuild:
+    desc: Rebuild the nix-darwin configuration from this flake
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+      - sudo darwin-rebuild switch --flake .
