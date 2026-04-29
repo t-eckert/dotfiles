@@ -15,7 +15,7 @@
     extraPackages = with pkgs; [
       # Language servers
       lua-language-server
-      nodePackages.typescript-language-server
+      typescript-language-server
       gopls
       nil                          # Nix LSP
       pyright                      # Python LSP
@@ -23,7 +23,7 @@
       # Formatters
       stylua                       # Lua formatter
       nixpkgs-fmt                  # Nix formatter
-      nodePackages.prettier        # JS/TS/JSON formatter
+      prettier                     # JS/TS/JSON formatter
 
       # Linters
       shellcheck                   # Shell script linter

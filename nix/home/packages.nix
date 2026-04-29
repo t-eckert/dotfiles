@@ -50,8 +50,8 @@ in {
     # Node.js
     nodejs_22
     yarn
-    nodePackages.typescript
-    nodePackages.typescript-language-server
+    typescript
+    typescript-language-server
 
     # Python (only one version to avoid conflicts)
     python311
