@@ -296,48 +296,90 @@ require("lazy").setup({
           })
         end
 
-        -- LSP server capabilities
-        local capabilities = vim.lsp.protocol.make_client_capabilities()
-        capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+        local capabilities = vim.tbl_deep_extend(
+          "force",
+          vim.lsp.protocol.make_client_capabilities(),
+          require("cmp_nvim_lsp").default_capabilities()
+        )
 
-        -- Language servers configuration
-        local servers = {
-          lua_ls = {
-            settings = {
-              Lua = {
-                completion = {
-                  callSnippet = "Replace",
+        vim.lsp.config("*", {
+          capabilities = capabilities,
+        })
+
+        vim.lsp.config("lua_ls", {
+          settings = {
+            Lua = {
+              completion = { callSnippet = "Replace" },
+            },
+          },
+        })
+
+        vim.lsp.config("rust_analyzer", {
+          settings = {
+            ["rust-analyzer"] = {
+              inlayHints = {
+                enable = true,
+                chainingHints = { enable = true },
+                closingBraceHints = { enable = true, minLines = 10 },
+                closureReturnTypeHints = { enable = "always" },
+                lifetimeElisionHints = { enable = "always", useParameterNames = true },
+                parameterHints = { enable = true },
+                typeHints = { enable = true, hideClosureInitialization = false, hideNamedConstructor = false },
+              },
+              checkOnSave = { command = "clippy" },
+            },
+          },
+        })
+
+        vim.lsp.config("denols", {
+          root_markers = { "deno.json", "deno.jsonc" },
+          init_options = {
+            enable = true,
+            lint = true,
+            unstable = true,
+          },
+        })
+
+        vim.lsp.config("ts_ls", {
+          root_markers = { "svelte.config.js", "svelte.config.ts", "tsconfig.json" },
+          on_attach = function(client, bufnr)
+            if vim.fs.root(bufnr, { "deno.json", "deno.jsonc" }) then
+              client:stop()
+              return
+            end
+          end,
+          single_file_support = false,
+        })
+
+        vim.lsp.config("svelte", {
+          root_markers = { "svelte.config.js", "svelte.config.ts" },
+        })
+
+        vim.lsp.config("tailwindcss", {
+          settings = {
+            tailwindCSS = {
+              experimental = {
+                classRegex = {
+                  { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                  { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
                 },
               },
             },
           },
-          rust_analyzer = {
-            settings = {
-              ["rust-analyzer"] = {
-                inlayHints = {
-                  enable = true,
-                  chainingHints = { enable = true },
-                  closingBraceHints = { enable = true, minLines = 10 },
-                  closureReturnTypeHints = { enable = "always" },
-                  lifetimeElisionHints = { enable = "always", useParameterNames = true },
-                  parameterHints = { enable = true },
-                  typeHints = { enable = true, hideClosureInitialization = false, hideNamedConstructor = false },
-                },
-                checkOnSave = {
-                  command = "clippy",
-                },
-              },
+        })
+
+        vim.lsp.config("cssls", {
+          settings = {
+            css = {
+              lint = { unknownAtRules = "ignore" },
             },
           },
-        }
+        })
 
-        -- Mason setup
         require("mason").setup()
-
-        local ensure_installed = vim.tbl_keys(servers or {})
-        vim.list_extend(ensure_installed, { "stylua" })
-        require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
-
+        require("mason-tool-installer").setup({
+          ensure_installed = { "stylua" },
+        })
         require("mason-lspconfig").setup({
           ensure_installed = {
             "lua_ls",
@@ -352,77 +394,6 @@ require("lazy").setup({
             "yamlls",
             "jsonls",
           },
-          automatic_installation = true,
-          handlers = {
-            function(server_name)
-              local server = servers[server_name] or {}
-              server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-              require("lspconfig")[server_name].setup(server)
-            end,
-          },
-        })
-
-        -- TypeScript/Deno LSP configuration
-        local lspconfig = require("lspconfig")
-
-        lspconfig.denols.setup({
-          root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-          init_options = {
-            enable = true,
-            lint = true,
-            unstable = true,
-          },
-        })
-
-        lspconfig.ts_ls.setup({
-          -- In monorepos, prefer the nearest project root (has svelte.config.js or tsconfig.json)
-          -- over the workspace root package.json, so each sub-project gets its own TS server instance.
-          root_dir = lspconfig.util.root_pattern("svelte.config.js", "svelte.config.ts", "tsconfig.json"),
-          on_attach = function(client, bufnr)
-            local buffer_path = vim.api.nvim_buf_get_name(bufnr)
-            if lspconfig.util.root_pattern("deno.json", "deno.jsonc")(buffer_path) then
-              client.stop()
-              return
-            end
-          end,
-          single_file_support = false,
-        })
-
-        -- Svelte LSP — root at nearest svelte.config.js so each SvelteKit app gets its own instance
-        lspconfig.svelte.setup({
-          root_dir = lspconfig.util.root_pattern("svelte.config.js", "svelte.config.ts"),
-          capabilities = capabilities,
-        })
-
-        -- TailwindCSS with CVA support
-        require("lspconfig").tailwindcss.setup({
-          settings = {
-            tailwindCSS = {
-              experimental = {
-                classRegex = {
-                  { "cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-                  { "cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
-                },
-              },
-            },
-          },
-        })
-
-        -- Astro LSP
-        require("lspconfig").astro.setup({
-          capabilities = capabilities,
-        })
-
-        -- CSS LSP with Tailwind CSS v4 support
-        require("lspconfig").cssls.setup({
-          capabilities = capabilities,
-          settings = {
-            css = {
-              lint = {
-                unknownAtRules = "ignore"
-              }
-            }
-          }
         })
       end,
     },
