@@ -1,4 +1,4 @@
-# Package list (replaces Brewfile)
+# Package list
 { config, pkgs, lib, self, isDarwin, isLinux, ... }:
 
 let
@@ -156,9 +156,6 @@ in {
 
   ] ++ (if isDarwin then darwinPackages else linuxPackages);
 
-  # Note: The following are handled by nix-darwin or kept in Homebrew:
-  # - 1password-cli (cask - managed by nix-darwin homebrew module)
-  # - amethyst (cask - managed by nix-darwin homebrew module)
-  # - tailscale (service - managed by nix-darwin services)
-  # - redpanda (may need overlay if not in nixpkgs)
+  # Note: casks (1password-cli, amethyst, macfuse) and select brews
+  # (tailscale, redpanda) are managed by nix-darwin in darwin/default.nix
 }

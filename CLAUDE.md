@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Setup and Installation
 
-- **Initial setup**: Run `sudo ./install.sh` to install Homebrew packages, symlink configs, and install Go tools
+- **Initial setup**: Run `./install.sh` to install Nix and apply configuration
+- **Apply config**: `darwin-rebuild switch --flake .` (or `reload-nix` alias)
 - **Install tools only**: `go install ./tools/*`
 - **Run all tests**: `go test ./...`
 - **Test a specific tool**: `go test ./tools/[tool-name]/`
@@ -33,8 +34,8 @@ Symlinked directly to home directory:
 ### Custom Tools (`./tools/`)
 Go CLI utilities for development workflows. Each tool has its own directory with `main.go` and optional `README.md`.
 
-### Brewfile
-Defines Homebrew packages installed during setup via `brew bundle`.
+### Nix Configuration (`./nix/`)
+Nix flake configuration for declarative package management and system setup via nix-darwin and Home Manager.
 
 ## Go Module Structure
 

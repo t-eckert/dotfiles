@@ -4,15 +4,10 @@ This repository helps me unify development environments between multiple MacOS s
 
 ## Installation
 
-Clone the repository and run `./install.sh`. The installer supports two methods:
-
-- **Nix (recommended)**: Declarative, reproducible environment with nix-darwin
-- **Legacy**: Traditional Homebrew + stow approach
-
-### Nix Installation
+Clone the repository and run `./install.sh`:
 
 ```bash
-./install.sh --nix
+./install.sh
 ```
 
 This will:
@@ -32,7 +27,7 @@ darwin-rebuild switch --flake .
 # Or use the alias: reload-nix
 ```
 
-### Nix Troubleshooting
+### Troubleshooting
 
 **If nix commands require sudo:**
 
