@@ -50,7 +50,7 @@ in {
     # Node.js
     nodejs_22
     yarn
-    typescript
+    (lib.hiPrio typescript) # higher priority to win over wrangler's bundled tsc
     typescript-language-server
 
     # Python (only one version to avoid conflicts)
@@ -81,6 +81,7 @@ in {
     doctl                   # DigitalOcean
     flyctl                  # Fly.io
     awscli2
+    wrangler                # Cloudflare Workers
 
     # HashiCorp
     terraform
