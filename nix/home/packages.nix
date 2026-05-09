@@ -83,6 +83,9 @@ in {
     awscli2
     wrangler                # Cloudflare Workers
 
+    # Speedtest CLI
+    ookla-speedtest
+
     # HashiCorp
     terraform
     consul
