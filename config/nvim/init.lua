@@ -548,7 +548,6 @@ require("lazy").setup({
       branch = "0.1.x",
       dependencies = {
         "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
         {
           "nvim-telescope/telescope-fzf-native.nvim",
           build = "make",
@@ -1471,12 +1470,11 @@ vim.keymap.set("n", "<Leader>v", ":vsplit<CR>", { desc = "Vertical split" })
 vim.keymap.set("n", "<Leader>h", ":split<CR>", { desc = "Horizontal split" })
 
 -- Telescope
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<Leader>p", builtin.find_files, { desc = "Find files" })
-vim.keymap.set("n", "<Leader>f", builtin.live_grep, { desc = "Live grep" })
-vim.keymap.set("n", "<Leader>gb", builtin.git_branches, { desc = "Git branches" })
-vim.keymap.set("n", "<Leader>gc", builtin.git_commits, { desc = "Git commits" })
-vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Git stash" })
+vim.keymap.set("n", "<Leader>p", function() require("telescope.builtin").find_files() end, { desc = "Find files" })
+vim.keymap.set("n", "<Leader>f", function() require("telescope.builtin").live_grep() end, { desc = "Live grep" })
+vim.keymap.set("n", "<Leader>gb", function() require("telescope.builtin").git_branches() end, { desc = "Git branches" })
+vim.keymap.set("n", "<Leader>gc", function() require("telescope.builtin").git_commits() end, { desc = "Git commits" })
+vim.keymap.set("n", "<Leader>gs", function() require("telescope.builtin").git_stash() end, { desc = "Git stash" })
 
 -- File explorer
 vim.keymap.set("n", "<Leader>e", ":Neotree toggle<CR>", { desc = "File explorer" })
