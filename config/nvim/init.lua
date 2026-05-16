@@ -194,18 +194,28 @@ require("lazy").setup({
     -- Treesitter - Syntax highlighting and parsing
     {
       "nvim-treesitter/nvim-treesitter",
-      build = ":TSUpdate",
+      branch = "main",
       lazy = false,
-      main = "nvim-treesitter.configs",
-      opts = {
-        ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml", "astro", "tsx" },
-        sync_install = false,
-        auto_install = true,
-        ignore_install = {},
-        highlight = {
-          enable = true,
-        },
-      },
+      build = ":TSUpdate",
+      config = function()
+        require("nvim-treesitter").install({
+          "lua",
+          "javascript",
+          "typescript",
+          "tsx",
+          "rust",
+          "go",
+          "python",
+          "yaml",
+          "astro",
+        })
+
+        vim.api.nvim_create_autocmd("FileType", {
+          callback = function(args)
+            pcall(vim.treesitter.start, args.buf)
+          end,
+        })
+      end,
     },
 
     -- Language-specific plugins
