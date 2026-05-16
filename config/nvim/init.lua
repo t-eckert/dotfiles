@@ -1483,7 +1483,7 @@ vim.keymap.set("n", "<Leader>gc", builtin.git_commits, { desc = "Git commits" })
 vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Git stash" })
 
 -- File explorer
-vim.keymap.set("n", "<Leader>e", ":Neotree reveal<CR>", { desc = "File explorer" })
+vim.keymap.set("n", "<Leader>e", ":Neotree toggle<CR>", { desc = "File explorer" })
 
 -- Diagnostics
 vim.keymap.set("n", "<Leader>dn", function()
