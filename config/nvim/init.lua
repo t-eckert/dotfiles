@@ -89,9 +89,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "mdx" },
   callback = function()
-    vim.schedule(function()
-      vim.cmd("SoftWrapMode")
-    end)
+    vim.cmd("SoftWrapMode")
   end,
   desc = "Enable soft wrap mode for Markdown files",
 })
@@ -211,8 +209,8 @@ require("lazy").setup({
     },
 
     -- Language-specific plugins
-    "evanleck/vim-svelte", -- Svelte support
-    "wuelnerdotexe/vim-astro", -- Astro support
+    { "evanleck/vim-svelte", ft = { "svelte" } },
+    { "wuelnerdotexe/vim-astro", ft = { "astro" } },
     "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 
     -- =============================================================================
@@ -495,6 +493,7 @@ require("lazy").setup({
     -- GitHub Copilot
     {
       "zbirenbaum/copilot.lua",
+      event = "InsertEnter",
       dependencies = { "zbirenbaum/copilot-cmp" },
       opts = {
         suggestion = {
@@ -721,6 +720,7 @@ require("lazy").setup({
     -- Git signs and hunk management
     {
       "lewis6991/gitsigns.nvim",
+      event = "BufReadPost",
       opts = {
         signs = {
           add = { text = "│" },
@@ -814,7 +814,7 @@ require("lazy").setup({
     },
 
     -- Git commands
-    "tpope/vim-fugitive",
+    { "tpope/vim-fugitive", cmd = { "Git", "Gread", "Gwrite", "Gdiffsplit", "GBrowse" } },
 
     -- Git conflict resolution
     { "akinsho/git-conflict.nvim", version = "*", config = true },
@@ -842,7 +842,7 @@ require("lazy").setup({
           desc = "Debug: Start/Continue",
         },
         {
-          "<F1>",
+          "<F6>",
           function()
             require("dap").step_into()
           end,
@@ -1032,6 +1032,7 @@ require("lazy").setup({
     -- Indent guides
     {
       "lukas-reineke/indent-blankline.nvim",
+      event = "BufReadPost",
       main = "ibl",
       opts = {},
     },
@@ -1173,12 +1174,7 @@ require("lazy").setup({
     {
       "t-eckert/obsidian.nvim",
       branch = "t-eckert/add-set-checkbox",
-      lazy = true,
       ft = "markdown",
-      event = {
-        "BufReadPre " .. vim.fn.expand("~") .. "/Notebook/**.md",
-        "BufNewFile " .. vim.fn.expand("~") .. "/Notebook/**.md",
-      },
       dependencies = { "nvim-lua/plenary.nvim" },
       opts = {
         workspaces = {
@@ -1229,6 +1225,7 @@ require("lazy").setup({
     -- Markdown table formatting
     {
       "Kicamon/markdown-table-mode.nvim",
+      ft = { "markdown", "mdx" },
       config = function()
         require("markdown-table-mode").setup()
       end,
@@ -1416,7 +1413,7 @@ vim.opt.shiftround = true
 
 -- Code folding
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevelstart = 99
 vim.opt.foldnestmax = 10
 vim.opt.foldenable = false
@@ -1476,7 +1473,6 @@ vim.keymap.set("n", "<Leader>h", ":split<CR>", { desc = "Horizontal split" })
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<Leader>p", builtin.find_files, { desc = "Find files" })
 vim.keymap.set("n", "<Leader>f", builtin.live_grep, { desc = "Live grep" })
-vim.keymap.set("n", "<Leader>b", builtin.buffers, { desc = "Find buffers" })
 vim.keymap.set("n", "<Leader>gb", builtin.git_branches, { desc = "Git branches" })
 vim.keymap.set("n", "<Leader>gc", builtin.git_commits, { desc = "Git commits" })
 vim.keymap.set("n", "<Leader>gs", builtin.git_stash, { desc = "Git stash" })
