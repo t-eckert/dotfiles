@@ -50,6 +50,7 @@ in {
     # Node.js
     nodejs_22
     yarn
+    pnpm
     (lib.hiPrio typescript) # higher priority to win over wrangler's bundled tsc
     typescript-language-server
 
