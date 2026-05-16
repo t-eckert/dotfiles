@@ -95,6 +95,7 @@
         fb = "!f() { git branch -a --contains $1; }; f";
         fm = "!f() { git log --pretty=format:'%C(yellow)%h  %Cblue%ad  %Creset%s%Cgreen  [%cn] %Cred%d' --decorate --date=short --grep=$1; }; f";
         dm = "!git branch --merged | grep -v '\\\\*' | xargs -n 1 git branch -d";
+        hist = "log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short";
       };
     };
 
