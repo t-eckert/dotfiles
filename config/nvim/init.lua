@@ -197,6 +197,7 @@ require("lazy").setup({
     {
       "nvim-treesitter/nvim-treesitter",
       build = ":TSUpdate",
+      event = { "BufReadPre", "BufNewFile" },
       main = "nvim-treesitter.configs",
       opts = {
         ensure_installed = { "lua", "javascript", "typescript", "rust", "go", "python", "yaml", "astro", "tsx" },
