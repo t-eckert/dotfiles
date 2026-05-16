@@ -10,6 +10,8 @@
     viAlias = true;
     vimAlias = true;
     vimdiffAlias = true;
+    withRuby = false;
+    withPython3 = false;
 
     # Extra packages available to Neovim (for plugins, LSPs, etc.)
     extraPackages = with pkgs; [

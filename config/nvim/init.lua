@@ -548,6 +548,7 @@ require("lazy").setup({
       branch = "0.1.x",
       dependencies = {
         "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
         {
           "nvim-telescope/telescope-fzf-native.nvim",
           build = "make",
