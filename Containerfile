@@ -1,34 +1,36 @@
-# Multi-stage build for Kubernetes tools PVC
-# Builds tools with Nix, then creates minimal runtime image
+# Devcontainer: self-contained personal development environment
+# Builds the full thomaseckert@linux home-manager configuration into a
+# portable image you can shell into on any system that runs containers.
+#
+# Build:  podman build -t devenv .
+# Run:    podman run -it --rm devenv
+# Persist workdir: podman run -it --rm -v $(pwd):/workspace devenv
 
-# Stage 1: Build with Nix
-FROM nixos/nix:latest AS builder
+FROM nixos/nix:latest
 
-# Enable flakes
-RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+# Enable flakes; disable sandbox (required inside Docker/Podman)
+RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf && \
+    echo "sandbox = false" >> /etc/nix/nix.conf
 
-# Copy source
-COPY . /src
-WORKDIR /src
+# Create the user (nixos/nix is Alpine-based)
+RUN adduser -D -h /home/thomaseckert -s /bin/sh thomaseckert
 
-# Build the k8s tools volume and keep the symlink for easy access
-RUN nix build .#packages.x86_64-linux.k8s-tools-volume
+# Copy dotfiles
+COPY . /dotfiles
 
-# Verify the build succeeded
-RUN test -L result && echo "Build successful: $(readlink result)" || exit 1
+# Build the home-manager activation package and apply it to the user's home
+RUN cd /dotfiles && \
+    nix build .#homeConfigurations."thomaseckert@linux".activationPackage && \
+    HOME=/home/thomaseckert \
+    USER=thomaseckert \
+    ./result/activate && \
+    chown -R thomaseckert:thomaseckert /home/thomaseckert
 
-# Stage 2: Minimal runtime image
-FROM alpine:latest
+USER thomaseckert
+WORKDIR /home/thomaseckert
 
-# Install minimal dependencies for the install script
-RUN apk add --no-cache coreutils bash
+ENV HOME=/home/thomaseckert
+ENV USER=thomaseckert
+ENV PATH=/home/thomaseckert/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH
 
-# Copy built tools from builder
-# The 'result' symlink points into the nix store
-COPY --from=builder /src/result /tools
-
-# Copy install script
-COPY scripts/install-to-pvc.sh /install.sh
-RUN chmod +x /install.sh
-
-ENTRYPOINT ["/install.sh"]
+CMD ["/home/thomaseckert/.nix-profile/bin/zsh"]
