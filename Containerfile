@@ -12,8 +12,11 @@ FROM nixos/nix:latest
 RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf && \
     echo "sandbox = false" >> /etc/nix/nix.conf
 
-# Create the user (nixos/nix is Alpine-based)
-RUN adduser -D -h /home/thomaseckert -s /bin/sh thomaseckert
+# Create the user
+RUN echo "thomaseckert:x:1000:1000::/home/thomaseckert:/bin/sh" >> /etc/passwd && \
+    echo "thomaseckert:x:1000:" >> /etc/group && \
+    mkdir -p /home/thomaseckert && \
+    chown 1000:1000 /home/thomaseckert
 
 # Copy dotfiles
 COPY . /dotfiles
