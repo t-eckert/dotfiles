@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest"
+      ]
+    },
+    "tolaria": {
+      "args": [
+        "/Applications/Tolaria.app/Contents/Resources/mcp-server/index.js"
+      ],
+      "command": "/etc/profiles/per-user/thomaseckert/bin/node",
+      "env": {
+        "VAULT_PATH": "/Users/thomaseckert/Notebook",
+        "WS_UI_PORT": "9711"
+      },
+      "type": "stdio"
+    }
+  }
+}

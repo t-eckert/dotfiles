@@ -66,12 +66,24 @@
 
     # Note: gh config is managed by programs.gh in git.nix
     # hosts.yml must be writable for authentication, so we don't symlink it
+
+    # Claude Code XDG config — statusline script only; settings.json is
+    # generated from config/claude/settings.json.tpl via `op inject` in install.sh
+    "claude/statusline.sh".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Repos/github.com/t-eckert/dotfiles/config/claude/statusline.sh";
   };
 
   # Home directory files
   home.file = {
     # EditorConfig
     ".editorconfig".source = ../../.editorconfig;
+
+    # Claude Code user config — mcp.json and statusline script are symlinked;
+    # settings.json is generated from claude/settings.json.tpl via `op inject` in install.sh
+    ".claude/mcp.json".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Repos/github.com/t-eckert/dotfiles/claude/mcp.json";
+    ".claude/statusline-command.sh".source = config.lib.file.mkOutOfStoreSymlink
+      "${config.home.homeDirectory}/Repos/github.com/t-eckert/dotfiles/claude/statusline-command.sh";
   } // lib.optionalAttrs isDarwin {
     # Hammerspoon (macOS only, uses ~/.hammerspoon not ~/.config)
     ".hammerspoon" = {

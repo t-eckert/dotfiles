@@ -128,6 +128,46 @@ install_nix_darwin() {
   log_info "Run: nix run nix-darwin -- switch --flake ."
 }
 
+# Generate Claude Code config files from 1Password templates
+setup_claude_config() {
+  log_header "Setting up Claude Code Configuration"
+
+  local dotfiles_dir
+  dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  if ! command -v op &>/dev/null; then
+    log_warn "1Password CLI (op) not found. Skipping Claude secret config."
+    log_warn "After installing op, run manually:"
+    log_warn "  op inject -i ${dotfiles_dir}/claude/settings.json.tpl -o ~/.claude/settings.json"
+    log_warn "  op inject -i ${dotfiles_dir}/config/claude/settings.json.tpl -o ~/.config/claude/settings.json"
+    return 0
+  fi
+
+  if ! op account list &>/dev/null 2>&1; then
+    log_warn "Not signed in to 1Password. Run 'op signin' then re-run setup_claude_config."
+    log_warn "Or run manually after signing in:"
+    log_warn "  op inject -i ${dotfiles_dir}/claude/settings.json.tpl -o ~/.claude/settings.json"
+    log_warn "  op inject -i ${dotfiles_dir}/config/claude/settings.json.tpl -o ~/.config/claude/settings.json"
+    return 0
+  fi
+
+  log_info "Generating Claude settings from 1Password (Dotfiles vault)..."
+
+  mkdir -p ~/.claude ~/.config/claude
+
+  if op inject -i "${dotfiles_dir}/claude/settings.json.tpl" -o ~/.claude/settings.json; then
+    log_info "Generated ~/.claude/settings.json"
+  else
+    log_error "Failed to generate ~/.claude/settings.json — check that the Dotfiles vault has 'youtube-mcp' with field 'api-key'"
+  fi
+
+  if op inject -i "${dotfiles_dir}/config/claude/settings.json.tpl" -o ~/.config/claude/settings.json; then
+    log_info "Generated ~/.config/claude/settings.json"
+  else
+    log_error "Failed to generate ~/.config/claude/settings.json — check that the Dotfiles vault has 'linear-mcp' with field 'api-key'"
+  fi
+}
+
 # Apply Nix configuration
 apply_nix_config() {
   log_header "Applying Nix Configuration"
@@ -193,6 +233,7 @@ main() {
   configure_nix_trusted_users
   install_nix_darwin
   apply_nix_config
+  setup_claude_config
 
   log_header "Installation Complete!"
 
