@@ -559,6 +559,24 @@ require("lazy").setup({
         require("telescope").setup({
           defaults = {
             file_ignore_patterns = { "%.DS_Store" },
+            -- telescope 0.1.x's built-in treesitter previewer uses the legacy
+            -- nvim-treesitter API (ft_to_lang, configs.is_enabled, ...) which the
+            -- `main` branch removed. Disable it and start the native highlighter
+            -- ourselves so previews keep treesitter highlighting without crashing.
+            preview = {
+              treesitter = false,
+            },
+            buffer_previewer_maker = function(filepath, bufnr, opts)
+              opts = opts or {}
+              local user_callback = opts.callback
+              opts.callback = function(buf)
+                if user_callback then
+                  user_callback(buf)
+                end
+                pcall(vim.treesitter.start, buf)
+              end
+              require("telescope.previewers").buffer_previewer_maker(filepath, bufnr, opts)
+            end,
           },
           pickers = {
             find_files = {
