@@ -77,13 +77,13 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Set conceal level for Obsidian markdown files
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
-  pattern = vim.fn.expand("~") .. "/Notebook/*.md",
-  callback = function()
-    vim.opt_local.conceallevel = 2
-  end,
-  desc = "Set conceal level to 2 for Obsidian notes",
-})
+-- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+--   pattern = vim.fn.expand("~") .. "/Notebook/*.md",
+--   callback = function()
+--     vim.opt_local.conceallevel = 2
+--   end,
+--   desc = "Set conceal level to 2 for Obsidian notes",
+-- })
 
 -- Force SoftWrapMode for all Markdown files
 vim.api.nvim_create_autocmd("FileType", {
@@ -1502,11 +1502,21 @@ vim.keymap.set("n", "<Leader>v", ":vsplit<CR>", { desc = "Vertical split" })
 vim.keymap.set("n", "<Leader>h", ":split<CR>", { desc = "Horizontal split" })
 
 -- Telescope
-vim.keymap.set("n", "<Leader>p", function() require("telescope.builtin").find_files() end, { desc = "Find files" })
-vim.keymap.set("n", "<Leader>f", function() require("telescope.builtin").live_grep() end, { desc = "Live grep" })
-vim.keymap.set("n", "<Leader>gb", function() require("telescope.builtin").git_branches() end, { desc = "Git branches" })
-vim.keymap.set("n", "<Leader>gc", function() require("telescope.builtin").git_commits() end, { desc = "Git commits" })
-vim.keymap.set("n", "<Leader>gs", function() require("telescope.builtin").git_stash() end, { desc = "Git stash" })
+vim.keymap.set("n", "<Leader>p", function()
+  require("telescope.builtin").find_files()
+end, { desc = "Find files" })
+vim.keymap.set("n", "<Leader>f", function()
+  require("telescope.builtin").live_grep()
+end, { desc = "Live grep" })
+vim.keymap.set("n", "<Leader>gb", function()
+  require("telescope.builtin").git_branches()
+end, { desc = "Git branches" })
+vim.keymap.set("n", "<Leader>gc", function()
+  require("telescope.builtin").git_commits()
+end, { desc = "Git commits" })
+vim.keymap.set("n", "<Leader>gs", function()
+  require("telescope.builtin").git_stash()
+end, { desc = "Git stash" })
 
 -- File explorer
 vim.keymap.set("n", "<Leader>e", ":Neotree toggle<CR>", { desc = "File explorer" })
