@@ -76,15 +76,6 @@ vim.api.nvim_create_autocmd("FileType", {
   desc = "Override save in Neo-tree to save all files",
 })
 
--- Set conceal level for Obsidian markdown files
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
---   pattern = vim.fn.expand("~") .. "/Notebook/*.md",
---   callback = function()
---     vim.opt_local.conceallevel = 2
---   end,
---   desc = "Set conceal level to 2 for Obsidian notes",
--- })
-
 -- Force SoftWrapMode for all Markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "mdx" },
@@ -1186,58 +1177,6 @@ require("lazy").setup({
     -- DOCUMENTATION AND NOTES
     -- =============================================================================
 
-    -- Obsidian integration
-    {
-      "t-eckert/obsidian.nvim",
-      branch = "t-eckert/add-set-checkbox",
-      ft = "markdown",
-      dependencies = { "nvim-lua/plenary.nvim" },
-      opts = {
-        workspaces = {
-          {
-            name = "Notebook",
-            path = "~/Notebook",
-          },
-        },
-        daily_notes = {
-          folder = "Log",
-        },
-        templates = {
-          folder = "./+Templates",
-        },
-        ui = {
-          enable = true,
-          update_debounce = 200,
-          max_file_length = 5000,
-          checkboxes = {
-            [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-            ["x"] = { char = "", hl_group = "ObsidianDone" },
-            [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-            ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-            ["!"] = { char = "", hl_group = "ObsidianImportant" },
-          },
-          external_link_icon = { char = "", hl_group = "ObsidianExtLinkIcon" },
-          reference_text = { hl_group = "ObsidianRefText" },
-          highlight_text = { hl_group = "ObsidianHighlightText" },
-          tags = { hl_group = "ObsidianTag" },
-          block_ids = { hl_group = "ObsidianBlockID" },
-          hl_groups = {
-            ObsidianTodo = { bold = true, fg = "#f78c6c" },
-            ObsidianDone = { bold = true, fg = "#89ddff" },
-            ObsidianRightArrow = { bold = true, fg = "#f78c6c" },
-            ObsidianTilde = { bold = true, fg = "#ff5370" },
-            ObsidianImportant = { bold = true, fg = "#d73128" },
-            ObsidianBullet = { bold = true, fg = "#89ddff" },
-            ObsidianRefText = { underline = true, fg = "#c792ea" },
-            ObsidianExtLinkIcon = { fg = "#c792ea" },
-            ObsidianTag = { italic = true, fg = "#89ddff" },
-            ObsidianBlockID = { italic = true, fg = "#89ddff" },
-            ObsidianHighlightText = { bg = "#75662e" },
-          },
-        },
-      },
-    },
-
     -- Markdown table formatting
     {
       "Kicamon/markdown-table-mode.nvim",
@@ -1530,31 +1469,6 @@ vim.keymap.set("n", "<Leader>dp", function()
 end, { desc = "Previous diagnostic" })
 vim.keymap.set("n", "<Leader>dt", ":Trouble diagnostics toggle<CR>", { desc = "Toggle trouble diagnostics" })
 vim.keymap.set("n", "<Leader>dd", ":Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Buffer diagnostics" })
-
--- Obsidian
-vim.keymap.set("n", "<Leader>x", ":ObsidianToggleCheckbox<CR>", { desc = "Toggle checkbox" })
-
--- Daily notes
-vim.keymap.set("n", "<Leader>ot", ":ObsidianToday<CR>", { desc = "Today's note" })
-vim.keymap.set("n", "<Leader>om", ":ObsidianTomorrow<CR>", { desc = "Tomorrow's note" })
-vim.keymap.set("n", "<Leader>oy", ":ObsidianYesterday<CR>", { desc = "Yesterday's note" })
-vim.keymap.set("n", "<Leader>od", ":ObsidianDailies<CR>", { desc = "Daily notes picker" })
-
--- Navigation and search
-vim.keymap.set("n", "<Leader>oo", ":ObsidianQuickSwitch<CR>", { desc = "Quick switch notes" })
-vim.keymap.set("n", "<Leader>os", ":ObsidianSearch<CR>", { desc = "Search notes" })
-vim.keymap.set("n", "<Leader>ob", ":ObsidianBacklinks<CR>", { desc = "Show backlinks" })
-vim.keymap.set("n", "<Leader>oT", ":ObsidianTags<CR>", { desc = "Search by tags" })
-
--- Note management
-vim.keymap.set("n", "<Leader>on", ":ObsidianNew<CR>", { desc = "New note" })
-vim.keymap.set("n", "<Leader>or", ":ObsidianRename", { desc = "Rename note" })
-vim.keymap.set("n", "<Leader>oh", ":ObsidianTOC<CR>", { desc = "Table of contents" })
-vim.keymap.set("n", "<Leader>oO", ":ObsidianOpen<CR>", { desc = "Open in Obsidian app" })
-
--- Templates and media
-vim.keymap.set("n", "<Leader>opt", ":ObsidianTemplate<CR>", { desc = "Insert template" })
-vim.keymap.set("n", "<Leader>opi", ":ObsidianPasteImage<CR>", { desc = "Paste image" })
 
 -- Claude Code integration
 vim.keymap.set("n", "<Leader>cc", ":ClaudeCodeDiagnostic<CR>", { desc = "Send diagnostic to Claude Code" })
