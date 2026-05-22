@@ -1381,6 +1381,22 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     vim.api.nvim_set_hl(0, "GitSignsDeleteStaged", { fg = "#eba0ac" })
     vim.api.nvim_set_hl(0, "GitSignsTopDeleteStaged", { fg = "#eba0ac" })
     vim.api.nvim_set_hl(0, "GitSignsChangeDeleteStaged", { fg = "#eba0ac" })
+
+    -- Make Telescope transparent so it matches the terminal background.
+    -- catppuccin links these to NormalFloat/FloatBorder, which it keeps opaque
+    -- even with transparent_background. Setting concrete highlights (no `link`)
+    -- breaks the link so the bg actually goes transparent.
+    vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "TelescopePromptNormal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "TelescopeResultsNormal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "TelescopePreviewNormal", { bg = "NONE" })
+    vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopePromptBorder", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopePromptTitle", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { bg = "NONE", fg = "#89b4fa" })
+    vim.api.nvim_set_hl(0, "TelescopePreviewTitle", { bg = "NONE", fg = "#89b4fa" })
   end,
   desc = "Set custom gitsigns colors for staged vs unstaged",
 })
