@@ -1,4 +1,5 @@
 .config/
+.claude/settings.local.json
 
 # Nix build outputs
 result
