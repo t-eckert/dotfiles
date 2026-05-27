@@ -138,6 +138,7 @@
 
       # Claude Code
       ".claude/settings.local.json"
+      "**/.claude/settings.local.json"
     ];
   };
 
