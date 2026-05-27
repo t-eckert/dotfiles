@@ -135,6 +135,9 @@
       # Nix
       "result"
       "result-*"
+
+      # Claude Code
+      ".claude/settings.local.json"
     ];
   };
 
