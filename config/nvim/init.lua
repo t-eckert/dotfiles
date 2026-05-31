@@ -1036,6 +1036,22 @@ require("lazy").setup({
     -- Color scheme
     { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 
+    -- Tab line
+    {
+      "akinsho/bufferline.nvim",
+      version = "*",
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      opts = {
+        options = {
+          mode = "tabs",
+          diagnostics = "nvim_lsp",
+          show_buffer_close_icons = false,
+          show_close_icon = false,
+          separator_style = "slant",
+        },
+      },
+    },
+
     -- Indent guides
     {
       "lukas-reineke/indent-blankline.nvim",
@@ -1291,6 +1307,7 @@ require("catppuccin").setup({
   custom_highlights = {},
   default_integrations = true,
   integrations = {
+    bufferline = true,
     cmp = true,
     gitsigns = true,
     nvimtree = true,
@@ -1416,8 +1433,8 @@ vim.keymap.set("v", ".", ":normal .<cr>", { desc = "Repeat last command" })
 
 -- Tab management
 vim.keymap.set("n", "<Leader>t", ":tabnew<CR>", { desc = "New tab" })
-vim.keymap.set("n", "<Tab>", "gt", { desc = "Next tab" })
-vim.keymap.set("n", "<S-Tab>", "gT", { desc = "Previous tab" })
+vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next tab" })
+vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous tab" })
 
 -- Faster scrolling
 vim.keymap.set("n", "<C-E>", "6<C-E>", { desc = "Scroll down faster" })
