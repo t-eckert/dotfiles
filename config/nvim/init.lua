@@ -58,6 +58,18 @@ vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHo
   desc = "Check for external file changes",
 })
 
+-- Refresh neo-tree git status when returning from an external terminal or after shell commands
+vim.api.nvim_create_autocmd({ "FocusGained", "ShellCmdPost" }, {
+  pattern = "*",
+  callback = function()
+    local ok, manager = pcall(require, "neo-tree.sources.manager")
+    if ok then
+      manager.refresh("filesystem")
+    end
+  end,
+  desc = "Refresh neo-tree git status on focus and after shell commands",
+})
+
 -- Notify when file is automatically reloaded
 vim.api.nvim_create_autocmd("FileChangedShellPost", {
   pattern = "*",
@@ -516,6 +528,7 @@ require("lazy").setup({
       },
       opts = {
         filesystem = {
+          use_libuv_file_watcher = true,
           filtered_items = {
             visible = false, -- Hide filtered items by default
             hide_dotfiles = false, -- Don't hide dotfiles
