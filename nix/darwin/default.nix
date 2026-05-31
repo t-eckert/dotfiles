@@ -108,7 +108,7 @@
 
       # Trackpad
       trackpad = {
-        Clicking = true;
+        Clicking = false;
         TrackpadRightClick = true;
         TrackpadThreeFingerDrag = false;  # Disable three-finger drag to enable swipe gestures
         TrackpadThreeFingerHorizSwipeGesture = 2;  # Three-finger swipe between spaces/desktops
