@@ -147,6 +147,7 @@ in {
     rename
     ctags
     d2                      # Diagramming
+    typst                   # Document formatting
 
     # ============================================================
     # Language servers & dev tools
