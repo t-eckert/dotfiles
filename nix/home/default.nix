@@ -92,5 +92,6 @@
   home.sessionPath = [
     "${config.home.homeDirectory}/.local/bin"
     "${config.home.homeDirectory}/go/bin"
+    "/Applications/Tailscale.app/Contents/MacOS"
   ];
 }

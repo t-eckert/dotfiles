@@ -36,7 +36,6 @@
 
     # Formulae that don't work well with Nix on macOS
     brews = [
-      "tailscale"        # Better to use Homebrew service management
       {
         name = "redpanda-data/tap/redpanda";
       }
