@@ -101,6 +101,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -- CORE VIM OPTIONS
 -- ======================================================================================
 
+vim.lsp.set_log_level("off")
+
 -- Leader keys
 vim.g.mapleader = " " -- Set leader key to space
 vim.g.maplocalleader = " " -- Set local leader key to space
