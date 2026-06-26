@@ -48,6 +48,7 @@ in {
     delve
 
     # Node.js
+    bun
     nodejs_22
     yarn
     pnpm

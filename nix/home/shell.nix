@@ -135,9 +135,6 @@
         fi
       done
 
-      # Bun completions (if installed outside of Nix)
-      [ -s "${config.home.homeDirectory}/.bun/_bun" ] && source "${config.home.homeDirectory}/.bun/_bun"
-
       # Zellij list sessions with columnar output (kubectl-style)
       zls() {
         if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
@@ -184,10 +181,6 @@
       # Add custom paths
       export PATH="${config.home.homeDirectory}/.local/bin:$PATH"
       export PATH="${config.home.homeDirectory}/go/bin:$PATH"
-
-      # Bun
-      export BUN_INSTALL="${config.home.homeDirectory}/.bun"
-      export PATH="$BUN_INSTALL/bin:$PATH"
 
     '';
   };
