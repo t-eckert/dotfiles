@@ -1,5 +1,5 @@
 # Package list
-{ config, pkgs, lib, self, isDarwin, isLinux, ... }:
+{ config, pkgs, lib, self, hunk, isDarwin, isLinux, ... }:
 
 let
   # Platform-specific packages
@@ -13,7 +13,7 @@ let
   ];
 
   # Custom Go tools from this repo
-  dotfiles-tools = self.packages.${pkgs.system}.dotfiles-tools;
+  dotfiles-tools = self.packages.${pkgs.stdenv.hostPlatform.system}.dotfiles-tools;
 
 in {
   home.packages = with pkgs; [
@@ -37,6 +37,7 @@ in {
     watch
     wget
     curl
+    hunk.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # ============================================================
     # Languages & Runtimes
@@ -72,7 +73,7 @@ in {
     # ============================================================
     # Kubernetes
     kubectl
-    kubernetes-helm
+    (kubernetes-helm.overrideAttrs (_: { doCheck = false; }))
     k9s
     kind
     kustomize
@@ -83,7 +84,7 @@ in {
     doctl                   # DigitalOcean
     flyctl                  # Fly.io
     awscli2
-    wrangler                # Cloudflare Workers
+    # wrangler             # Cloudflare Workers — broken in nixpkgs (EBADF build failure), use `npx wrangler`
 
     # Speedtest CLI
     ookla-speedtest

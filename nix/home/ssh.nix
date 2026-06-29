@@ -7,6 +7,11 @@
     enableDefaultConfig = false;
 
     matchBlocks = {
+      "ardent-forge" = lib.hm.dag.entryBefore [ "*" ] {
+        hostname = "ardent-forge.feist-gondola.ts.net";
+        user = "thomaseckert";
+      };
+
       "dev.galley.pub" = lib.hm.dag.entryBefore [ "*" ] {
         user = "galley";
         identityFile = "~/.ssh/id_ed25519";

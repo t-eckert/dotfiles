@@ -47,7 +47,7 @@
   # Minimal package set for Linux containers
   home.packages = with pkgs; [
     # Custom Go tools from this repo
-    self.packages.${pkgs.system}.dotfiles-tools
+    self.packages.${pkgs.stdenv.hostPlatform.system}.dotfiles-tools
 
     # Core tools
     git

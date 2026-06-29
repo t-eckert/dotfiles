@@ -19,12 +19,15 @@
 
     # Flake utilities
     flake-utils.url = "github:numtide/flake-utils";
+
+    # Git diff viewer
+    hunk.url = "github:modem-dev/hunk";
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, flake-utils }:
+  outputs = { self, nixpkgs, home-manager, darwin, flake-utils, hunk }:
     let
       # Supported systems
-      supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
 
       # Helper to generate attrs for each system
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
@@ -80,7 +83,7 @@
         "thomaseckert@macos" = home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor "aarch64-darwin";
           extraSpecialArgs = {
-            inherit self;
+            inherit self hunk;
             isDarwin = true;
             isLinux = false;
           };
@@ -100,7 +103,7 @@
         "thomaseckert@linux" = home-manager.lib.homeManagerConfiguration {
           pkgs = pkgsFor "x86_64-linux";
           extraSpecialArgs = {
-            inherit self;
+            inherit self hunk;
             isDarwin = false;
             isLinux = true;
           };
@@ -136,7 +139,7 @@
                 useUserPackages = true;
                 backupFileExtension = "backup";
                 extraSpecialArgs = {
-                  inherit self;
+                  inherit self hunk;
                   isDarwin = true;
                   isLinux = false;
                 };
