@@ -47,6 +47,9 @@ in {
     gopls
     golangci-lint
     delve
+    gotools                 # goimports and friends (golang.org/x/tools)
+    gofumpt                 # stricter gofmt
+    go-tools                # staticcheck suite (honnef.co/go/tools)
 
     # Node.js
     bun
