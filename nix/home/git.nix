@@ -18,7 +18,19 @@
         editor = "nvim";
         autocrlf = "input";
         whitespace = "trailing-space,space-before-tab";
-        fsmonitor = true;
+        # fsmonitor is deliberately off. It lets git skip lstat() for paths the
+        # watcher daemon reports unchanged, so when the daemon's view is wrong
+        # git silently reports a modified file as clean — and neither
+        # `update-index --really-refresh` nor touching the file recovers, since
+        # the stat never happens. Only a forced content re-read
+        # (`git add --renormalize .`) does. That cost two mis-staged commits in
+        # the Galley repo on 2026-08-02, where the index still carried a token
+        # from a week-old orphaned daemon.
+        #
+        # It also buys nothing at our repo sizes: measured 4ms with vs 3ms
+        # without on a 273-file repo. fsmonitor is for 100k+ tracked files.
+        # If it's ever re-enabled, watch for daemon leaks — 14 had accumulated.
+        fsmonitor = false;
         untrackedCache = true;
       };
 
