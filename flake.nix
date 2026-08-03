@@ -55,6 +55,9 @@
           # Individual tools
           dotfiles-tools = pkgs.callPackage ./nix/packages/go-tools.nix { };
 
+          # mq - jq for Markdown (not yet in nixpkgs)
+          mq = pkgs.callPackage ./nix/packages/mq.nix { };
+
           # Default package
           default = self.packages.${system}.dotfiles-tools;
 

@@ -15,6 +15,9 @@ let
   # Custom Go tools from this repo
   dotfiles-tools = self.packages.${pkgs.stdenv.hostPlatform.system}.dotfiles-tools;
 
+  # mq - jq for Markdown, built from source (not in nixpkgs)
+  mq = self.packages.${pkgs.stdenv.hostPlatform.system}.mq;
+
 in {
   home.packages = with pkgs; [
     # ============================================================
@@ -33,6 +36,7 @@ in {
     bat
     jq
     yq
+    mq                      # jq for Markdown
     tree
     watch
     wget
@@ -131,6 +135,7 @@ in {
     zellij                  # Terminal multiplexer
     atuin                   # Shell history
     lazygit                 # Git TUI
+    mosh                    # Roaming remote shell (client; servers use programs.mosh)
 
     # ============================================================
     # Networking & Security
@@ -140,6 +145,7 @@ in {
     arp-scan
     nghttp2
     nss
+    yubikey-manager         # ykman — configure/reset YubiKey applets
 
     # ============================================================
     # Media & Documents

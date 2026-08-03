@@ -101,6 +101,13 @@
 
     # Extra initialization (runs at the end of .zshrc)
     initContent = ''
+      # Freeze terminal modes so a program that dies without restoring termios
+      # (crashed TUI, dropped ssh, binary dumped to stdout) can't leave the tty
+      # in raw mode. Without this, ISIG stays off and Ctrl+C silently stops
+      # working for every later command in the tab. Use `ttyctl -u` to unfreeze
+      # if you ever want an `stty` change to persist across prompts.
+      ttyctl -f
+
       # Disable command correction (keep auto-suggestions but not corrections)
       unsetopt correct_all
 
