@@ -6,10 +6,20 @@ let
   darwinPackages = with pkgs; [
     iproute2mac      # macOS networking tools
     libiconv         # Required for Rust linking on macOS
+    # NOTE: gcc is deliberately NOT installed on macOS. It puts a `cc` and an `ld`
+    # on PATH ahead of /usr/bin, and both break native builds:
+    #   - its `cc` has no macOS SDK, so any C dep that includes a system framework
+    #     header (e.g. libusb1-sys -> IOKit/IOTypes.h) fails to compile
+    #   - its `ld` (cctools-binutils-darwin-wrapper, pulled in by the gcc wrapper)
+    #     emits unwind tables the macOS unwinder can't walk, so every Rust panic
+    #     aborts with "failed to initiate panic, error 5" instead of unwinding
+    # Apple's clang at /usr/bin/cc is the correct native toolchain here. If a
+    # project genuinely needs GCC, scope it into that project's devshell.
   ];
 
   linuxPackages = with pkgs; [
     iproute2         # Linux networking tools
+    gcc              # Native compiler on Linux; on macOS use Apple clang (see above)
   ];
 
   # Custom Go tools from this repo
@@ -122,7 +132,6 @@ in {
     process-compose         # Process orchestration
     cmake
     ninja
-    gcc
     autoconf
     automake
     ccache
