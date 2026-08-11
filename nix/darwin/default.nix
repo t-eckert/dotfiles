@@ -35,9 +35,19 @@
     ];
 
     # Formulae that don't work well with Nix on macOS
+    #
+    # NOTE: cleanup = "zap" above means ANYTHING installed with `brew install`
+    # and not listed here is removed on the next rebuild. If you brew-install
+    # something you intend to keep, add it here in the same sitting.
     brews = [
       {
         name = "redpanda-data/tap/redpanda";
+      }
+      {
+        # Required by the rtl_* SDR tools in /opt/homebrew/bin, which are built
+        # from source and link against /opt/homebrew/opt/libusb/lib/libusb-1.0.0.dylib.
+        # Without it every rtl_* command dies with a dyld "Library not loaded" error.
+        name = "libusb";
       }
     ];
 
