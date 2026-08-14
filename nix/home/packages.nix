@@ -168,6 +168,7 @@ in {
     ctags
     d2                      # Diagramming
     typst                   # Document formatting
+    presenterm              # Terminal slide decks from markdown
 
     # ============================================================
     # Language servers & dev tools
