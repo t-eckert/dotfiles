@@ -6,3 +6,32 @@ tasks:
     dir: '{{.TASKFILE_DIR}}'
     cmds:
       - sudo darwin-rebuild switch --flake .
+
+  bootstrap:
+    desc: First-time nix-darwin activation on a machine (handles unknown hostnames)
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+      # `--flake .` resolves darwinConfigurations.$(hostname -s), and macOS
+      # hostnames differ per machine. Fall back to the `default` attribute so a
+      # brand-new Mac can activate before being added to darwinHosts.
+      - |
+        host="$(hostname -s)"
+        if nix eval --raw ".#darwinConfigurations.${host}.system.outPath" >/dev/null 2>&1; then
+          target=".#${host}"
+        else
+          echo "Hostname '${host}' is not in darwinHosts; using .#default." >&2
+          echo "Add it to flake.nix to make a bare '--flake .' work here." >&2
+          target=".#default"
+        fi
+        echo "Activating ${target}"
+        nix run nix-darwin -- switch --flake "${target}"
+
+  hosts:
+    desc: List the hostnames this flake can configure
+    dir: '{{.TASKFILE_DIR}}'
+    cmds:
+      - |
+        echo "This machine: $(hostname -s)"
+        echo "Configured:"
+        nix eval .#darwinConfigurations --apply builtins.attrNames --json |
+          tr -d '[]"' | tr ',' '\n' | sed 's/^/  /'

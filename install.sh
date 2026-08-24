@@ -111,6 +111,39 @@ EOF
   fi
 }
 
+# Determine which darwinConfigurations attribute applies to this machine.
+#
+# `--flake .` resolves `darwinConfigurations.$(hostname -s)`, and macOS derives
+# that name from the account's full name during setup, so it varies per machine
+# ("Thomas-MacBook-Pro" vs "Thomass-MacBook-Pro"). Rather than assume, ask the
+# flake which hostnames it knows about and fall back to the hostname-independent
+# `default` attribute. Echoes the flake target to use, e.g. ".#Thomas-MacBook-Pro".
+darwin_flake_target() {
+  local host
+  host="$(hostname -s)"
+
+  local known
+  known="$(nix eval --raw .#darwinConfigurations \
+    --apply 'cfgs: builtins.concatStringsSep " " (builtins.attrNames cfgs)' \
+    2>/dev/null || true)"
+
+  if [[ -z "$known" ]]; then
+    # Flake could not be evaluated; the bare hostname is the best guess.
+    echo ".#${host}"
+    return 0
+  fi
+
+  if [[ " $known " == *" $host "* ]]; then
+    echo ".#${host}"
+  else
+    log_warn "This machine's hostname is '${host}', which the flake does not define." >&2
+    log_warn "Known configurations: ${known}" >&2
+    log_warn "Using '.#default' for now. To make '--flake .' work bare, add" >&2
+    log_warn "'${host}' to darwinHosts in flake.nix and switch again." >&2
+    echo ".#default"
+  fi
+}
+
 # Install nix-darwin (macOS only)
 install_nix_darwin() {
   if [[ "$(uname)" != "Darwin" ]]; then
@@ -125,7 +158,7 @@ install_nix_darwin() {
   fi
 
   log_info "nix-darwin will be bootstrapped on first activation."
-  log_info "Run: nix run nix-darwin -- switch --flake ."
+  log_info "Run: nix run nix-darwin -- switch --flake $(darwin_flake_target)"
 }
 
 # Apply Nix configuration
@@ -155,12 +188,16 @@ apply_nix_config() {
 
   # Apply configuration based on OS
   if [[ "$(uname)" == "Darwin" ]]; then
+    local target
+    target="$(darwin_flake_target)"
+
     log_info "To complete setup, run the following commands:"
     echo ""
     echo "  # First time: Bootstrap nix-darwin"
-    echo "  nix run nix-darwin -- switch --flake ."
+    echo "  nix run nix-darwin -- switch --flake ${target}"
     echo ""
-    echo "  # Subsequent updates:"
+    echo "  # Subsequent updates (the flake pins this machine's hostname,"
+    echo "  # so a bare '--flake .' resolves correctly after the first switch):"
     echo "  darwin-rebuild switch --flake ."
     echo ""
     echo "  # Or just Home Manager (without system config):"

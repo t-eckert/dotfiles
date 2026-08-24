@@ -45,6 +45,46 @@
         then "/Users/${username}"
         else "/home/${username}";
 
+      # Hostnames that should receive the macOS system configuration.
+      #
+      # `darwin-rebuild switch --flake .` looks up
+      # `darwinConfigurations.$(hostname -s)`. macOS derives that name from the
+      # account's full name during setup, so it is NOT stable across machines --
+      # one Mac ends up "Thomas-MacBook-Pro" and another "Thomass-MacBook-Pro".
+      # Listing every name here means a bare `--flake .` works on all of them.
+      darwinHosts = [
+        "Thomas-MacBook-Pro"   # personal
+        "Thomass-MacBook-Pro"  # work (macOS generated the possessive form)
+      ];
+
+      # Builds the macOS system configuration for a given hostname.
+      #
+      # `hostName = null` produces a config that leaves the machine's name
+      # alone -- used by the `default` alias for machines not yet listed above.
+      mkDarwinSystem = hostName: darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = {
+          inherit self username hostName;
+        };
+        modules = [
+          ./nix/darwin
+          home-manager.darwinModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "backup";
+              extraSpecialArgs = {
+                inherit self hunk;
+                isDarwin = true;
+                isLinux = false;
+              };
+              users.${username} = import ./nix/home;
+            };
+          }
+        ];
+      };
+
     in {
       # ============================================================
       # Packages - Go CLI tools
@@ -126,32 +166,20 @@
       # ============================================================
       # Darwin (macOS) System Configurations
       # ============================================================
-      darwinConfigurations = {
-        # Apple Silicon Mac
-        "Thomas-MacBook-Pro" = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit self username;
-          };
-          modules = [
-            ./nix/darwin
-            home-manager.darwinModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "backup";
-                extraSpecialArgs = {
-                  inherit self hunk;
-                  isDarwin = true;
-                  isLinux = false;
-                };
-                users.${username} = import ./nix/home;
-              };
-            }
-          ];
-        };
-      };
+      # Every hostname in `darwinHosts` gets the same Apple Silicon config, and
+      # each one pins its own machine name declaratively (see nix/darwin), so
+      # after the first switch the machine and the flake agree.
+      #
+      # `default` is a hostname-independent escape hatch for a machine whose
+      # name is not in the list yet:
+      #
+      #   darwin-rebuild switch --flake .#default
+      #
+      # If the work and personal machines ever need to diverge, replace the
+      # genAttrs line with explicit entries that pass different module lists.
+      darwinConfigurations =
+        nixpkgs.lib.genAttrs darwinHosts mkDarwinSystem
+        // { default = mkDarwinSystem null; };
 
       # ============================================================
       # Flake checks

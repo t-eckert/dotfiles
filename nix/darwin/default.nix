@@ -1,9 +1,27 @@
 # macOS system configuration (nix-darwin)
-{ config, pkgs, lib, self, username, ... }:
+{ config, pkgs, lib, self, username, hostName ? null, ... }:
 
 {
   # Primary user (required for user-specific settings like system.defaults)
   system.primaryUser = username;
+
+  # Machine name, declared here so macOS and the flake stay in agreement.
+  #
+  # `darwin-rebuild --flake .` resolves `darwinConfigurations.$(hostname -s)`.
+  # macOS picks that name from the account's full name at setup time, which is
+  # how the work Mac ended up as "Thomass-MacBook-Pro" while the personal one is
+  # "Thomas-MacBook-Pro". Setting it here makes the name a declared fact rather
+  # than an accident of the setup assistant, so a rebuild can never drift out
+  # from under the flake.
+  #
+  # All three options accept null, and nix-darwin's activation script skips any
+  # that are null -- so the `default` config (hostName = null) leaves whatever
+  # name the machine already has untouched.
+  networking = {
+    computerName = hostName;   # Finder, AirDrop, Sharing pane
+    hostName = hostName;       # what `hostname -s` returns
+    localHostName = hostName;  # Bonjour / .local name
+  };
 
   # Disable nix-darwin's Nix management (Determinate Systems installer handles this)
   nix.enable = false;

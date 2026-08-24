@@ -27,7 +27,42 @@ darwin-rebuild switch --flake .
 # Or use the alias: reload-nix
 ```
 
+## Adding a new machine
+
+`darwin-rebuild --flake .` resolves `darwinConfigurations.$(hostname -s)`. macOS
+picks that hostname from the account's full name during setup, so it is not
+consistent between machines — one Mac is `Thomas-MacBook-Pro`, another is
+`Thomass-MacBook-Pro`.
+
+To onboard a new Mac:
+
+```bash
+# 1. Activate without caring about the hostname
+task bootstrap          # or: nix run nix-darwin -- switch --flake .#default
+
+# 2. Add the machine's name to `darwinHosts` in flake.nix
+task hosts              # shows this machine's name and the configured ones
+
+# 3. From then on, the bare form works
+task rebuild            # or: darwin-rebuild switch --flake .
+```
+
+Each listed hostname pins itself via `networking.hostName` in
+[`nix/darwin`](./nix/darwin), so once a machine has switched, its name and the
+flake cannot drift apart.
+
 ### Troubleshooting
+
+**`error: flake ... does not provide attribute 'darwinConfigurations.<name>.system'`**
+
+The machine's hostname is not in `darwinHosts`. Either activate explicitly with
+an existing config:
+
+```bash
+nix run nix-darwin -- switch --flake .#default
+```
+
+or add the hostname to `darwinHosts` in `flake.nix` and switch normally.
 
 **If nix commands require sudo:**
 
