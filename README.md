@@ -11,10 +11,11 @@ Clone the repository and run `./install.sh`:
 ```
 
 This will:
-1. Install Nix via Determinate Systems installer
-2. Configure your user as a trusted user (no more sudo for nix commands!)
-3. Set up nix-darwin for macOS system configuration
-4. Apply Home Manager for user environment
+1. Install Homebrew (required by the nix-darwin `homebrew` module)
+2. Install Nix via Determinate Systems installer
+3. Configure your user as a trusted user (no more sudo for nix commands!)
+4. Set up nix-darwin for macOS system configuration
+5. Apply Home Manager for user environment
 
 After installation, apply the full configuration:
 
@@ -52,6 +53,19 @@ Each listed hostname pins itself via `networking.hostName` in
 flake cannot drift apart.
 
 ### Troubleshooting
+
+**`error: Using the homebrew module requires homebrew installed, aborting activation`**
+
+nix-darwin manages the *contents* of the Brewfile but never installs Homebrew
+itself, so brew has to exist before the first switch:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+`./install.sh` does this first, so this only bites when switching by hand on a
+fresh machine.
 
 **`error: flake ... does not provide attribute 'darwinConfigurations.<name>.system'`**
 

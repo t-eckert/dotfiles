@@ -38,6 +38,74 @@ show_usage() {
   echo "  --help      Show this help message"
 }
 
+# Make the Nix toolchain reachable in *this* shell.
+#
+# A fresh install puts `nix` behind the daemon profile, and once nix-darwin has
+# switched at least once `darwin-rebuild` lives in /run/current-system/sw/bin.
+# A login shell picks both up automatically, but this script runs before any of
+# that is on PATH -- so source and extend it explicitly. Idempotent: safe to
+# call repeatedly, which is how the later steps stay re-runnable.
+ensure_nix_on_path() {
+  if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+    # shellcheck disable=SC1091
+    . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  fi
+  export PATH="/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH"
+}
+
+# Install Homebrew (macOS only)
+#
+# nix/darwin/default.nix sets `homebrew.enable = true`, and nix-darwin's
+# homebrew module refuses to activate without the `brew` binary already present:
+#
+#   error: Using the homebrew module requires homebrew installed, aborting activation
+#
+# nix-darwin manages the *contents* of the Brewfile, never Homebrew itself, so
+# this has to happen before the first switch.
+install_homebrew() {
+  if [[ "$(uname)" != "Darwin" ]]; then
+    return 0
+  fi
+
+  log_header "Installing Homebrew"
+
+  # Apple Silicon installs to /opt/homebrew; Intel to /usr/local.
+  local brew_prefix
+  if [[ "$(uname -m)" == "arm64" ]]; then
+    brew_prefix="/opt/homebrew"
+  else
+    brew_prefix="/usr/local"
+  fi
+
+  if [[ -x "${brew_prefix}/bin/brew" ]]; then
+    log_info "Homebrew is already installed."
+  else
+    log_info "Homebrew is required by the nix-darwin homebrew module."
+    log_info "Installing via the official installer (this will ask for sudo)..."
+
+    # NONINTERACTIVE stops the installer from waiting on a RETURN keypress and
+    # lets it pull the Xcode Command Line Tools on its own if they're missing.
+    if ! NONINTERACTIVE=1 /bin/bash -c \
+      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+      log_error "Homebrew installation failed."
+      log_error "Install it manually, then re-run this script:"
+      log_error '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+      return 1
+    fi
+  fi
+
+  # Put brew on PATH for the rest of this script. The interactive shell picks it
+  # up from nix/home/shell.nix on the next login, but the nix-darwin activation
+  # we're about to run needs to find it now.
+  if [[ -x "${brew_prefix}/bin/brew" ]]; then
+    eval "$("${brew_prefix}/bin/brew" shellenv)"
+    log_info "Homebrew ready: $(brew --version | head -1)"
+  else
+    log_error "Expected brew at ${brew_prefix}/bin/brew but it isn't there."
+    return 1
+  fi
+}
+
 # Install Nix using Determinate Systems installer
 install_nix() {
   log_header "Installing Nix"
@@ -66,7 +134,8 @@ configure_nix_trusted_users() {
   log_header "Configuring Nix Trusted Users"
 
   local nix_custom_conf="/etc/nix/nix.custom.conf"
-  local current_user=$(whoami)
+  local current_user
+  current_user=$(whoami)
 
   # Check if already configured
   if grep -q "trusted-users.*$current_user" "$nix_custom_conf" 2>/dev/null; then
@@ -144,26 +213,72 @@ darwin_flake_target() {
   fi
 }
 
-# Install nix-darwin (macOS only)
+# Report the nix-darwin state (macOS only). The actual switch happens in
+# apply_nix_config; this just puts the toolchain on PATH and says what's next so
+# a re-run reads clearly.
 install_nix_darwin() {
   if [[ "$(uname)" != "Darwin" ]]; then
     return 0
   fi
 
   log_header "Setting up nix-darwin"
+  ensure_nix_on_path
 
   if command -v darwin-rebuild &>/dev/null; then
-    log_info "nix-darwin is already installed."
+    log_info "nix-darwin is already bootstrapped; the config will be re-applied below."
+  else
+    log_info "nix-darwin will be bootstrapped during 'Applying Nix Configuration'."
+  fi
+}
+
+# Guarantee the Home Manager *file* generation is live for this user.
+#
+# nix-darwin runs Home Manager's activation through
+# `launchctl asuser ... sudo -u <you> <activation>`, and that step is what writes
+# ~/.zshrc and the ~/.config/* symlinks. On a fresh bootstrap it can quietly
+# fail to link files (an in-the-way dotfile, or the user's launchd domain not
+# being ready yet), leaving a machine with every *package* installed but none of
+# the config -- the "my zshrc didn't get picked up" failure mode. Detect that
+# and run the activation script the current system embeds, directly as the
+# invoking user, which is the codepath that reliably links the files.
+ensure_home_manager_activated() {
+  [[ "$(uname)" == "Darwin" ]] || return 0
+
+  if [[ -f "$HOME/.zshrc" ]]; then
+    log_info "Home Manager files are active (~/.zshrc present)."
     return 0
   fi
 
-  log_info "nix-darwin will be bootstrapped on first activation."
-  log_info "Run: nix run nix-darwin -- switch --flake $(darwin_flake_target)"
+  log_warn "Shell config (~/.zshrc) is missing after the switch -- Home Manager files didn't link."
+  log_info "Running Home Manager activation directly as $(whoami)..."
+
+  # The activation script is referenced by an absolute /nix/store path on the
+  # `launchctl asuser` line of the freshly-linked /run/current-system/activate.
+  local activation
+  activation="$(grep -oE "/nix/store/[a-z0-9]+-activation-$(whoami)" \
+    /run/current-system/activate 2>/dev/null | head -1 || true)"
+
+  if [[ -z "$activation" || ! -x "$activation" ]]; then
+    log_error "Couldn't locate the Home Manager activation script in /run/current-system/activate."
+    log_error "Re-run the switch by hand: sudo darwin-rebuild switch --flake ."
+    return 1
+  fi
+
+  "$activation"
+
+  if [[ -f "$HOME/.zshrc" ]]; then
+    log_info "Home Manager activation completed; ~/.zshrc is now in place."
+  else
+    log_error "Activation ran but ~/.zshrc still isn't present. Inspect the output above."
+    return 1
+  fi
 }
 
-# Apply Nix configuration
+# Apply Nix configuration -- this is the step that actually switches the machine.
 apply_nix_config() {
   log_header "Applying Nix Configuration"
+
+  ensure_nix_on_path
 
   # Detect system
   local system
@@ -179,7 +294,8 @@ apply_nix_config() {
 
   log_info "Detected system: $system"
 
-  # Build Go tools first to verify everything works
+  # Build the Go tools first as a cheap smoke test of the flake. Non-fatal: a
+  # stale vendorHash shouldn't block the whole machine from being configured.
   log_info "Building Go tools with Nix..."
   if ! nix build .#dotfiles-tools --no-link; then
     log_warn "Go tools build failed. You may need to update the vendorHash in nix/packages/go-tools.nix"
@@ -191,18 +307,22 @@ apply_nix_config() {
     local target
     target="$(darwin_flake_target)"
 
-    log_info "To complete setup, run the following commands:"
-    echo ""
-    echo "  # First time: Bootstrap nix-darwin"
-    echo "  nix run nix-darwin -- switch --flake ${target}"
-    echo ""
-    echo "  # Subsequent updates (the flake pins this machine's hostname,"
-    echo "  # so a bare '--flake .' resolves correctly after the first switch):"
-    echo "  darwin-rebuild switch --flake ."
-    echo ""
-    echo "  # Or just Home Manager (without system config):"
-    echo "  nix run home-manager -- switch --flake .#thomaseckert@macos"
-    echo ""
+    if command -v darwin-rebuild &>/dev/null; then
+      # Machine has switched before. `darwin-rebuild switch` is idempotent --
+      # Nix only rebuilds what changed -- and needs root.
+      log_info "Applying macOS configuration: sudo darwin-rebuild switch --flake ${target}"
+      sudo darwin-rebuild switch --flake "${target}"
+    else
+      # First activation on this machine. nix-darwin isn't on PATH yet, so run
+      # it straight from the flake registry; it escalates to root on its own.
+      log_info "Bootstrapping nix-darwin: nix run nix-darwin -- switch --flake ${target}"
+      nix run nix-darwin -- switch --flake "${target}"
+      ensure_nix_on_path
+    fi
+
+    # The switch above installs packages even when the per-user file activation
+    # silently fails; this backstops that so the shell config always lands.
+    ensure_home_manager_activated
   else
     log_info "Applying Home Manager configuration..."
     nix run home-manager -- switch --flake ".#thomaseckert@linux"
@@ -226,6 +346,16 @@ main() {
     esac
   done
 
+  # Run from the repo root so every `.#...` flake reference resolves no matter
+  # where the script was invoked from.
+  cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  # Each step is idempotent: it checks the current state and no-ops if the work
+  # is already done, so re-running install.sh is the normal way to converge a
+  # machine after editing the flake.
+  #
+  # Homebrew first: the nix-darwin homebrew module aborts activation without it.
+  install_homebrew
   install_nix
   configure_nix_trusted_users
   install_nix_darwin
@@ -234,15 +364,15 @@ main() {
   log_header "Installation Complete!"
 
   echo ""
-  echo "Quick reference:"
-  echo "  nix develop           # Enter dev shell"
-  echo "  nix build             # Build Go tools"
-  echo "  nix flake update      # Update all inputs"
-  echo ""
   if [[ "$(uname)" == "Darwin" ]]; then
-    echo "  darwin-rebuild switch --flake .   # Apply full macOS config"
+    echo "Your machine is configured. Open a new terminal to pick up the shell."
+    echo ""
   fi
-  echo "  home-manager switch --flake .     # Apply Home Manager config"
+  echo "Quick reference:"
+  echo "  reload-nix            # Re-apply after editing the flake (darwin-rebuild switch)"
+  echo "  ./install.sh          # Re-run the full, idempotent setup"
+  echo "  nix develop           # Enter dev shell"
+  echo "  nix flake update      # Update all inputs"
   echo ""
 }
 

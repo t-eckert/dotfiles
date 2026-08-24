@@ -101,6 +101,20 @@
 
     # Extra initialization (runs at the end of .zshrc)
     initContent = ''
+      # ── Zellij auto-start ─────────────────────────────────────────────
+      # Start Zellij for interactive, top-level shells: attach to a running
+      # session if there is one (ZELLIJ_AUTO_ATTACH) and close the terminal
+      # when the session ends (ZELLIJ_AUTO_EXIT). The $ZELLIJ guard stops
+      # shells spawned *inside* Zellij from nesting another instance, and the
+      # editor checks keep VS Code / IntelliJ integrated terminals plain.
+      if [[ -z "$ZELLIJ" ]] && [[ -o interactive ]] && (( $+commands[zellij] )); then
+        if [[ "$TERM_PROGRAM" != "vscode" && -z "$INTELLIJ_ENVIRONMENT_READER" ]]; then
+          export ZELLIJ_AUTO_ATTACH=true
+          export ZELLIJ_AUTO_EXIT=true
+          eval "$(zellij setup --generate-auto-start zsh)"
+        fi
+      fi
+
       # Freeze terminal modes so a program that dies without restoring termios
       # (crashed TUI, dropped ssh, binary dumped to stdout) can't leave the tty
       # in raw mode. Without this, ISIG stays off and Ctrl+C silently stops

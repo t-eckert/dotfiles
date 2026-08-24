@@ -11,6 +11,14 @@ tasks:
     desc: First-time nix-darwin activation on a machine (handles unknown hostnames)
     dir: '{{.TASKFILE_DIR}}'
     cmds:
+      # The nix-darwin homebrew module aborts activation if brew is missing.
+      - |
+        if ! command -v brew >/dev/null 2>&1 && [ ! -x /opt/homebrew/bin/brew ]; then
+          echo "Homebrew is not installed, and the homebrew module needs it." >&2
+          echo "Run ./install.sh, or install it directly:" >&2
+          echo '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"' >&2
+          exit 1
+        fi
       # `--flake .` resolves darwinConfigurations.$(hostname -s), and macOS
       # hostnames differ per machine. Fall back to the `default` attribute so a
       # brand-new Mac can activate before being added to darwinHosts.
