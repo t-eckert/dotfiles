@@ -101,20 +101,6 @@
 
     # Extra initialization (runs at the end of .zshrc)
     initContent = ''
-      # ── Zellij auto-start ─────────────────────────────────────────────
-      # Start Zellij for interactive, top-level shells: attach to a running
-      # session if there is one (ZELLIJ_AUTO_ATTACH) and close the terminal
-      # when the session ends (ZELLIJ_AUTO_EXIT). The $ZELLIJ guard stops
-      # shells spawned *inside* Zellij from nesting another instance, and the
-      # editor checks keep VS Code / IntelliJ integrated terminals plain.
-      if [[ -z "$ZELLIJ" ]] && [[ -o interactive ]] && (( $+commands[zellij] )); then
-        if [[ "$TERM_PROGRAM" != "vscode" && -z "$INTELLIJ_ENVIRONMENT_READER" ]]; then
-          export ZELLIJ_AUTO_ATTACH=true
-          export ZELLIJ_AUTO_EXIT=true
-          eval "$(zellij setup --generate-auto-start zsh)"
-        fi
-      fi
-
       # Freeze terminal modes so a program that dies without restoring termios
       # (crashed TUI, dropped ssh, binary dumped to stdout) can't leave the tty
       # in raw mode. Without this, ISIG stays off and Ctrl+C silently stops
@@ -171,11 +157,18 @@
           return 0
         fi
 
+        # Grab the raw session list first, and stay silent when there are none
+        # (Zellij otherwise writes "No active zellij sessions found." to stderr,
+        # which is just noise on a fresh window).
+        local sessions
+        sessions="$(zellij list-sessions --no-formatting "$@" 2>/dev/null)"
+        [[ -n "$sessions" ]] || return 0
+
         # Print header
         printf "%-25s %-45s %s\n" "NAME" "CREATED" "STATUS"
 
-        # Get session list and format it
-        zellij list-sessions --no-formatting "$@" | awk -F'[][]' '{
+        # Format the captured session list
+        print -r -- "$sessions" | awk -F'[][]' '{
           name = $1
           created = $3
           status = $5
@@ -195,6 +188,13 @@
 
       # Obsidian CLI
       export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+      # Greet new top-level windows with the list of Zellij sessions so you can
+      # pick one to attach to. Skipped inside Zellij (every pane would reprint
+      # it) and in non-interactive shells.
+      if [[ -z "$ZELLIJ" ]] && [[ -o interactive ]] && (( $+commands[zellij] )); then
+        zls
+      fi
     '';
 
     # Profile extra (runs at login)

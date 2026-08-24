@@ -10,6 +10,11 @@ window-padding-x = 4
 window-decoration = true
 macos-titlebar-style = hidden
 
+# Send Option as Alt/Meta instead of composing special characters (ø, ˙, ¬),
+# so Alt-based keybindings (e.g. Zellij's Alt+h/j/k/l, Alt+o) reach the terminal.
+# Use "left" instead if you want the right Option key to keep typing accents.
+macos-option-as-alt = true
+
 mouse-hide-while-typing = true
 keybind = shift+enter=text:\n
 confirm-close-surface = false
