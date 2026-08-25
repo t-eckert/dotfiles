@@ -74,6 +74,7 @@
       "1password-cli"
       "amethyst"
       "macfuse"
+      "orbstack"      # Container runtime + Docker daemon; Tilt/hound need a live daemon
     ];
   };
 

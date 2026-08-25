@@ -56,6 +56,13 @@ in {
     # ============================================================
     # Languages & Runtimes
     # ============================================================
+    # Per-project runtime versions. Repos that pin tools in `.tool-versions`
+    # (e.g. honeycombio/hound) get those versions instead of the ones below;
+    # mise's shims sit ahead of this profile on PATH inside such a repo.
+    # Do NOT also install asdf -- hound's .envrc aborts when both are present,
+    # because whichever hooked the shell last silently wins.
+    mise
+
     # Go
     go
     gopls
@@ -95,6 +102,7 @@ in {
     kind
     kustomize
     fluxcd
+    tilt                    # Runs the hound dev stack locally (Tiltfile at repo root)
 
     # Cloud CLIs
     azure-cli
@@ -118,6 +126,7 @@ in {
     # Databases & Data
     # ============================================================
     postgresql_15
+    mysql84                 # Client for hound's local DBs; Tilt runs the server, don't start it yourself
 
     # ============================================================
     # Protocol Buffers & APIs
