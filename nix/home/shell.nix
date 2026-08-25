@@ -241,4 +241,19 @@
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
+
+  # Per-project runtime versions from `.tool-versions` / `.go-version` / `.nvmrc`.
+  # Repos that pin tools (e.g. honeycombio/hound) get those versions instead of
+  # the ones in packages.nix -- mise's shims sit ahead of this profile on PATH.
+  # Without the zsh integration mise installs the pinned runtimes but nothing
+  # ever selects them, so hound would silently build against the profile's node.
+  #
+  # Do NOT also install asdf: hound's .envrc aborts when both are present,
+  # because whichever hooked the shell last silently wins.
+  programs.mise = {
+    enable = true;
+    enableZshIntegration = true;
+    globalConfig.settings.idiomatic_version_file_enable_tools =
+      [ "go" "node" "python" "terraform" "uv" ];
+  };
 }

@@ -56,12 +56,9 @@ in {
     # ============================================================
     # Languages & Runtimes
     # ============================================================
-    # Per-project runtime versions. Repos that pin tools in `.tool-versions`
-    # (e.g. honeycombio/hound) get those versions instead of the ones below;
-    # mise's shims sit ahead of this profile on PATH inside such a repo.
-    # Do NOT also install asdf -- hound's .envrc aborts when both are present,
-    # because whichever hooked the shell last silently wins.
-    mise
+    # NOTE: mise is configured in shell.nix (programs.mise) rather than listed
+    # here -- it needs the zsh integration to actually select pinned versions.
+    # The versions below are the fallback for repos that pin nothing.
 
     # Go
     go
