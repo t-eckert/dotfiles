@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Setup and Installation
 
 - **Initial setup**: Run `./install.sh` to install Nix and apply configuration
-- **Apply config**: `darwin-rebuild switch --flake .` (or `reload-nix` alias)
+- **Apply config**: `sudo darwin-rebuild switch --flake .` (or `reload-nix` alias). Activation must run as root; without `sudo` it fails with "system activation must now be run as root". Note `darwin-rebuild build` does *not* need root.
 - **Install tools only**: `go install ./tools/*`
 - **Run all tests**: `go test ./...`
 - **Test a specific tool**: `go test ./tools/[tool-name]/`

@@ -176,7 +176,7 @@
       # `default` is a hostname-independent escape hatch for a machine whose
       # name is not in the list yet:
       #
-      #   darwin-rebuild switch --flake .#default
+      #   sudo darwin-rebuild switch --flake .#default
       #
       # If the work and personal machines ever need to diverge, replace the
       # genAttrs line with explicit entries that pass different module lists.

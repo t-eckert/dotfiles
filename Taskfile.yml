@@ -25,14 +25,25 @@ tasks:
       - |
         host="$(hostname -s)"
         if nix eval --raw ".#darwinConfigurations.${host}.system.outPath" >/dev/null 2>&1; then
-          target=".#${host}"
+          name="${host}"
         else
           echo "Hostname '${host}' is not in darwinHosts; using .#default." >&2
           echo "Add it to flake.nix to make a bare '--flake .' work here." >&2
-          target=".#default"
+          name="default"
         fi
+        target=".#${name}"
         echo "Activating ${target}"
-        nix run nix-darwin -- switch --flake "${target}"
+        # Build as the invoking user, then activate as root. Deliberately not
+        # `sudo nix run nix-darwin -- switch`, for two reasons:
+        #   - `nix run nix-darwin` resolves through the flake *registry*, so it
+        #     activates with whatever nix-darwin that points at rather than the
+        #     `darwin` input this flake pins. On a fresh machine they disagree.
+        #   - macOS sudo resets PATH to a system default with no nix on it, so
+        #     the binary has to be named by absolute path regardless.
+        # Building first also keeps the download out of root's context; the
+        # store is shared, so the switch below is a cache hit.
+        system="$(nix build ".#darwinConfigurations.${name}.system" --no-link --print-out-paths)"
+        sudo "${system}/sw/bin/darwin-rebuild" switch --flake "${target}"
 
   hosts:
     desc: List the hostnames this flake can configure

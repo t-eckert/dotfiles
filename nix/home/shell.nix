@@ -24,7 +24,10 @@
     # Shell aliases
     shellAliases = {
       # Nix
-      reload-nix = "darwin-rebuild switch --flake ~/Repos/github.com/t-eckert/dotfiles#Thomas-MacBook-Pro";
+      # Activation must run as root, and the bare flake ref resolves
+      # darwinConfigurations.$(hostname -s) -- do not pin a hostname here, it
+      # would apply the personal machine config on the work one.
+      reload-nix = "sudo darwin-rebuild switch --flake ~/Repos/github.com/t-eckert/dotfiles";
 
       # Kubernetes
       k = "kubectl";

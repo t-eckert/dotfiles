@@ -23,8 +23,8 @@ After installation, apply the full configuration:
 # First time: Bootstrap nix-darwin
 nix run nix-darwin -- switch --flake .
 
-# Subsequent updates:
-darwin-rebuild switch --flake .
+# Subsequent updates (activation must run as root):
+sudo darwin-rebuild switch --flake .
 # Or use the alias: reload-nix
 ```
 
@@ -39,13 +39,13 @@ To onboard a new Mac:
 
 ```bash
 # 1. Activate without caring about the hostname
-task bootstrap          # or: nix run nix-darwin -- switch --flake .#default
+task bootstrap          # activation runs as root; the task handles the sudo
 
 # 2. Add the machine's name to `darwinHosts` in flake.nix
 task hosts              # shows this machine's name and the configured ones
 
 # 3. From then on, the bare form works
-task rebuild            # or: darwin-rebuild switch --flake .
+task rebuild            # or: sudo darwin-rebuild switch --flake .
 ```
 
 Each listed hostname pins itself via `networking.hostName` in
