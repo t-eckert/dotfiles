@@ -98,6 +98,9 @@
           # mq - jq for Markdown (not yet in nixpkgs)
           mq = pkgs.callPackage ./nix/packages/mq.nix { };
 
+          # rwx - RWX CI CLI (not in nixpkgs; prebuilt release binary)
+          rwx = pkgs.callPackage ./nix/packages/rwx.nix { };
+
           # Default package
           default = self.packages.${system}.dotfiles-tools;
 
