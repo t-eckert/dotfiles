@@ -215,6 +215,11 @@
     enableZshIntegration = true;
     defaultCommand = "rg --files --hidden --follow --glob '!.git/'";
     defaultOptions = [ "--height=40%" "--layout=reverse" "--border" ];
+    # Atuin owns Ctrl-R. Both integrations bind it and atuin is sourced last,
+    # so atuin already won -- but only as a side effect of ordering, which is
+    # what home-manager warns about. Empty disables fzf's binding and makes the
+    # existing outcome explicit. Needs fzf >= 0.66 to be honoured; 0.74 here.
+    historyWidget.command = "";
   };
 
   # Atuin shell history
