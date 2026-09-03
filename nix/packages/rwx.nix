@@ -61,9 +61,18 @@ in stdenv.mkDerivation {
     runHook postInstall
   '';
 
-  # Completions must be generated in postFixup, not installPhase: on Linux the
-  # binary is not runnable until autoPatchelfHook has done its work.
+  # Completions must be generated after autoPatchelfHook has run: on Linux the
+  # release binary is not runnable until then. Ordering it by putting this in
+  # postFixup is not enough, and silently produced a broken build -- the hook
+  # appends itself to postFixupHooks, while runHook evaluates a derivation's
+  # own postFixup *before* that array. So the binary was still unpatched here,
+  # every `rwx completion` wrote nothing, and installShellCompletion failed on
+  # the zero-size file. Drive the patching explicitly instead of relying on
+  # phase ordering that runs the other way.
+  dontAutoPatchelf = true;
+
   postFixup = ''
+    ${lib.optionalString stdenv.hostPlatform.isLinux "autoPatchelf -- $out"}
     installShellCompletion --cmd rwx \
       --bash <($out/bin/rwx completion bash) \
       --zsh <($out/bin/rwx completion zsh) \
