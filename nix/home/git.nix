@@ -70,7 +70,7 @@
       };
 
       # Credential helper (macOS keychain)
-      credential.helper = lib.mkIf pkgs.stdenv.isDarwin "osxkeychain";
+      credential.helper = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "osxkeychain";
 
       # URL rewrites
       url = {
