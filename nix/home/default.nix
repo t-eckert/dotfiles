@@ -86,6 +86,14 @@
     VISUAL = "nvim";
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
     BAT_THEME = "base16";
+
+    # skopeo (and podman's tooling) otherwise looks for registry credentials
+    # under /run/containers/<uid>, which is root-owned 0700 on the NixOS box --
+    # so every non-root `skopeo inspect` failed with a permission error before
+    # it ever reached the network, even for a public image. Point it somewhere
+    # the user owns. Harmless on macOS, where the path simply does not exist
+    # until something writes it.
+    REGISTRY_AUTH_FILE = "${config.home.homeDirectory}/.config/containers/auth.json";
   };
 
   # Session path additions

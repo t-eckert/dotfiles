@@ -121,6 +121,9 @@ in {
     # Containers
     docker-client
     podman
+    skopeo                  # Inspect/copy images without a daemon. Resolves a
+                            # tag to its digest for pinning:
+                            # `skopeo inspect docker://ghcr.io/o/i:latest`
 
     # CI
     rwx                     # RWX CLI -- hound's CI. `rwx run .rwx/ci.yml --wait`
