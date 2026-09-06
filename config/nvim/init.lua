@@ -1540,16 +1540,32 @@ require("claude-code")
 -- CLAUDE CODE INTEGRATION
 -- ======================================================================================
 
--- Create user command for Claude Code diagnostic integration
+-- Hand the diagnostic at the cursor to a headless `claude -p` run, which edits
+-- the files itself. A report pane opens only when the fix was not trivial, could
+-- not be made, or the run failed.
 vim.api.nvim_create_user_command("ClaudeCodeDiagnostic", function()
   require("claude-code").send_diagnostic_to_claude()
 end, {
-  desc = "Send diagnostic at cursor to Claude Code for fixing suggestions",
+  desc = "Fix the diagnostic at the cursor with a headless Claude Code run",
 })
 
 -- Short alias for convenience
-vim.api.nvim_create_user_command("CCDiagnostic", function()
+vim.api.nvim_create_user_command("CCFix", function()
   require("claude-code").send_diagnostic_to_claude()
 end, {
-  desc = "Send diagnostic at cursor to Claude Code for fixing suggestions",
+  desc = "Fix the diagnostic at the cursor with a headless Claude Code run",
 })
+
+-- The escape hatch: write the diagnostic up and open it, calling nothing. For
+-- handing an error to a Claude Code session by hand.
+vim.api.nvim_create_user_command("CCDiagnostic", function()
+  require("claude-code").write_diagnostic()
+end, {
+  desc = "Write the diagnostic at the cursor to a file, without calling the model",
+})
+
+-- The keystroke this is actually reached by. There was no mapping before, only
+-- the :commands above, so the key people reach for did nothing.
+vim.keymap.set("n", "<leader>cc", function()
+  require("claude-code").send_diagnostic_to_claude()
+end, { desc = "[C]laude [C]ode: fix diagnostic at cursor" })
