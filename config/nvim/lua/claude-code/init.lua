@@ -318,4 +318,179 @@ function M.write_diagnostic()
 	open_report(out)
 end
 
+-- ======================================================================================
+-- EXPLAIN A SELECTION
+--
+-- <leader>ce over a highlighted block hands those lines to a headless `claude -p`
+-- run and opens the explanation in a pane beside the code. The model gets
+-- read-only tools, so it can read around the selection and explain the lines in
+-- terms of the rest of the file rather than in isolation.
+--
+-- Unlike the fix above there is no verdict to interpret: the whole reply is the
+-- artifact, so the pane always opens.
+-- ======================================================================================
+
+-- A stable path again, for the same reason: a Claude Code session on this
+-- machine can read the explanation without it having to go via the clipboard.
+M.explanation_path = vim.fn.expand("~/.claude/nvim-explanation.md")
+
+M._explaining = false
+
+local EXPLAIN_INSTRUCTIONS = [[
+
+Explain this code to the person reading it in their editor right now. Read the
+file, and whatever it depends on, before answering.
+
+Reply with markdown, using these sections and nothing around them:
+
+## Summary
+
+Two or three sentences: what this code is for, in the context of the file it
+lives in.
+
+## How it works
+
+Walk through it, grouping the lines into steps rather than narrating each one.
+Use the project's own names for the things involved.
+
+## Worth knowing
+
+What a reader would otherwise have to find out the hard way: invariants it
+depends on, edge cases it handles or deliberately ignores, why a more obvious
+version would not work. Leave the section out if there is nothing real to put
+in it.
+
+Explain what is there. Do not review it, do not suggest improvements, and do not
+edit anything.
+]]
+
+-- The selection, written up the way the model will see it
+function M.format_selection(file_info, first_line, last_line, lines)
+	local parts = {
+		string.format("**File**: %s", file_info.path),
+		string.format("**Lines**: %d-%d", first_line, last_line),
+		"",
+		"**Selection**:",
+		"```" .. (file_info.filetype or ""),
+	}
+
+	for i, line in ipairs(lines) do
+		table.insert(parts, string.format("%d: %s", first_line + i - 1, line))
+	end
+
+	table.insert(parts, "```")
+	return table.concat(parts, "\n")
+end
+
+-- Open the file in a pane, reusing the one already showing it so a second
+-- explanation replaces the first instead of stacking up splits
+local function open_pane(path)
+	local target = vim.fn.fnamemodify(path, ":p")
+
+	for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+		if vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win)) == target then
+			vim.api.nvim_set_current_win(win)
+			vim.cmd("edit!")
+			return
+		end
+	end
+
+	vim.cmd("vsplit " .. vim.fn.fnameescape(path))
+	vim.bo.filetype = "markdown"
+	vim.wo.wrap = true
+	vim.wo.linebreak = true
+	vim.wo.number = false
+	vim.wo.relativenumber = false
+end
+
+local function write_explanation(header, body)
+	local out = M.explanation_path
+	vim.fn.mkdir(vim.fn.fnamemodify(out, ":h"), "p")
+	vim.fn.writefile(vim.split(header .. "\n\n---\n\n" .. body, "\n"), out)
+	return out
+end
+
+-- Explain lines first_line..last_line of the current buffer, inclusive and
+-- 1-indexed. Reached from visual mode, where the range comes from the selection.
+function M.explain_selection(first_line, last_line)
+	if M._explaining then
+		notify("An explanation is already running", vim.log.levels.WARN)
+		return
+	end
+
+	local file_path = vim.fn.expand("%:p")
+	if file_path == "" then
+		notify("No file open", vim.log.levels.WARN)
+		return
+	end
+
+	if vim.fn.executable(M.opts.cmd) ~= 1 then
+		notify("`" .. M.opts.cmd .. "` is not on PATH", vim.log.levels.ERROR)
+		return
+	end
+
+	local lines = vim.api.nvim_buf_get_lines(0, first_line - 1, last_line, false)
+	if #lines == 0 then
+		notify("Nothing selected", vim.log.levels.WARN)
+		return
+	end
+
+	local file_info = { path = file_path, filetype = vim.bo.filetype }
+	local selection = M.format_selection(file_info, first_line, last_line, lines)
+	local prompt = selection .. "\n" .. EXPLAIN_INSTRUCTIONS
+
+	local header = string.format(
+		"# Explanation\n\n`%s:%d-%d`\n\n```%s\n%s\n```",
+		vim.fn.fnamemodify(file_path, ":."),
+		first_line,
+		last_line,
+		file_info.filetype or "",
+		table.concat(lines, "\n")
+	)
+
+	local root = vim.fs.root(0, { ".git" }) or vim.fn.getcwd()
+
+	M._explaining = true
+	notify(
+		string.format("Explaining %s:%d-%d…", vim.fn.fnamemodify(file_path, ":t"), first_line, last_line)
+	)
+
+	vim.system({
+		M.opts.cmd,
+		"-p",
+		"--output-format",
+		"json",
+		-- Read-only: it should understand the code, not touch it
+		"--allowed-tools",
+		"Read,Grep,Glob",
+	}, {
+		stdin = prompt,
+		cwd = root,
+		text = true,
+		timeout = M.opts.timeout_ms,
+	}, function(result)
+		vim.schedule(function()
+			M._explaining = false
+
+			if result.code ~= 0 then
+				local err = (result.stderr ~= "" and result.stderr) or result.stdout or "no output"
+				local body = "The `claude` run failed (exit "
+					.. tostring(result.code)
+					.. "):\n\n```\n"
+					.. err
+					.. "\n```"
+				open_pane(write_explanation(header, body))
+				notify("Explain run failed — see the pane", vim.log.levels.ERROR)
+				return
+			end
+
+			local decoded_ok, envelope = pcall(vim.json.decode, result.stdout)
+			local text = (decoded_ok and type(envelope) == "table" and envelope.result) or result.stdout
+
+			open_pane(write_explanation(header, text ~= "" and text or "(no output)"))
+			notify("Explanation ready")
+		end)
+	end)
+end
+
 return M

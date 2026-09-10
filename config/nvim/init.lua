@@ -1569,3 +1569,26 @@ end, {
 vim.keymap.set("n", "<leader>cc", function()
   require("claude-code").send_diagnostic_to_claude()
 end, { desc = "[C]laude [C]ode: fix diagnostic at cursor" })
+
+-- Hand the highlighted block to a headless run and open the explanation in a
+-- pane beside it. The range comes from the visual selection, so `:'<,'>` — which
+-- `:` inserts on its own — is what tells the command which lines to explain.
+vim.api.nvim_create_user_command("ClaudeCodeExplain", function(args)
+  require("claude-code").explain_selection(args.line1, args.line2)
+end, {
+  range = true,
+  desc = "Explain the selected lines with a headless Claude Code run",
+})
+
+-- Short alias, matching CCFix
+vim.api.nvim_create_user_command("CCExplain", function(args)
+  require("claude-code").explain_selection(args.line1, args.line2)
+end, {
+  range = true,
+  desc = "Explain the selected lines with a headless Claude Code run",
+})
+
+vim.keymap.set("v", "<leader>ce", ":ClaudeCodeExplain<CR>", {
+  desc = "[C]laude Code: [e]xplain the selection",
+  silent = true,
+})
