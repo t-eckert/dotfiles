@@ -58,7 +58,9 @@
       };
 
       # Credential helper (macOS keychain)
-      credential.helper = lib.mkIf pkgs.stdenv.isDarwin "osxkeychain";
+      # stdenv.hostPlatform.isDarwin, not stdenv.isDarwin: the latter is deprecated
+      # as of the nixpkgs bump in 95a002e and warns on every evaluation.
+      credential.helper = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "osxkeychain";
 
       # URL rewrites
       url = {
