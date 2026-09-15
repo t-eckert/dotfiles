@@ -67,13 +67,17 @@
         };
       };
 
-      # Ported from the unmanaged ~/.gitconfig before it was deleted.
+      # http.postBuffer is deliberately NOT set -- git's 1 MiB default applies.
       #
-      # NOTE: 1572864000000 is the value that file carried (~1.5 TB). It is almost
-      # certainly a typo for 1572864000 (~1.5 GB) or 524288000 (500 MB) -- the usual
-      # cargo-culted fix for "RPC failed; curl 56". Kept verbatim so deleting
-      # ~/.gitconfig changes nothing; worth correcting deliberately.
-      http.postBuffer = 1572864000000;
+      # The old ~/.gitconfig carried 1572864000000 (~1.5 TB) to work around some
+      # long-since-resolved push problem. Per git-config(5), raising this only
+      # helps when the remote or a proxy speaks HTTP/1.0 or is non-compliant; it
+      # is "not, in general, an effective solution for most push problems, but can
+      # increase memory consumption significantly since the entire buffer is
+      # allocated even for small pushes."
+      #
+      # If large pushes start failing again, prefer diagnosing the transport over
+      # reinstating this.
 
       # Rerere (remember conflict resolutions)
       rerere.enabled = true;
