@@ -53,58 +53,18 @@ ensure_nix_on_path() {
   export PATH="/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH"
 }
 
-# Install Homebrew (macOS only)
+# Homebrew is installed by nix-darwin, not here.
 #
-# nix/darwin/default.nix sets `homebrew.enable = true`, and nix-darwin's
-# homebrew module refuses to activate without the `brew` binary already present:
+# This used to shell out to the official curl|bash installer, because
+# nix-darwin's homebrew module aborts activation when `brew` is missing:
 #
 #   error: Using the homebrew module requires homebrew installed, aborting activation
 #
-# nix-darwin manages the *contents* of the Brewfile, never Homebrew itself, so
-# this has to happen before the first switch.
-install_homebrew() {
-  if [[ "$(uname)" != "Darwin" ]]; then
-    return 0
-  fi
-
-  log_header "Installing Homebrew"
-
-  # Apple Silicon installs to /opt/homebrew; Intel to /usr/local.
-  local brew_prefix
-  if [[ "$(uname -m)" == "arm64" ]]; then
-    brew_prefix="/opt/homebrew"
-  else
-    brew_prefix="/usr/local"
-  fi
-
-  if [[ -x "${brew_prefix}/bin/brew" ]]; then
-    log_info "Homebrew is already installed."
-  else
-    log_info "Homebrew is required by the nix-darwin homebrew module."
-    log_info "Installing via the official installer (this will ask for sudo)..."
-
-    # NONINTERACTIVE stops the installer from waiting on a RETURN keypress and
-    # lets it pull the Xcode Command Line Tools on its own if they're missing.
-    if ! NONINTERACTIVE=1 /bin/bash -c \
-      "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
-      log_error "Homebrew installation failed."
-      log_error "Install it manually, then re-run this script:"
-      log_error '  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
-      return 1
-    fi
-  fi
-
-  # Put brew on PATH for the rest of this script. The interactive shell picks it
-  # up from nix/home/shell.nix on the next login, but the nix-darwin activation
-  # we're about to run needs to find it now.
-  if [[ -x "${brew_prefix}/bin/brew" ]]; then
-    eval "$("${brew_prefix}/bin/brew" shellenv)"
-    log_info "Homebrew ready: $(brew --version | head -1)"
-  else
-    log_error "Expected brew at ${brew_prefix}/bin/brew but it isn't there."
-    return 1
-  fi
-}
+# nix/darwin/default.nix now sets `nix-homebrew.enable = true`, which installs
+# and owns /opt/homebrew at the version pinned by flake.nix's `brew-src`, and
+# suppresses that check itself (it sets INSTALLING_HOMEBREW=1). Installing
+# Homebrew out-of-band here would just create an unpinned installation for
+# `autoMigrate` to adopt and rewrite on the first switch.
 
 # Install Nix using Determinate Systems installer
 install_nix() {
@@ -354,8 +314,8 @@ main() {
   # is already done, so re-running install.sh is the normal way to converge a
   # machine after editing the flake.
   #
-  # Homebrew first: the nix-darwin homebrew module aborts activation without it.
-  install_homebrew
+  # No Homebrew step: nix-homebrew installs it during activation, pinned to the
+  # version in flake.nix. See the note above install_nix.
   install_nix
   configure_nix_trusted_users
   install_nix_darwin

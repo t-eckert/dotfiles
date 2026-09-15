@@ -1,5 +1,6 @@
 # macOS system configuration (nix-darwin)
-{ config, pkgs, lib, self, username, hostName ? null, ... }:
+{ config, pkgs, lib, self, username, hostName ? null
+, brewPackage, homebrew-services, redpanda-tap, ... }:
 
 {
   # Primary user (required for user-specific settings like system.defaults)
@@ -37,20 +38,91 @@
     wget
   ];
 
+  # Homebrew itself, pinned.
+  #
+  # The `homebrew` block below manages only the *contents* of the Brewfile; it
+  # shells out to whatever `brew` is on the system. Installed by the official
+  # curl|bash script, that binary self-updates on its own schedule, so the
+  # Homebrew version was the one part of this machine Nix did not describe.
+  # nix-homebrew owns /opt/homebrew, and flake.nix's `brew-src` tag decides the
+  # version.
+  #
+  # nix-homebrew patches Library/Homebrew/cmd/update.sh to strip
+  # HOMEBREW_REPOSITORY out of the self-update loop, so `brew update` can no
+  # longer move Homebrew off the pin -- it is a real pin, not a default.
+  nix-homebrew = {
+    enable = true;
+    user = username;
+
+    # No Intel prefix on this machine: /usr/local/Homebrew does not exist, and
+    # setting this would have nix-homebrew create and manage a second prefix.
+    enableRosetta = false;
+
+    # Adopt the existing installation instead of demanding a clean prefix.
+    # This deletes the Homebrew *git repository* under /opt/homebrew (Nix now
+    # supplies those files) while leaving installed formulae and casks in place.
+    autoMigrate = true;
+
+    # The pinned source. Without this, nix-homebrew falls back to the tag in its
+    # own flake.lock, which would put the version in someone else's repo.
+    package = brewPackage;
+
+    # Taps come from flake inputs. Keys must be the on-disk repository name --
+    # `homebrew/homebrew-services`, not the short `homebrew/services` form that
+    # `brew tap` accepts -- because they become directory names under
+    # $HOMEBREW_LIBRARY/Taps.
+    taps = {
+      "homebrew/homebrew-services" = homebrew-services;
+      "redpanda-data/homebrew-tap" = redpanda-tap;
+    };
+
+    # Fully declarative taps. Side effect worth knowing: this also exports
+    # HOMEBREW_NO_AUTO_UPDATE=1, and `brew tap` stops working imperatively --
+    # adding a tap is now an edit to flake.nix plus a rebuild.
+    mutableTaps = false;
+
+    # Report the pinned version from `brew --version`.
+    #
+    # nix-homebrew normally embeds the version by sed-ing `^HOMEBREW_VERSION=`
+    # in Library/Homebrew/brew.sh. As of Homebrew 7.0.1 that assignment has
+    # moved into utils/git.sh (`set-homebrew-version-from-git`), so the sed
+    # silently matches nothing and brew falls back to reporting
+    # ">=4.3.0 (shallow or no git repository)" -- the Nix store copy has no .git
+    # for it to describe.
+    #
+    # That function only assigns when HOMEBREW_VERSION is empty, and returns
+    # early when there is no git revision to find, so exporting it here wins.
+    extraEnv = {
+      HOMEBREW_VERSION = brewPackage.version;
+    };
+
+    # Non-official taps need explicit trust, which previously had to be applied
+    # by hand and read from ~/.homebrew/trust.json. Declaring it here means a
+    # fresh machine trusts the tap before the first `brew bundle` runs.
+    #
+    # Note: removing an entry here does NOT revoke it; use `brew untrust`.
+    trust = {
+      taps = [ "redpanda-data/tap" ];
+      formulae = [ "redpanda-data/tap/redpanda" ];
+    };
+  };
+
   # Homebrew integration for casks that don't have Nix equivalents
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
+      # Off deliberately: with the version pinned above there is nothing for
+      # Homebrew to auto-update itself to, and mutableTaps = false already
+      # exports HOMEBREW_NO_AUTO_UPDATE=1. Leaving this true would only be a
+      # misleading claim about what a rebuild does.
+      autoUpdate = false;
       cleanup = "zap";  # Remove formulae not in this config
-      upgrade = true;
+      upgrade = true;   # Still upgrades formulae/casks, which resolve via the API
     };
 
-    # Taps
-    taps = [
-      "homebrew/services"
-      "redpanda-data/tap"
-    ];
+    # Taps, kept in lockstep with nix-homebrew.taps so the Brewfile can never
+    # ask for a tap the (now immutable) Taps directory does not provide.
+    taps = builtins.attrNames config.nix-homebrew.taps;
 
     # Formulae that don't work well with Nix on macOS
     #

@@ -22,9 +22,45 @@
 
     # Git diff viewer
     hunk.url = "github:modem-dev/hunk";
+
+    # Homebrew installation manager.
+    #
+    # nix-darwin's `homebrew` module manages only the *contents* of the Brewfile
+    # and drives whatever `brew` binary happens to be on the system -- which the
+    # official installer keeps self-updating. nix-homebrew owns the installation
+    # itself, so the Homebrew version becomes a declared fact of this flake.
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+
+      # Without this, nix-homebrew's own `brew-src` pin is fetched too and we
+      # end up with two copies of the Homebrew source in the lock.
+      inputs.brew-src.follows = "brew-src";
+    };
+
+    # The Homebrew version. THIS is the knob: bump the tag to upgrade Homebrew,
+    # then `task rebuild`. nix/darwin reads the tag back out of flake.lock, so
+    # the version lives here and nowhere else.
+    brew-src = {
+      url = "github:Homebrew/brew/7.0.1";
+      flake = false;
+    };
+
+    # Taps, pinned as sources because nix-homebrew.mutableTaps is false.
+    # homebrew-core and homebrew-cask are deliberately absent: without them
+    # Homebrew resolves formulae through its JSON API, which is the current
+    # (untapped) state of the machine and avoids vendoring two huge repos.
+    homebrew-services = {
+      url = "github:Homebrew/homebrew-services";
+      flake = false;
+    };
+    redpanda-tap = {
+      url = "github:redpanda-data/homebrew-tap";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, flake-utils, hunk }:
+  outputs = { self, nixpkgs, home-manager, darwin, flake-utils, hunk
+            , nix-homebrew, brew-src, homebrew-services, redpanda-tap }:
     let
       # Supported systems
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
@@ -45,6 +81,22 @@
         then "/Users/${username}"
         else "/home/${username}";
 
+      # The pinned Homebrew source, labelled with its tag.
+      #
+      # Read back out of flake.lock rather than written literally so the version
+      # has exactly one home: the `brew-src` URL in `inputs` above. Bumping the
+      # tag there and re-locking is the whole upgrade procedure.
+      #
+      # nix-homebrew embeds this `version` into brew.sh during its patch phase,
+      # which is what lets `brew --version` report a number at all -- the Nix
+      # store copy has no .git for Homebrew to interrogate.
+      brewVersion =
+        (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.brew-src.original.ref;
+      brewPackage = brew-src // {
+        name = "brew-${brewVersion}";
+        version = brewVersion;
+      };
+
       # Hostnames that should receive the macOS system configuration.
       #
       # `darwin-rebuild switch --flake .` looks up
@@ -64,10 +116,11 @@
       mkDarwinSystem = hostName: darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
-          inherit self username hostName;
+          inherit self username hostName brewPackage homebrew-services redpanda-tap;
         };
         modules = [
           ./nix/darwin
+          nix-homebrew.darwinModules.nix-homebrew
           home-manager.darwinModules.home-manager
           {
             home-manager = {

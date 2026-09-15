@@ -11,11 +11,14 @@ Clone the repository and run `./install.sh`:
 ```
 
 This will:
-1. Install Homebrew (required by the nix-darwin `homebrew` module)
-2. Install Nix via Determinate Systems installer
-3. Configure your user as a trusted user (no more sudo for nix commands!)
-4. Set up nix-darwin for macOS system configuration
-5. Apply Home Manager for user environment
+1. Install Nix via Determinate Systems installer
+2. Configure your user as a trusted user (no more sudo for nix commands!)
+3. Set up nix-darwin for macOS system configuration
+4. Apply Home Manager for user environment
+
+Homebrew is not a separate step: `nix-homebrew` installs and owns
+`/opt/homebrew` during activation, at the version pinned in `flake.nix`. An
+existing Homebrew installation is adopted automatically (`autoMigrate`).
 
 After installation, apply the full configuration:
 
@@ -54,18 +57,40 @@ flake cannot drift apart.
 
 ### Troubleshooting
 
-**`error: Using the homebrew module requires homebrew installed, aborting activation`**
+**`Error: An existing /opt/homebrew/Library/Taps is in the way`**
 
-nix-darwin manages the *contents* of the Brewfile but never installs Homebrew
-itself, so brew has to exist before the first switch:
+Hit when migrating a machine that already had Homebrew installed by the official
+script. `nix-homebrew.autoMigrate` deletes the Homebrew *repository* but never
+touches `Library/Taps`, and `mutableTaps = false` needs to replace that directory
+with a symlink into the store. Move it aside and re-run:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-eval "$(/opt/homebrew/bin/brew shellenv)"
+mv /opt/homebrew/Library/Taps ~/homebrew-taps-pre-nix
+task rebuild
 ```
 
-`./install.sh` does this first, so this only bites when switching by hand on a
-fresh machine.
+Nothing is lost -- the taps are supplied by the flake inputs. Note that on Apple
+Silicon the prefix *is* the repository, so a failure here leaves `/opt/homebrew/bin/brew`
+deleted and Homebrew unusable until the rebuild completes. Installed formulae and
+casks under `Cellar`/`Caskroom` are not affected.
+
+**Upgrading Homebrew**
+
+Homebrew's version is pinned by the `brew-src` input in
+[`flake.nix`](./flake.nix). To move to a new release, bump the tag and rebuild:
+
+```bash
+# edit flake.nix:  url = "github:Homebrew/brew/<new-tag>";
+nix flake update brew-src
+task rebuild
+brew --version   # should report <new-tag>
+```
+
+`brew update` cannot move Homebrew off the pin -- `nix-homebrew` patches the
+self-update path out of `cmd/update.sh` and exports `HOMEBREW_NO_AUTO_UPDATE=1`.
+Taps are pinned the same way, as flake inputs; because `mutableTaps = false`,
+`brew tap` no longer works imperatively and adding a tap means editing
+`nix/darwin/default.nix` and rebuilding.
 
 **`error: flake ... does not provide attribute 'darwinConfigurations.<name>.system'`**
 
