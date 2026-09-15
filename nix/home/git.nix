@@ -67,6 +67,14 @@
         };
       };
 
+      # Ported from the unmanaged ~/.gitconfig before it was deleted.
+      #
+      # NOTE: 1572864000000 is the value that file carried (~1.5 TB). It is almost
+      # certainly a typo for 1572864000 (~1.5 GB) or 524288000 (500 MB) -- the usual
+      # cargo-culted fix for "RPC failed; curl 56". Kept verbatim so deleting
+      # ~/.gitconfig changes nothing; worth correcting deliberately.
+      http.postBuffer = 1572864000000;
+
       # Rerere (remember conflict resolutions)
       rerere.enabled = true;
 
@@ -138,6 +146,25 @@
 
       # Claude Code
       ".claude/settings.local.json"
+
+      # Ported from the unmanaged ~/.gitconfig, which set core.excludesfile to
+      # ~/.gitignore and so masked this list entirely -- git never read
+      # ~/.config/git/ignore while that file existed.
+      ".envrc"
+      "go.work"
+      "go.work.sum"
+
+      # Go build and coverage artifacts
+      "*.coverprofile"
+      "coverage.*"
+      "profile.cov"
+      "*.dll"
+      "*.dylib"
+      "*.exe"
+      "*.exe~"
+      "*.out"
+      "*.so"
+      "*.test"
       "**/.claude/settings.local.json"
     ];
   };

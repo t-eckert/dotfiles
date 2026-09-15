@@ -189,6 +189,8 @@ in {
 
   ] ++ (if isDarwin then darwinPackages else linuxPackages);
 
-  # Note: casks (1password-cli, amethyst, macfuse) and select brews
-  # (tailscale, redpanda) are managed by nix-darwin in darwin/default.nix
+  # Note: GUI apps and the few formulae that don't work well under Nix are managed
+  # by nix-darwin in darwin/default.nix -- casks (1password-cli, amethyst, ghostty,
+  # macfuse, obsidian, orbstack, tailscale-app) and brews (redpanda, libusb).
+  # Homebrew itself is pinned there too; see flake.nix's brew-src input.
 }

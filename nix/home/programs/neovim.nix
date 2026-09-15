@@ -11,13 +11,13 @@
 { config, pkgs, lib, ... }:
 
 {
+  # NOTE: gopls, lua-language-server, typescript-language-server and ripgrep are
+  # NOT repeated here -- they are declared in packages.nix. Listing them twice was
+  # harmless (same derivation) but meant two places to edit.
   home.packages = with pkgs; [
     neovim
 
     # Language servers
-    lua-language-server
-    typescript-language-server
-    gopls
     nil                          # Nix LSP
     pyright                      # Python LSP
 
@@ -30,7 +30,6 @@
     shellcheck                   # Shell script linter
 
     # Tools used by plugins
-    ripgrep                      # For telescope
     fd                           # For telescope
     tree-sitter                  # For treesitter
   ];

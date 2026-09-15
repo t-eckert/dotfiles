@@ -72,13 +72,10 @@
   home.file = {
     # EditorConfig
     ".editorconfig".source = ../../.editorconfig;
-  } // lib.optionalAttrs isDarwin {
-    # Hammerspoon (macOS only, uses ~/.hammerspoon not ~/.config)
-    ".hammerspoon" = {
-      source = ../../config/hammerspoon;
-      recursive = true;
-    };
   };
+  # Hammerspoon's config used to be deployed here, but the app was not installed
+  # on this machine and amethyst (a declared cask) already handles tiling, so the
+  # config was deployed and inert. Removed rather than adding a second window manager.
 
   # Session variables
   home.sessionVariables = {

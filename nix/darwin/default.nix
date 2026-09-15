@@ -142,12 +142,32 @@
     ];
 
     # Casks (GUI apps that must stay in Homebrew)
+    #
+    # ghostty/tailscale-app/obsidian were installed by hand and declared nowhere,
+    # so a fresh machine got their configs (config/ghostty, home.sessionPath, the
+    # `ob` alias) and none of the apps. `brew bundle` passes --adopt for casks, so
+    # it takes over the existing /Applications copies instead of colliding.
     casks = [
       "1password-cli"
       "amethyst"
+      "ghostty"       # Terminal; config/ghostty is deployed by home-manager
       "macfuse"
+      # NOTE: the obsidian cask's `zap` stanza trashes
+      # ~/Library/Application Support/obsidian, which holds the vault registry and
+      # settings (the vaults themselves live in ~/Notebook, ~/Redpanda, etc. and are
+      # untouched). With cleanup = "zap" above, REMOVING this line deletes that
+      # registry -- take a copy first if you ever drop it.
+      "obsidian"      # shell.nix puts its CLI on PATH and aliases `ob`
       "orbstack"      # Container runtime + Docker daemon; Tilt/hound need a live daemon
     ];
+
+    # Tailscale is deliberately NOT a cask.
+    #
+    # The tailscale-app cask installs via a .pkg that runs scripts as root, and
+    # against the existing hand-installed /Applications/Tailscale.app it failed:
+    #   installer: The install failed. ... An error occurred while running scripts
+    # Tailscale itself then reported a conflict between multiple installations.
+    # It stays hand-managed; home.sessionPath still points at the app bundle.
   };
 
   # macOS system defaults

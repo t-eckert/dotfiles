@@ -23,8 +23,10 @@
 
     # Shell aliases
     shellAliases = {
-      # Nix
-      reload-nix = "darwin-rebuild switch --flake ~/Repos/github.com/t-eckert/dotfiles#Thomas-MacBook-Pro";
+      # Nix: rebuilds go through `task rebuild`, which resolves the hostname
+      # itself. A hardcoded `#Thomas-MacBook-Pro` alias used to live here and
+      # silently failed on the work Mac, which is the drift darwinHosts exists
+      # to prevent.
 
       # Kubernetes
       k = "kubectl";
@@ -32,7 +34,6 @@
 
       # Editor
       v = "nvim";
-      zrc = "$EDITOR ~/.config/home-manager/home.nix";  # Edit home-manager config
 
       # Terminal tools
       z = "zellij";
@@ -92,7 +93,6 @@
       GOPATH = "${config.home.homeDirectory}/go";
       FZF_DEFAULT_COMMAND = "rg --files --hidden --follow --glob '!.git/'";
       FZF_CTRL_T_COMMAND = "rg --files --hidden --follow --glob '!.git/'";
-      NVM_DIR = "${config.home.homeDirectory}/.nvm";
       LS_COLORS = "no=0;97:fi=0;34:di=1;97:ln=1;97:pi=0;32:ex=1;35:ow=1;97";
     } // lib.optionalAttrs isDarwin {
       # macOS: Add libiconv to library path for Rust linking
@@ -130,8 +130,11 @@
       # FZF key bindings if available
       [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-      # NVM (if installed outside of Nix)
-      [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+      # No nvm here on purpose. It is a third runtime manager alongside mise and
+      # the profile, and it won: `node` resolved to ~/.nvm/versions/node/v24 instead
+      # of the nodejs_22 declared in packages.nix. That is the same failure the
+      # mise comment below warns about for asdf -- whichever hooks the shell last
+      # silently wins. Pinned versions come from mise, everything else from the profile.
 
       # Google Cloud SDK (check multiple possible locations)
       for gcloud_path in "$HOME/google-cloud-sdk" "$HOME/Downloads/google-cloud-sdk" "/usr/local/Caskroom/google-cloud-sdk"; do
@@ -181,9 +184,20 @@
         }'
       }
 
-      # Homebrew (macOS)
+      # Homebrew goes LAST on PATH.
+      #
+      # nix-homebrew's /etc/zshrc integration already runs `brew shellenv`, which
+      # PREPENDS /opt/homebrew/bin (and this file used to prepend it a second time,
+      # hence the duplicate entry). That ordering is how an orphaned npm `tsc` stub
+      # in the brew prefix came to shadow the TypeScript declared in packages.nix --
+      # lib.hiPrio only breaks ties inside the nix profile, it cannot beat PATH order.
+      #
+      # `typeset -U` also collapses the duplicate entries.
       ${lib.optionalString isDarwin ''
-      [ -d "/opt/homebrew/bin" ] && export PATH="/opt/homebrew/bin:$PATH"
+      typeset -U path
+      path=(''${path:#/opt/homebrew/bin})
+      path=(''${path:#/opt/homebrew/sbin})
+      path+=(/opt/homebrew/bin /opt/homebrew/sbin)
       ''}
 
       # Obsidian CLI

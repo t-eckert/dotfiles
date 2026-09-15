@@ -15,7 +15,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a personal dotfiles repository that manages development environment configuration across multiple MacOS systems.
 
 ### Configuration Files (`./config/`)
-Application configurations that get symlinked to `~/.config/` using stow:
+Application configurations deployed to `~/.config/` by home-manager via
+`xdg.configFile` (see `nix/home/default.nix`). Note: stow is not used anywhere in
+this repo despite older docs saying so.
 - **nvim/**: Neovim configuration (lazy.nvim plugin manager, custom Lua modules)
 - **ghostty/**: Terminal emulator configuration
 - **zellij/**: Terminal multiplexer configuration
@@ -23,13 +25,13 @@ Application configurations that get symlinked to `~/.config/` using stow:
 - **gh/**: GitHub CLI configuration
 - **k9s/**: Kubernetes cluster management tool configuration
 - **helm/**: Kubernetes package manager configuration
-- **hammerspoon/**: Window management (symlinks to `~/.hammerspoon` instead of `~/.config`)
 
-### Shell and Git Config (root level)
-Symlinked directly to home directory:
-- `.zshrc`: Zsh configuration with Oh My Zsh plugins
-- `.gitconfig`: Git configuration
-- `.editorconfig`: Editor configuration
+### Shell and Git Config
+Generated declaratively, not symlinked from the repo root:
+- Zsh: `nix/home/shell.nix` generates `~/.zshrc` (Oh My Zsh plugins, aliases, mise).
+  There is no `.zshrc` file in this repo.
+- Git: `nix/home/git.nix` generates `~/.config/git/config` and `~/.config/git/ignore`.
+- `.editorconfig`: the repo-root file, linked to `~/.editorconfig` by `home.file`.
 
 ### Custom Tools (`./tools/`)
 Go CLI utilities for development workflows. Each tool has its own directory with `main.go` and optional `README.md`.
