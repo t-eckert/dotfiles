@@ -7,6 +7,7 @@
     ./shell.nix
     ./git.nix
     ./ssh.nix
+    ./syncshot.nix
     ./programs/neovim.nix
     ./programs/starship.nix
   ];
