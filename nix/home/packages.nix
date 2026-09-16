@@ -175,6 +175,8 @@ in {
     # Media & Documents
     # ============================================================
     ffmpeg
+    poppler-utils           # pdftotext, pdftoppm. Claude Code's Read tool shells out to
+                            # pdftoppm to view a PDF, and silently can't open one without it.
 
     # ============================================================
     # Utilities
