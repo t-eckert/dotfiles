@@ -23,7 +23,7 @@ cd ~/Repos/github.com/t-eckert/dotfiles
 Then apply the configuration:
 
 ```bash
-darwin-rebuild switch --flake .
+sudo darwin-rebuild switch --flake .
 ```
 
 ### 2. Login

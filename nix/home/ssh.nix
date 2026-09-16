@@ -6,14 +6,15 @@
     enable = true;
     enableDefaultConfig = false;
 
-    # `settings` replaces the deprecated `matchBlocks`. Two things change:
-    #   - keys are upstream OpenSSH directive names (HostName, not hostname), and
-    #   - `extraOptions` is gone; those directives are now written inline.
+    # `settings` replaces the deprecated `matchBlocks`. It is freeform and takes
+    # upstream OpenSSH directive names, so the camelCase aliases and the
+    # separate `extraOptions` escape hatch both collapse into one flat block.
+    # DAG ordering is unchanged. Booleans still render through yesNo, so
+    # `true` becomes `yes` rather than `true`.
     #
-    # Values are rendered with `renderValue`: booleans become yes/no, everything
-    # else goes through `toString` with NO quoting added. IdentityAgent below
-    # therefore keeps its embedded quotes -- the path contains spaces, and
-    # dropping them would silently break 1Password agent auth.
+    # Non-boolean values go through plain `toString` with NO quoting added, so
+    # IdentityAgent below keeps its embedded quotes: the path contains spaces and
+    # dropping them silently breaks 1Password agent auth.
     settings = {
       "ardent-forge" = lib.hm.dag.entryBefore [ "*" ] {
         HostName = "ardent-forge.feist-gondola.ts.net";

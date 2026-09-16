@@ -23,10 +23,13 @@
 
     # Shell aliases
     shellAliases = {
-      # Nix: rebuilds go through `task rebuild`, which resolves the hostname
-      # itself. A hardcoded `#Thomas-MacBook-Pro` alias used to live here and
-      # silently failed on the work Mac, which is the drift darwinHosts exists
-      # to prevent.
+      # Nix: no reload-nix alias. Rebuilds go through `task rebuild`, which runs
+      # activation as root and resolves darwinConfigurations.$(hostname -s)
+      # itself.
+      #
+      # If you ever reinstate a direct alias, do NOT pin a hostname in the flake
+      # ref: the old one hardcoded `#Thomas-MacBook-Pro` and would apply the
+      # personal machine's config on the work one.
 
       # Kubernetes
       k = "kubectl";
@@ -234,6 +237,11 @@
     historyWidget.command = "";
     defaultCommand = "rg --files --hidden --follow --glob '!.git/'";
     defaultOptions = [ "--height=40%" "--layout=reverse" "--border" ];
+    # Atuin owns Ctrl-R. Both integrations bind it and atuin is sourced last,
+    # so atuin already won -- but only as a side effect of ordering, which is
+    # what home-manager warns about. Empty disables fzf's binding and makes the
+    # existing outcome explicit. Needs fzf >= 0.66 to be honoured; 0.74 here.
+    historyWidget.command = "";
   };
 
   # Atuin shell history
