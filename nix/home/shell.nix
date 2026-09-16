@@ -227,14 +227,6 @@
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
-
-    # Atuin owns Ctrl-R, so fzf's history widget is disabled explicitly.
-    #
-    # Both modules bind Ctrl-R and home-manager warns that the choice is
-    # implicit: atuin's integration is sourced after fzf's and silently won.
-    # This makes the existing behaviour the declared one rather than an artifact
-    # of sourcing order. Ctrl-T (files) and Alt-C (directories) are unaffected.
-    historyWidget.command = "";
     defaultCommand = "rg --files --hidden --follow --glob '!.git/'";
     defaultOptions = [ "--height=40%" "--layout=reverse" "--border" ];
     # Atuin owns Ctrl-R. Both integrations bind it and atuin is sourced last,
