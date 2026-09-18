@@ -187,6 +187,40 @@
         }'
       }
 
+      # Launch Claude Code with a named session: `ccn dev APPO11Y 5028` becomes
+      # the session name "[DEV] APPO11Y 5028". Without a name the CLI invents a
+      # lowercase phrase, and a job list full of those is unscannable. The tag
+      # vocabulary lives in ~/.claude/CLAUDE.md; `/rename` fixes one after the
+      # fact. No ''${...} in here -- Nix would eat it before zsh ever sees it.
+      ccn() {
+        local tag subject
+        case "$1" in
+          dev|DEV)           tag="DEV" ;;
+          note|NOTE)         tag="NOTE" ;;
+          research|RESEARCH) tag="RESEARCH" ;;
+          ops|OPS)           tag="OPS" ;;
+          plan|PLAN)         tag="PLAN" ;;
+          -h|--help)
+            print -r -- 'Usage: ccn <dev|note|research|ops|plan> <subject>'
+            print -r -- 'Launches Claude Code named "[TAG] Subject".'
+            print -r -- 'Tag meanings: ~/.claude/CLAUDE.md'
+            return 0 ;;
+          "")
+            print -ru2 -- 'ccn: needs a tag (dev, note, research, ops, plan)'
+            return 1 ;;
+          *)
+            print -ru2 -- "ccn: unknown tag '$1' (dev, note, research, ops, plan)"
+            return 1 ;;
+        esac
+        shift
+        subject="$*"
+        if [[ -z "$subject" ]]; then
+          print -ru2 -- "ccn: $tag needs a subject"
+          return 1
+        fi
+        command claude -n "[$tag] $subject"
+      }
+
       # Homebrew goes LAST on PATH.
       #
       # nix-homebrew's /etc/zshrc integration already runs `brew shellenv`, which
