@@ -1,6 +1,6 @@
 # macOS system configuration (nix-darwin)
 { config, pkgs, lib, self, username, hostName ? null
-, brewPackage, homebrew-services, redpanda-tap, ... }:
+, brewPackage, homebrew-services, redpanda-tap, launchdarkly-tap, ... }:
 
 {
   # Primary user (required for user-specific settings like system.defaults)
@@ -74,6 +74,7 @@
     taps = {
       "homebrew/homebrew-services" = homebrew-services;
       "redpanda-data/homebrew-tap" = redpanda-tap;
+      "launchdarkly/homebrew-tap" = launchdarkly-tap;
     };
 
     # Fully declarative taps. Side effect worth knowing: this also exports
@@ -102,8 +103,8 @@
     #
     # Note: removing an entry here does NOT revoke it; use `brew untrust`.
     trust = {
-      taps = [ "redpanda-data/tap" ];
-      formulae = [ "redpanda-data/tap/redpanda" ];
+      taps = [ "redpanda-data/tap" "launchdarkly/tap" ];
+      formulae = [ "redpanda-data/tap/redpanda" "launchdarkly/tap/ldcli" ];
     };
   };
 
@@ -138,6 +139,12 @@
         # from source and link against /opt/homebrew/opt/libusb/lib/libusb-1.0.0.dylib.
         # Without it every rtl_* command dies with a dyld "Library not loaded" error.
         name = "libusb";
+      }
+      {
+        # Installed by hand on 2026-09-16 and declared nowhere, so the next
+        # rebuild would have zapped it. The tap is pinned above for the same
+        # reason: mutableTaps = false means `brew tap` cannot put it back.
+        name = "launchdarkly/tap/ldcli";
       }
     ];
 

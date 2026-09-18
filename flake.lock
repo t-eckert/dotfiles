@@ -172,6 +172,22 @@
         "type": "github"
       }
     },
+    "launchdarkly-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787687329,
+        "narHash": "sha256-QSzXoksSXpMxdlp7cmlk87ogBSUWWLH/iE3Up9nHEPc=",
+        "owner": "launchdarkly",
+        "repo": "homebrew-tap",
+        "rev": "7ae50fe5d2b0832896ea1f001af6f26bdb2a61f7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "launchdarkly",
+        "repo": "homebrew-tap",
+        "type": "github"
+      }
+    },
     "nix-homebrew": {
       "inputs": {
         "brew-src": [
@@ -263,6 +279,7 @@
         "home-manager": "home-manager",
         "homebrew-services": "homebrew-services",
         "hunk": "hunk",
+        "launchdarkly-tap": "launchdarkly-tap",
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs_2",
         "redpanda-tap": "redpanda-tap"

@@ -57,10 +57,15 @@
       url = "github:redpanda-data/homebrew-tap";
       flake = false;
     };
+    launchdarkly-tap = {
+      url = "github:launchdarkly/homebrew-tap";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, darwin, flake-utils, hunk
-            , nix-homebrew, brew-src, homebrew-services, redpanda-tap }:
+            , nix-homebrew, brew-src, homebrew-services, redpanda-tap
+            , launchdarkly-tap }:
     let
       # Supported systems
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
@@ -116,7 +121,8 @@
       mkDarwinSystem = hostName: darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = {
-          inherit self username hostName brewPackage homebrew-services redpanda-tap;
+          inherit self username hostName brewPackage homebrew-services
+            redpanda-tap launchdarkly-tap;
         };
         modules = [
           ./nix/darwin
