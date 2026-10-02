@@ -167,6 +167,7 @@ in {
     # ============================================================
     caddy                   # Web server
     nmap
+    dig                     # DNS lookups (bind)
     arp-scan
     nghttp2
     nss
