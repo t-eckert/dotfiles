@@ -108,6 +108,7 @@ in {
     azure-cli
     doctl                   # DigitalOcean
     flyctl                  # Fly.io
+    pscale                  # PlanetScale
     awscli2
     # wrangler             # Cloudflare Workers — broken in nixpkgs (EBADF build failure), use `npx wrangler`
 
