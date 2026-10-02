@@ -27,6 +27,16 @@
         IdentitiesOnly = true;
         IdentityAgent = "none";
       };
+
+      # Advanced SSH & Web Terminal add-on. The public key is the 1Password
+      # "Home Assistant" key; pinning it with IdentitiesOnly stops the agent
+      # offering every key and tripping "Too many authentication failures".
+      "homeassistant" = lib.hm.dag.entryBefore [ "*" ] {
+        HostName = "homeassistant.feist-gondola.ts.net";
+        User = "hassio";
+        IdentityFile = "~/.ssh/homeassistant.pub";
+        IdentitiesOnly = true;
+      };
     } // lib.optionalAttrs isDarwin {
       "*" = {
         AddKeysToAgent = "yes";
