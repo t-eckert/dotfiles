@@ -61,11 +61,15 @@
       url = "github:launchdarkly/homebrew-tap";
       flake = false;
     };
+    clerk-tap = {
+      url = "github:clerk/homebrew-stable";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, darwin, flake-utils, hunk
             , nix-homebrew, brew-src, homebrew-services, redpanda-tap
-            , launchdarkly-tap }:
+            , launchdarkly-tap, clerk-tap }:
     let
       # Supported systems
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
@@ -122,7 +126,7 @@
         system = "aarch64-darwin";
         specialArgs = {
           inherit self username hostName brewPackage homebrew-services
-            redpanda-tap launchdarkly-tap;
+            redpanda-tap launchdarkly-tap clerk-tap;
         };
         modules = [
           ./nix/darwin

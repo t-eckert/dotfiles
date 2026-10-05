@@ -1,6 +1,6 @@
 # macOS system configuration (nix-darwin)
 { config, pkgs, lib, self, username, hostName ? null
-, brewPackage, homebrew-services, redpanda-tap, launchdarkly-tap, ... }:
+, brewPackage, homebrew-services, redpanda-tap, launchdarkly-tap, clerk-tap, ... }:
 
 {
   # Primary user (required for user-specific settings like system.defaults)
@@ -75,6 +75,7 @@
       "homebrew/homebrew-services" = homebrew-services;
       "redpanda-data/homebrew-tap" = redpanda-tap;
       "launchdarkly/homebrew-tap" = launchdarkly-tap;
+      "clerk/homebrew-stable" = clerk-tap;
     };
 
     # Fully declarative taps. Side effect worth knowing: this also exports
@@ -103,8 +104,12 @@
     #
     # Note: removing an entry here does NOT revoke it; use `brew untrust`.
     trust = {
-      taps = [ "redpanda-data/tap" "launchdarkly/tap" ];
-      formulae = [ "redpanda-data/tap/redpanda" "launchdarkly/tap/ldcli" ];
+      taps = [ "redpanda-data/tap" "launchdarkly/tap" "clerk/stable" ];
+      formulae = [
+        "redpanda-data/tap/redpanda"
+        "launchdarkly/tap/ldcli"
+        "clerk/stable/clerk"
+      ];
     };
   };
 
@@ -145,6 +150,11 @@
         # rebuild would have zapped it. The tap is pinned above for the same
         # reason: mutableTaps = false means `brew tap` cannot put it back.
         name = "launchdarkly/tap/ldcli";
+      }
+      {
+        # Clerk CLI. Not in nixpkgs -- the `clerk` attribute there is an
+        # unrelated MPD client.
+        name = "clerk/stable/clerk";
       }
     ];
 

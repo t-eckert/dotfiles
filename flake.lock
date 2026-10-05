@@ -45,6 +45,22 @@
         "type": "github"
       }
     },
+    "clerk-tap": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790708130,
+        "narHash": "sha256-L/KqTv126JxV9XXpY68Ya5ECM38zHdjwi2Mw8VQGdEA=",
+        "owner": "clerk",
+        "repo": "homebrew-stable",
+        "rev": "2199f63ebad179cc0e5ac9a854ff6acc8887ee44",
+        "type": "github"
+      },
+      "original": {
+        "owner": "clerk",
+        "repo": "homebrew-stable",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -274,6 +290,7 @@
     "root": {
       "inputs": {
         "brew-src": "brew-src",
+        "clerk-tap": "clerk-tap",
         "darwin": "darwin",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
