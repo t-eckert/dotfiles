@@ -139,15 +139,6 @@
       # mise comment below warns about for asdf -- whichever hooks the shell last
       # silently wins. Pinned versions come from mise, everything else from the profile.
 
-      # Google Cloud SDK (check multiple possible locations)
-      for gcloud_path in "$HOME/google-cloud-sdk" "$HOME/Downloads/google-cloud-sdk" "/usr/local/Caskroom/google-cloud-sdk"; do
-        if [ -f "$gcloud_path/path.zsh.inc" ]; then
-          source "$gcloud_path/path.zsh.inc"
-          [ -f "$gcloud_path/completion.zsh.inc" ] && source "$gcloud_path/completion.zsh.inc"
-          break
-        fi
-      done
-
       # Zellij list sessions with columnar output (kubectl-style)
       zls() {
         if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then

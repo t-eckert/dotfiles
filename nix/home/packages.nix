@@ -110,6 +110,9 @@ in {
     flyctl                  # Fly.io
     pscale                  # PlanetScale
     awscli2
+    (google-cloud-sdk.withExtraComponents [   # gcloud, gsutil, bq
+      google-cloud-sdk.components.gke-gcloud-auth-plugin  # kubectl auth for GKE
+    ])
     # wrangler             # Cloudflare Workers — broken in nixpkgs (EBADF build failure), use `npx wrangler`
 
     # Speedtest CLI
