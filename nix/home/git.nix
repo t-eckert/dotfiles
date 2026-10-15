@@ -97,6 +97,14 @@
       # Color
       color.ui = "auto";
 
+      # bat renders diffs. --strip-ansi=always drops git's own colors
+      # (including colorMoved) so bat's highlighting is the only layer.
+      pager = let bat = "bat --language=diff --style=plain --strip-ansi=always"; in {
+        diff = bat;
+        show = bat;
+        log = bat;
+      };
+
       # Help
       help.autocorrect = 1;
 
@@ -185,10 +193,10 @@
     ];
   };
 
-  # Delta for better diffs (now separate from git)
+  # Delta is kept for lazygit's pager below; git itself pages through bat.
   programs.delta = {
     enable = true;
-    enableGitIntegration = true;
+    enableGitIntegration = false;
     options = {
       navigate = true;
       side-by-side = true;
