@@ -122,6 +122,55 @@ sudo launchctl kickstart -k system/systems.determinate.nix-daemon
 nix store ping  # Should show "Trusted: 1"
 ```
 
+## Container
+
+The [`Containerfile`](./Containerfile) builds the `thomaseckert@linux` Home Manager
+configuration into an image, so the same shell, editor and tools are available on
+any machine that runs containers. CI publishes it to
+`ghcr.io/t-eckert/dotfiles` on every push to `main` that touches the config. Tags:
+`latest`, `sha-<short-sha>` and `YYYY.MM.DD`. The image is public, so no login is
+needed to pull it.
+
+### Podman or Docker
+
+```sh
+# Start an interactive zsh session (removed on exit)
+podman run -it --rm ghcr.io/t-eckert/dotfiles:latest
+
+# Mount the current directory to work on local files
+podman run -it --rm -v "$(pwd)":/workspace -w /workspace ghcr.io/t-eckert/dotfiles:latest
+
+# Build the image locally instead of pulling it
+podman build -t devenv .
+podman run -it --rm devenv
+```
+
+`docker` takes the same arguments; swap it in for `podman`.
+
+### Kubernetes
+
+Start a pod that stays running, then open a shell in it:
+
+```sh
+kubectl run devenv --image=ghcr.io/t-eckert/dotfiles:latest --restart=Never \
+  --command -- sleep infinity
+kubectl wait --for=condition=Ready pod/devenv --timeout=10m
+kubectl exec -it devenv -- zsh
+```
+
+The image is several GB, so the first pull on a node can take a few minutes.
+Delete the pod when you are done:
+
+```sh
+kubectl delete pod devenv
+```
+
+For a one-off session that cleans up after itself, attach directly instead:
+
+```sh
+kubectl run devenv -it --rm --image=ghcr.io/t-eckert/dotfiles:latest --restart=Never
+```
+
 ## Configs
 
 - [Atuin](./config/atuin)
