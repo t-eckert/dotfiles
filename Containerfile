@@ -6,17 +6,18 @@
 # Run:    podman run -it --rm devenv
 # Persist workdir: podman run -it --rm -v $(pwd):/workspace devenv
 
-FROM nixos/nix:latest
+FROM docker.io/nixos/nix:latest
 
 # Enable flakes; disable sandbox (required inside Docker/Podman)
 RUN echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf && \
     echo "sandbox = false" >> /etc/nix/nix.conf
 
-# Create the user
+# Create the user. The home directory stays root-owned until activation is done:
+# activation runs as root, and Nix warns and ignores $HOME when it is owned by
+# another user. Home Manager also needs a profiles directory to already exist.
 RUN echo "thomaseckert:x:1000:1000::/home/thomaseckert:/bin/sh" >> /etc/passwd && \
     echo "thomaseckert:x:1000:" >> /etc/group && \
-    mkdir -p /home/thomaseckert && \
-    chown 1000:1000 /home/thomaseckert
+    mkdir -p /home/thomaseckert/.local/state/nix/profiles
 
 # Copy dotfiles
 COPY . /dotfiles
