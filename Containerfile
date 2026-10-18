@@ -22,12 +22,18 @@ RUN echo "thomaseckert:x:1000:1000::/home/thomaseckert:/bin/sh" >> /etc/passwd &
 # Copy dotfiles
 COPY . /dotfiles
 
-# Build the home-manager activation package and apply it to the user's home
+# Build the home-manager activation package and apply it to the user's home.
+# Garbage collection must happen in this same step: build-only store paths
+# (compilers, flake sources) would otherwise stay in this layer for good. The
+# activated generation stays alive through its Home Manager profile and gcroots.
 RUN cd /dotfiles && \
     nix build .#homeConfigurations."thomaseckert@linux".activationPackage && \
     HOME=/home/thomaseckert \
     USER=thomaseckert \
     ./result/activate && \
+    rm result && \
+    nix-collect-garbage && \
+    rm -rf /root/.cache/nix && \
     chown -R thomaseckert:thomaseckert /home/thomaseckert
 
 USER thomaseckert
