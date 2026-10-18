@@ -21,7 +21,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     # Git diff viewer
-    hunk.url = "github:modem-dev/hunk";
+    hunk.url = "github:modem-dev/hunk/v0.23.0";
 
     # Homebrew installation manager.
     #
