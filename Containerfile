@@ -43,4 +43,7 @@ ENV HOME=/home/thomaseckert
 ENV USER=thomaseckert
 ENV PATH=/home/thomaseckert/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH
 
+# Install Neovim plugins into the image so each `run --rm` doesn't clone them again
+RUN nvim --headless "+Lazy! sync" +qa
+
 CMD ["/home/thomaseckert/.nix-profile/bin/zsh"]
