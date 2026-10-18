@@ -79,6 +79,9 @@
     atuin
     lazygit
 
+    # AI agents
+    pi-coding-agent         # Pi (https://pi.dev), runs as `pi`
+
     # Networking
     iproute2
   ];
