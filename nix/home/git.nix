@@ -72,11 +72,16 @@
       # Credential helper (macOS keychain)
       credential.helper = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin "osxkeychain";
 
-      # URL rewrites
+      # URL rewrites. On macOS every GitHub URL goes over SSH. On Linux only
+      # pushes do: the container image has no SSH key or known_hosts, so
+      # rewriting fetches broke every clone, lazy.nvim's plugin installs included.
+      # Public repos fetch fine over HTTPS, and pushes still use SSH where a key
+      # exists.
       url = {
-        "git@github.com:" = {
-          insteadOf = "https://github.com/";
-        };
+        "git@github.com:" =
+          if pkgs.stdenv.hostPlatform.isDarwin
+          then { insteadOf = "https://github.com/"; }
+          else { pushInsteadOf = "https://github.com/"; };
       };
 
       # http.postBuffer is deliberately NOT set -- git's 1 MiB default applies.
