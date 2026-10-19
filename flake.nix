@@ -81,6 +81,19 @@
       pkgsFor = system: import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = nixpkgs.lib.optional (nixpkgs.lib.hasSuffix "darwin" system) darwinOverlay;
+      };
+
+      # Package fixes that only macOS needs. Kept off Linux so its builds still
+      # come from cache.nixos.org instead of being rebuilt locally.
+      darwinOverlay = final: prev: {
+        # atuin 18.23.0 isn't cached for our nixpkgs rev on aarch64-darwin, so
+        # every Mac compiles it, and its end-to-end PTY tests (e2e_capture,
+        # e2e_pty) time out in a local `darwin-rebuild build`. Skipping one
+        # (2026-10-18) only exposed 13 more in e2e_pty. Hydra's darwin build
+        # runs and passes them, so drop the test phase here instead of
+        # skipping tests one at a time. Remove this once a cached build exists.
+        atuin = prev.atuin.overrideAttrs (_: { doCheck = false; });
       };
 
       # User configuration
@@ -130,6 +143,9 @@
         };
         modules = [
           ./nix/darwin
+          # nix-darwin builds its own pkgs rather than using pkgsFor, and Home
+          # Manager reuses them (useGlobalPkgs), so the overlay goes in here too.
+          { nixpkgs.overlays = [ darwinOverlay ]; }
           nix-homebrew.darwinModules.nix-homebrew
           home-manager.darwinModules.home-manager
           {
