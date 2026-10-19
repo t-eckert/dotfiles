@@ -131,6 +131,13 @@
         "Thomass-MacBook-Pro"  # work (macOS generated the possessive form)
       ];
 
+      # Claude Code profile per host (see nix/home/claude.nix). Unlisted hosts,
+      # including the `default` alias, get null: nothing managed.
+      claudeProfiles = {
+        "Thomas-MacBook-Pro" = "personal";
+        "Thomass-MacBook-Pro" = "work";
+      };
+
       # Builds the macOS system configuration for a given hostname.
       #
       # `hostName = null` produces a config that leaves the machine's name
@@ -158,7 +165,13 @@
                 isDarwin = true;
                 isLinux = false;
               };
-              users.${username} = import ./nix/home;
+              users.${username} = {
+                imports = [ ./nix/home ];
+                claude.profile =
+                  if hostName == null then null else claudeProfiles.${hostName} or null;
+                # Kept outside this public repo; create it on the personal Mac.
+                claude.personal.claudeMd = "/Users/${username}/.config/claude-personal/CLAUDE.md";
+              };
             };
           }
         ];
