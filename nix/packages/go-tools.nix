@@ -26,7 +26,7 @@ buildGoModule {
 
   # Vendor hash - update after changing go.mod dependencies
   # Run: nix build .#dotfiles-tools 2>&1 | grep "got:" to get the correct hash
-  vendorHash = "sha256-zwjK121nP1fzKas9HXDL7jp0mrcGJK64CiXK1OEffnY=";
+  vendorHash = "sha256-4W7hvg7qZSOVBf5tbqj3DyzWuhi7MEqq8M+El4ZkbIk=";
 
   # Build all tools as subpackages
   subPackages = [
