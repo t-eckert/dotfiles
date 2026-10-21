@@ -77,6 +77,19 @@ in
           rm -f "$tmp"
         fi
       '';
+
+      # Claude Code itself is not a Nix package: a store copy goes stale and
+      # sits on PATH behind the self-updating one, so losing ~/.local/bin from
+      # PATH would silently run an old version. Instead, bootstrap the native
+      # install once on a fresh machine and let `claude update` own it after.
+      home.activation.claudeInstall = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if [[ ! -v DRY_RUN && ! -e "$HOME/.local/bin/claude" ]]; then
+          # The installer shells out to curl itself, so it needs it on PATH.
+          ( export PATH="${lib.makeBinPath (with pkgs; [ curl coreutils ])}:$PATH"
+            curl -fsSL https://claude.ai/install.sh | ${pkgs.bash}/bin/bash ) \
+            || echo "claude: native install failed; run 'curl -fsSL https://claude.ai/install.sh | bash' by hand" >&2
+        fi
+      '';
     })
 
     (lib.mkIf (cfg.profile == "personal") {
