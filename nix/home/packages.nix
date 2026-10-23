@@ -109,6 +109,7 @@ in {
     doctl                   # DigitalOcean
     flyctl                  # Fly.io
     pscale                  # PlanetScale
+    stripe-cli              # Stripe
     awscli2
     (google-cloud-sdk.withExtraComponents [   # gcloud, gsutil, bq
       google-cloud-sdk.components.gke-gcloud-auth-plugin  # kubectl auth for GKE
